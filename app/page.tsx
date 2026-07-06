@@ -1,19 +1,35 @@
 'use client';
 import { useState, useEffect } from 'react';
 
-export default function Timer() {
-  const [timeLeft, setTimeLeft] = useState<number>(60); // Время в секундах
+type Mode = 'work' | 'shortBreak';
+
+export default function PomodoroWidget() {
+  const [mode, setMode] = useState<Mode>('work');
+  const [timeLeft, setTimeLeft] = useState<number>(25 * 60);
   const [isRunning, setIsRunning] = useState<boolean>(false);
 
   useEffect(() => {
     let interval: NodeJS.Timeout;
+    
     if (isRunning && timeLeft > 0) {
       interval = setInterval(() => {
         setTimeLeft((prev) => prev - 1);
       }, 1000);
+    } else if (isRunning && timeLeft === 0) {
+      if (mode === 'work') {
+        setMode('shortBreak');
+        setTimeLeft(5 * 60);
+        alert('Break time! ☕');
+      } else {
+        setMode('work');
+        setTimeLeft(25 * 60);
+        alert('Work time! 💻');
+      }
+      setIsRunning(false);
     }
+
     return () => clearInterval(interval);
-  }, [isRunning, timeLeft]);
+  }, [isRunning, timeLeft, mode]);
 
   const formatTime = (seconds: number) => {
     const minutes = Math.floor(seconds / 60);
@@ -21,33 +37,31 @@ export default function Timer() {
     return `${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   };
 
-  const resetTimer = () => {
-    setIsRunning(false);
-    setTimeLeft(60); // Сброс на 1 минуту
-  };
-
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center p-24 bg-gray-900 text-white">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-8">Мой Таймер</h1>
-        <div className="text-6xl font-mono mb-8">{formatTime(timeLeft)}</div>
-        <div className="space-x-4">
-          <button
-            onClick={() => setIsRunning(!isRunning)}
-            className={`px-6 py-2 rounded-lg font-semibold ${
-              isRunning ? 'bg-yellow-500' : 'bg-green-500'
-            } text-black hover:opacity-90 transition`}
-          >
-            {isRunning ? 'Пауза' : 'Старт'}
-          </button>
-          <button
-            onClick={resetTimer}
-            className="px-6 py-2 rounded-lg font-semibold bg-red-500 text-white hover:opacity-90 transition"
-          >
-            Сброс
-          </button>
-        </div>
-      </div>
-    </main>
+    // Фиксированное окно 100x100 в правом верхнем углу, всегда сверху (z-50)
+    <div 
+      onClick={() => setIsRunning(!isRunning)}
+      className={`fixed top-4 right-4 z-50 w-[100px] h-[100px] rounded-2xl flex flex-col items-center justify-center cursor-pointer select-none transition-all duration-300 active:scale-95 shadow-2xl ${
+        mode === 'work' 
+          ? 'bg-red-600 hover:bg-red-500' 
+          : 'bg-green-600 hover:bg-green-500'
+      } ${isRunning ? 'animate-pulse' : ''}`}
+      title={isRunning ? 'Клик для паузы' : 'Клик для старта'}
+    >
+      {/* Название режима мелким шрифтом */}
+      <span className="text-[10px] uppercase tracking-wider font-bold text-white/80">
+        {mode === 'work' ? 'Work' : 'Break'}
+      </span>
+      
+      {/* Крупные цифры таймера */}
+      <span className="text-xl font-mono font-bold text-white mt-1">
+        {formatTime(timeLeft)}
+      </span>
+
+      {/* Индикатор состояния */}
+      <span className="text-[9px] text-white/60 mt-1">
+        {isRunning ? '● pause' : '▶ start'}
+      </span>
+    </div>
   );
 }
