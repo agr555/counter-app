@@ -1,5 +1,6 @@
 'use client';
 import { useState, useEffect, startTransition } from 'react';
+import styles from './widget.module.css'; // ПОДКЛЮЧЕНИЕ ФАЙЛА СТИЛЕЙ
 
 type Mode = 'work' | 'shortBreak';
 
@@ -10,7 +11,6 @@ export default function PomodoroWidget() {
 
   const totalSeconds = mode === 'work' ? 25 * 60 : 5 * 60;
 
-  // Звук встроенными средствами браузера
   const playSound = () => {
     try {
       const audioCtx = new (window.AudioContext || (window as any).webkitAudioContext)();
@@ -36,7 +36,6 @@ export default function PomodoroWidget() {
         if (prev <= 1) {
           clearInterval(interval);
           playSound();
-          // Безопасное переключение состояний React в useEffect
           startTransition(() => {
             setIsRunning(false);
             if (mode === 'work') {
@@ -62,7 +61,6 @@ export default function PomodoroWidget() {
     return `${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   };
 
-  // Обычная кнопка вместо клика по всему экрану/диву
   const toggleTimer = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
@@ -85,39 +83,12 @@ export default function PomodoroWidget() {
       onClick={toggleTimer}
       onDoubleClick={handleDoubleClick}
       type="button"
-      style={{
-        position: 'fixed',
-        bottom: '20px',
-        right: '20px',
-        zIndex: 9999,
-        width: '100px',
-        height: '100px',
-        borderRadius: '20px',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        cursor: 'pointer',
-        userSelect: 'none',
-        border: 'none',
-        outline: 'none',
-        padding: 0,
-        backgroundColor: mode === 'work' ? '#e11d48' : '#16a34a',
-        boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.3)',
-        fontFamily: 'monospace',
-        transition: 'transform 0.1s ease'
-      }}
-      title="1 клик: Старт/Пауза | 2 клика: Сброс"
+      className={styles.widgetButton}
+      // Оставляем динамический цвет фона, зависящий от режима работы/отдыха
+      style={{ backgroundColor: mode === 'work' ? '#e11d48' : '#16a34a' }}
+      title="1 клик: Старт | 2 клика: Сброс"
     >
-      {/* SVG Круг прогресса */}
-      <svg 
-        style={{
-          position: 'absolute',
-          width: '100px',
-          height: '100px',
-          transform: 'rotate(-90deg)',
-          pointerEvents: 'none'
-        }}
-      >
+      <svg className={styles.widgetSvg}>
         <circle
           cx="50"
           cy="50"
@@ -136,29 +107,18 @@ export default function PomodoroWidget() {
           strokeDasharray={circumference}
           strokeDashoffset={strokeDashoffset}
           strokeLinecap="round"
-          style={{ transition: 'stroke-dashoffset 1s linear' }}
+          className={styles.circleProgress}
         />
       </svg>
 
-      {/* Текст */}
-      <div style={{
-        zIndex: 10,
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        color: 'white',
-        pointerEvents: 'none'
-      }}>
-        <span style={{ fontSize: '10px', fontWeight: 'bold', letterSpacing: '1px' }}>
+      <div className={styles.textContent}>
+        <span className={styles.modeText}>
           {mode === 'work' ? 'WORK' : 'BREAK'}
         </span>
-        
-        <span style={{ fontSize: '18px', fontWeight: 'bold', margin: '2px 0' }}>
+        <span className={styles.timeText}>
           {formatTime(timeLeft)}
         </span>
-
-        <span style={{ fontSize: '8px', opacity: 0.7 }}>
+        <span className={styles.statusText}>
           {isRunning ? 'PAUSE' : 'START'}
         </span>
       </div>
