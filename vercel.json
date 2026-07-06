@@ -1,6 +1,0 @@
-
-{
-  "buildCommand": "cd counter-app && npm run build",
-  "outputDirectory": "counter-app/.next",
-  "framework": "nextjs"
-}
