@@ -50,7 +50,7 @@ export default function PomodoroWidget() {
     >
       {/* Название режима мелким шрифтом */}
       <span className="text-[10px] uppercase tracking-wider font-bold text-white/80">
-        {mode === 'work' ? 'Work' : 'Break'}
+        {mode === 'work' ? 'Work ' : 'Break '}
       </span>
       
       {/* Крупные цифры таймера */}
@@ -59,8 +59,8 @@ export default function PomodoroWidget() {
       </span>
 
       {/* Индикатор состояния */}
-      <span className="text-[9px] text-white/60 mt-1">
-        {isRunning ? '● pause' : '▶ start'}
+      <span className="text-[14px] text-white/60 mt-1">
+        {isRunning ? ' ● pause' : ' ▶ start'}
       </span>
     </div>
   );
