@@ -37,30 +37,40 @@ export default function PomodoroWidget() {
     return `${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   };
 
+  // Сброс таймера по двойному клику
+  const handleDoubleClick = () => {
+    setIsRunning(false);
+    setMode('work');
+    setTimeLeft(25 * 60);
+  };
+
   return (
-    // Фиксированное окно 100x100 в правом верхнем углу, всегда сверху (z-50)
+    // Прижато к правому нижнему углу (bottom-4 right-4)
     <div 
       onClick={() => setIsRunning(!isRunning)}
-      className={`fixed top-4 right-4 z-50 w-[100px] h-[100px] rounded-2xl flex flex-col items-center justify-center cursor-pointer select-none transition-all duration-300 active:scale-95 shadow-2xl ${
+      onDoubleClick={handleDoubleClick}
+      className={`fixed bottom-4 right-4 z-50 w-[100px] h-[100px] rounded-2xl flex flex-col items-center justify-center cursor-pointer select-none transition-all duration-300 active:scale-95 shadow-2xl ${
         mode === 'work' 
           ? 'bg-red-600 hover:bg-red-500' 
           : 'bg-green-600 hover:bg-green-500'
       } ${isRunning ? 'animate-pulse' : ''}`}
-      title={isRunning ? 'Клик для паузы' : 'Клик для старта'}
+      title="1 клик: Старт/Пауза | 2 клика: Сброс"
     >
-      {/* Название режима мелким шрифтом */}
+      {/* Название режима */}
       <span className="text-[10px] uppercase tracking-wider font-bold text-white/80">
-        {mode === 'work' ? 'Work ' : 'Break '}
+        {mode === 'work' ? 'Work' : 'Break'}
       </span>
       
-      {/* Крупные цифры таймера */}
+      {/* Цифры */}
       <span className="text-xl font-mono font-bold text-white mt-1">
         {formatTime(timeLeft)}
       </span>
 
-      {/* Индикатор состояния */}
-      <span className="text-[14px] text-white/60 mt-1">
-        {isRunning ? ' ● pause' : ' ▶ start'}
+      {/* Инструкция мелким шрифтом */}
+      <span className="text-[8px] text-white/60 mt-1 text-center leading-none">
+        {isRunning ? '● pause' : '▶ start'}
+        <br />
+        <span className="text-[7px] text-white/40">2x click: reset</span>
       </span>
     </div>
   );
