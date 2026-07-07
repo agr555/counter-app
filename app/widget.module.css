@@ -261,4 +261,119 @@
     color: #eab308;
     line-height: 1.1;
   }
+  /* --- СТИЛИ ДЛЯ НОВОГО БЛОКА СЕКУНДОМЕРА --- */
+.stopwatchSection {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  
+  .stopwatchDisplay {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: #0f172a;
+    border: 2px solid #3b82f6; /* Синяя рамка для секундомера */
+    border-radius: 8px;
+    min-width: 100px;
+    height: 48px;
+    box-sizing: border-box;
+  }
+  
+  .stopwatchLabel {
+    font-size: 0.6rem;
+    font-weight: 700;
+    color: #94a3b8;
+    letter-spacing: 0.05em;
+    margin-top: 2px;
+  }
+  
+  .stopwatchNumbers {
+    font-size: 1.35rem;
+    font-weight: 800;
+    color: #3b82f6; /* Синие цифры прямого отсчета */
+    font-family: monospace;
+    line-height: 1.1;
+    margin-bottom: 2px;
+  }
+  
+  /* Кнопка ГОТОВО */
+  .realDoneBtn {
+    height: 44px;
+    padding: 0 16px;
+    background-color: #3b82f6;
+    color: #ffffff;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-weight: 800;
+    cursor: pointer;
+    box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.3);
+    transition: background-color 0.15s, transform 0.1s;
+  }
+  
+  .realDoneBtn:hover {
+    background-color: #2563eb;
+  }
+  
+  .realDoneBtn:active {
+    transform: scale(0.95);
+  }
+  
+  /* --- СТИЛИ ДЛЯ КНОПОК ПОДГОНКИ ПО ФАКТУ --- */
+  .adjustWrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  
+  /* Поле вывода цифры штук (теперь это не кнопка, а просто блок) */
+  .countDisplayOnly {
+    background-color: #0f172a;
+    border: 1px solid #16a34a;
+    border-radius: 6px;
+    color: #16a34a;
+    font-size: 0.95rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 36px;
+    width: 100px;
+    box-sizing: border-box;
+  }
+  
+  /* Сетка кнопок под цифрой готово */
+  .adjustButtonsGrid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2px;
+    width: 100px;
+  }
+  
+  /* Маленькие кнопочки корректировки */
+  .adjBtn {
+    background-color: #334155;
+    color: #e2e8f0;
+    border: none;
+    border-radius: 4px;
+    font-size: 0.65rem;
+    font-weight: 700;
+    height: 20px;
+    cursor: pointer;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.1s;
+  }
+  
+  .adjBtn:hover {
+    background-color: #475569;
+  }
+  
+  .adjBtn:active {
+    background-color: #1e293b;
+  }
   
