@@ -1,67 +1,55 @@
 .widgetContainer {
     display: flex;
     align-items: center;
-    gap: 16px;
-    background-color: #1e293b;
-    padding: 14px 20px;
-    border-radius: 12px;
+    background-color: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
     width: max-content;
-    margin: 20px auto;
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
-    font-family: system-ui, -apple-system, sans-serif;
+    margin: 10px auto;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+    height: 54px; /* Сделали виджет ультра-тонким по вертикали */
+    overflow: hidden;
   }
   
-  /* Блоки по секциям */
-  .controlsPanel {
+  .flexRow {
     display: flex;
     align-items: center;
-    gap: 12px;
-  }
-  
-  .timerSection {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  
-  .resultsSection {
-    display: flex;
-    align-items: center;
-    gap: 12px;
+    gap: 8px;
+    padding: 0 8px;
+    height: 100%;
   }
   
   .divider {
     width: 1px;
-    height: 44px;
-    background-color: #334155;
-    margin: 0 4px;
+    height: 34px;
+    background-color: #e2e8f0;
   }
   
   .fieldGroup {
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    justify-content: center;
+    gap: 1px;
   }
   
   .fieldLabel {
-    font-size: 0.72rem;
-    font-weight: 600;
+    font-size: 0.6rem;
+    font-weight: 700;
     color: #94a3b8;
     text-transform: uppercase;
-    letter-spacing: 0.05em;
   }
   
   .inputNumber {
-    background-color: #0f172a;
-    border: 1px solid #334155;
-    border-radius: 6px;
-    color: #f8fafc;
-    padding: 0 10px;
-    font-size: 0.95rem;
+    background-color: transparent;
+    border: 1px solid #cbd5e1;
+    border-radius: 4px;
+    color: #1e293b;
+    font-size: 0.85rem;
     font-weight: 700;
-    width: 65px;
-    height: 36px;
-    box-sizing: border-box;
+    width: 45px;
+    height: 24px;
+    text-align: center;
     outline: none;
   }
   
@@ -69,193 +57,113 @@
     display: flex;
     align-items: center;
     position: relative;
-    background-color: #0f172a;
-    border: 1px solid #334155;
-    border-radius: 6px;
-    padding: 2px;
-    height: 36px;
-    box-sizing: border-box;
-    min-width: 114px;
+    background-color: #f1f5f9;
+    border: 1px solid #e2e8f0;
+    border-radius: 4px;
+    height: 24px;
+    min-width: 100px;
   }
   
-  .radioInput {
-    position: absolute;
-    opacity: 0;
-    width: 0;
-    height: 0;
-  }
-  
+  .radioInput { position: absolute; opacity: 0; }
   .radioLabel {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 45px;
+    width: 40px;
     height: 100%;
-    font-size: 0.85rem;
-    font-weight: 600;
+    font-size: 0.75rem;
+    font-weight: 700;
     color: #64748b;
     cursor: pointer;
     z-index: 2;
-    transition: color 0.15s;
   }
-  
-  .radioLabel[htmlFor="shift-9"] {
-    width: 65px;
-  }
-  
-  .radioInput:checked + .radioLabel {
-    color: #ffffff;
-  }
+  .radioLabel[htmlFor="shift-9"] { width: 60px; }
+  .radioInput:checked + .radioLabel { color: #ffffff; }
   
   .slider {
     position: absolute;
-    top: 2px;
-    left: 2px;
+    top: 2px; left: 2px;
     height: calc(100% - 4px);
-    background-color: #3b82f6;
-    border-radius: 4px;
+    background-color: #0f766e;
+    border-radius: 3px;
     transition: transform 0.2s ease-in-out, width 0.2s ease-in-out;
     z-index: 1;
   }
   
-  /* Кнопки управления */
-  .timerControlBtn {
-    height: 48px;
-    padding: 0 14px;
-    border: none;
-    border-radius: 8px;
+  .targetDisplay, .countDisplayOnly {
+    background-color: transparent;
+    border: 1px solid #cbd5e1;
+    border-radius: 4px;
     font-size: 0.85rem;
     font-weight: 700;
-    cursor: pointer;
-    outline: none;
-    transition: background-color 0.15s, transform 0.1s;
-    color: #ffffff;
-  }
-  
-  .timerControlBtn:active {
-    transform: scale(0.96);
-  }
-  
-  .btnStart { background-color: #16a34a; }
-  .btnStart:hover { background-color: #15803d; }
-  
-  .btnPause { background-color: #eab308; color: #0f172a; }
-  .btnPause:hover { background-color: #ca8a04; }
-  
-  .btnReset { background-color: #ef4444; }
-  .btnReset:hover { background-color: #dc2626; }
-  
-  /* Дисплеи времени */
-  .timeDisplay, .stopwatchDisplay {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    background-color: #0f172a;
-    border-radius: 8px;
-    min-width: 95px;
-    height: 48px;
-    box-sizing: border-box;
-  }
-  
-  .timeDisplay { border: 2px solid #e11d48; }
-  .stopwatchDisplay { border: 2px solid #3b82f6; }
-  
-  .timeLabel, .stopwatchLabel {
-    font-size: 0.6rem;
-    font-weight: 700;
-    color: #94a3b8;
-    letter-spacing: 0.05em;
-    margin-top: 2px;
-  }
-  
-  .timeNumbers, .stopwatchNumbers {
-    font-size: 1.35rem;
-    font-weight: 800;
-    font-family: monospace;
-    line-height: 1.1;
-    margin-bottom: 2px;
-  }
-  
-  .timeNumbers { color: #ffffff; }
-  .stopwatchNumbers { color: #3b82f6; }
-  
-  /* Вывод План, Готово, Прогресс */
-  .targetDisplay, .countDisplayOnly, .progressDisplayContainer {
-    background-color: #0f172a;
-    border: 1px solid #334155;
-    border-radius: 6px;
-    font-size: 0.95rem;
-    font-weight: 700;
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 36px;
-    min-width: 75px;
-    box-sizing: border-box;
+    height: 24px;
+    width: 65px;
   }
+  .countDisplayOnly { border-color: #14b8a6; color: #0f766e; }
+  .targetUnit { font-size: 0.65rem; color: #94a3b8; margin-left: 1px; }
   
-  .targetDisplay { color: #3b82f6; }
-  .countDisplayOnly { color: #16a34a; border-color: #16a34a; width: 100px; }
-  .targetUnit { font-size: 0.7rem; font-weight: 500; color: #64748b; margin-left: 2px; }
-  
-  /* Блок Прогресса (3 строки аналитики) */
+  /* Компактная аналитика */
   .progressDisplayContainer {
-    border-color: #eab308;
-    flex-direction: column;
-    gap: 2px;
-    padding: 4px 10px;
-    min-width: 140px;
-    height: 58px;
-  }
-  
-  .progressRow {
+    border: 1px solid #e2e8f0;
+    border-radius: 4px;
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
+    flex-direction: column;
+    justify-content: center;
+    padding: 1px 6px;
+    min-width: 100px;
+    height: 38px;
   }
-  
-  .rowLabel {
-    font-size: 0.65rem;
-    font-weight: 600;
-    color: #64748b;
-    text-transform: uppercase;
-  }
-  
-  .rowValue {
-    font-size: 0.72rem;
-    font-weight: 700;
-    color: #f8fafc;
-    font-family: monospace;
-  }
-  
+  .progressRow { display: flex; justify-content: space-between; width: 100%; line-height: 1.1; }
+  .rowLabel { font-size: 0.5rem; font-weight: 700; color: #94a3b8; }
+  .rowValue { font-size: 0.6rem; font-weight: 700; color: #334155; font-family: monospace; }
   .textGreen { color: #16a34a !important; }
-  .textRed { color: #ef4444 !important; }
+  .textRed { color: #dc2626 !important; }
   
-  /* Ручная корректировка готово */
-  .adjustWrapper { display: flex; flex-direction: column; gap: 4px; }
-  .adjustButtonsGrid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2px; width: 100px; }
+  /* Кнопки корректировки */
+  .adjustWrapper { display: flex; flex-direction: column; gap: 1px; }
+  .adjustButtonsGrid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; width: 65px; }
   .adjBtn {
-    background-color: #334155; color: #e2e8f0; border: none; border-radius: 4px;
-    font-size: 0.65rem; font-weight: 700; height: 20px; cursor: pointer; padding: 0;
-    display: flex; align-items: center; justify-content: center; transition: background-color 0.1s;
+    background-color: transparent; border: 1px solid #e2e8f0; color: #64748b;
+    font-size: 0.5rem; font-weight: 700; height: 11px; cursor: pointer; padding: 0;
   }
-  .adjBtn:hover { background-color: #475569; }
   
-  /* Самая правая кнопка ГОТОВО */
+  /* Таймеры */
+  .buttonsColumn { display: flex; flex-direction: column; gap: 1px; }
+  .timerControlBtn {
+    height: 18px; padding: 0 4px; background-color: transparent;
+    border-radius: 3px; font-size: 0.6rem; font-weight: 700; cursor: pointer;
+  }
+  .btnStart { border: 1px solid #16a34a; color: #16a34a; }
+  .btnPause { border: 1px solid #ca8a04; color: #ca8a04; }
+  .btnReset { border: 1px solid #94a3b8; color: #64748b; }
+  
+  .timeDisplay, .stopwatchDisplay {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    border: 1px solid #e2e8f0; border-radius: 4px; min-width: 65px; height: 38px;
+  }
+  .timeDisplay { border-color: #14b8a6; }
+  .stopwatchDisplay { border-color: #0f766e; }
+  .timeLabel, .stopwatchLabel { font-size: 0.45rem; font-weight: 700; color: #94a3b8; }
+  .timeNumbers, .stopwatchNumbers { font-size: 0.9rem; font-weight: 700; font-family: monospace; }
+  .timeNumbers { color: #0f766e; }
+  .stopwatchNumbers { color: #14b8a6; }
+  
+  /* УДОБНАЯ ШИРОКАЯ КНОПКА НА КРАЮ */
   .realDoneBtn {
-    height: 58px;
-    padding: 0 20px;
-    background-color: #2563eb;
-    color: #ffffff;
+    width: 80px;
+    height: 100%;
+    background-color: #0f766e; /* Заливка темно-зеленым, чтобы сразу видеть кнопку */
     border: none;
-    border-radius: 8px;
+    color: #ffffff;
     font-size: 1rem;
     font-weight: 900;
     cursor: pointer;
-    box-shadow: 0 4px 10px rgba(37, 99, 235, 0.4);
-    transition: background-color 0.15s, transform 0.1s;
+    border-radius: 0;
+    transition: background-color 0.15s;
   }
-  .realDoneBtn:hover { background-color: #1d4ed8; }
-  .realDoneBtn:active { transform: scale(0.96); }
+  .realDoneBtn:hover { background-color: #115e59; }
+  .realDoneBtn:active { background-color: #134e4a; }
+  
