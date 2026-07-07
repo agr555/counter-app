@@ -11,21 +11,19 @@
     font-family: system-ui, -apple-system, sans-serif;
   }
   
-  /* Настройки слева */
+  /* Блоки по секциям */
   .controlsPanel {
     display: flex;
     align-items: center;
     gap: 12px;
   }
   
-  /* Управление и счетчики по центру */
   .timerSection {
     display: flex;
     align-items: center;
     gap: 10px;
   }
   
-  /* Результаты и кнопка справа */
   .resultsSection {
     display: flex;
     align-items: center;
@@ -122,7 +120,7 @@
   
   /* Кнопки управления */
   .timerControlBtn {
-    height: 48px; /* Выравниваем по высоте с табло времени */
+    height: 48px;
     padding: 0 14px;
     border: none;
     border-radius: 8px;
@@ -144,7 +142,7 @@
   .btnPause { background-color: #eab308; color: #0f172a; }
   .btnPause:hover { background-color: #ca8a04; }
   
-  .btnReset { background-color: #ef4444; } /* СБРОС теперь красный */
+  .btnReset { background-color: #ef4444; }
   .btnReset:hover { background-color: #dc2626; }
   
   /* Дисплеи времени */
@@ -183,7 +181,7 @@
   .stopwatchNumbers { color: #3b82f6; }
   
   /* Вывод План, Готово, Прогресс */
-  .targetDisplay, .countDisplayOnly, .progressDisplay {
+  .targetDisplay, .countDisplayOnly, .progressDisplayContainer {
     background-color: #0f172a;
     border: 1px solid #334155;
     border-radius: 6px;
@@ -201,11 +199,41 @@
   .countDisplayOnly { color: #16a34a; border-color: #16a34a; width: 100px; }
   .targetUnit { font-size: 0.7rem; font-weight: 500; color: #64748b; margin-left: 2px; }
   
-  .progressDisplay { border-color: #eab308; flex-direction: column; min-width: 90px; }
-  .progressTime { font-size: 0.7rem; font-weight: 600; color: #f8fafc; line-height: 1.1; }
-  .progressPercent { font-size: 0.8rem; font-weight: 800; color: #eab308; line-height: 1.1; }
+  /* Блок Прогресса (3 строки аналитики) */
+  .progressDisplayContainer {
+    border-color: #eab308;
+    flex-direction: column;
+    gap: 2px;
+    padding: 4px 10px;
+    min-width: 140px;
+    height: 58px;
+  }
   
-  /* Подгонка значений готово */
+  .progressRow {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+  }
+  
+  .rowLabel {
+    font-size: 0.65rem;
+    font-weight: 600;
+    color: #64748b;
+    text-transform: uppercase;
+  }
+  
+  .rowValue {
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: #f8fafc;
+    font-family: monospace;
+  }
+  
+  .textGreen { color: #16a34a !important; }
+  .textRed { color: #ef4444 !important; }
+  
+  /* Ручная корректировка готово */
   .adjustWrapper { display: flex; flex-direction: column; gap: 4px; }
   .adjustButtonsGrid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2px; width: 100px; }
   .adjBtn {
@@ -217,7 +245,7 @@
   
   /* Самая правая кнопка ГОТОВО */
   .realDoneBtn {
-    height: 60px; /* Сделали её крупнее и заметнее на краю */
+    height: 58px;
     padding: 0 20px;
     background-color: #2563eb;
     color: #ffffff;
@@ -231,4 +259,3 @@
   }
   .realDoneBtn:hover { background-color: #1d4ed8; }
   .realDoneBtn:active { transform: scale(0.96); }
-  
