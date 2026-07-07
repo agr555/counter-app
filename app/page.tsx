@@ -6,20 +6,21 @@ import styles from './widget.module.css';
 type ShiftType = '8h' | '9h40m';
 
 export default function PomodoroWidget() {
-  // Настройки пользователя и счетчики
+  // 1. Настройки пользователя и счетчики
   const [coefficient, setCoefficient] = useState<number>(21);
   const [shift, setShift] = useState<ShiftType>('9h40m');
   const [processedCount, setProcessedCount] = useState<number>(0);
 
-  // Состояния времени
+  // 2. Состояния времени
   const [isRunning, setIsRunning] = useState<boolean>(false);
   const [stopwatchSeconds, setStopwatchSeconds] = useState<number>(0);
+  const [totalRealSeconds, setTotalRealSeconds] = useState<number>(0);
 
-  // Математические расчеты плана и темпа
+  // 3. Математические расчеты плана и темпа
   const totalShiftMinutes = shift === '9h40m' ? (9 * 60 + 40) : (8 * 60);
-  const netWorkingMinutes = totalShiftMinutes - 45; // Чистое время с учетом 45 мин простоя
+  const netWorkingMinutes = totalShiftMinutes - 45; 
   const decimalHours = totalShiftMinutes / 60;
-  const targetPositions = Math.round(coefficient * decimalHours); // План на день (например, 203)
+  const targetPositions = Math.round(coefficient * decimalHours); 
 
   // Сколько секунд заложено на 1 деталь по плану
   const totalTimerSeconds = targetPositions > 0 
@@ -28,18 +29,20 @@ export default function PomodoroWidget() {
 
   const [timeLeft, setTimeLeft] = useState<number>(totalTimerSeconds);
 
-  // Загрузка настроек из localStorage при старте
+  // 4. Загрузка настроек из localStorage при старте страницы
   useEffect(() => {
     const savedCoefficient = localStorage.getItem('p_coefficient');
     const savedShift = localStorage.getItem('p_shift') as ShiftType;
     const savedProcessedCount = localStorage.getItem('p_processedCount');
+    const savedRealSeconds = localStorage.getItem('p_totalRealSeconds');
 
     if (savedCoefficient) setCoefficient(parseInt(savedCoefficient, 10));
     if (savedShift) setShift(savedShift);
     if (savedProcessedCount) setProcessedCount(parseInt(savedProcessedCount, 10));
+    if (savedRealSeconds) setTotalRealSeconds(parseInt(savedRealSeconds, 10));
   }, []);
 
-  // Автосохранение настроек
+  // 5. Автосохранение настроек
   useEffect(() => {
     localStorage.setItem('p_coefficient', coefficient.toString());
   }, [coefficient]);
@@ -52,14 +55,18 @@ export default function PomodoroWidget() {
     localStorage.setItem('p_processedCount', processedCount.toString());
   }, [processedCount]);
 
-  // Синхронизация основного таймера темпа НА ПАУЗЕ
+  useEffect(() => {
+    localStorage.setItem('p_totalRealSeconds', totalRealSeconds.toString());
+  }, [totalRealSeconds]);
+
+  // 6. Synchronizácia časovača tempa pri pauze
   useEffect(() => {
     if (!isRunning && timeLeft !== 0) {
       setTimeLeft(totalTimerSeconds);
     }
-  }, [totalTimerSeconds, isRunning]);
+  }, [totalTimerSeconds, isRunning, timeLeft]);
 
-  // ЕДИНЫЙ ИНТЕРВАЛ: Синхронно управляет и таймером темпа, и секундомером
+  // 7. Jednotný interval pre odpočet Tempu a prírastok Stopiek
   useEffect(() => {
     if (!isRunning) return;
 
@@ -67,9 +74,7 @@ export default function PomodoroWidget() {
       setStopwatchSeconds((prev) => prev + 1);
 
       setTimeLeft((prev) => {
-        if (prev <= 1) {
-          return totalTimerSeconds; // На следующий круг по плану
-        }
+        if (prev <= 1) return totalTimerSeconds;
         return prev - 1;
       });
     }, 1000);
@@ -77,65 +82,69 @@ export default function PomodoroWidget() {
     return () => clearInterval(interval);
   }, [isRunning, totalTimerSeconds]);
 
-  // Функция форматирования времени (ММ:СС)
+  // 8. Pomocné funkcie pre prácu s časom
   const formatTime = (seconds: number) => {
     const minutes = Math.floor(seconds / 60);
     const secs = seconds % 60;
     return `${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   };
 
-  // ИСПРАВЛЕННЫЙ СБРОС: Спрашивает подтверждение и обнуляет абсолютно всё
+  const formatAccumulatedTime = (totalSecs: number) => {
+    const hrs = Math.floor(totalSecs / 3600);
+    const mins = Math.floor((totalSecs % 3600) / 60);
+    const secs = totalSecs % 60;
+    
+    if (hrs > 0) return `${hrs}ч ${mins}м ${secs}с`;
+    if (mins > 0) return `${mins}м ${secs}с`;
+    return `${secs}с`;
+  };
+
+  // Funkcia pre globálny reštart s potvrdením
   const handleGlobalReset = () => {
-    // Временно ставим на паузу, чтобы таймер не тикал во время вопроса
     const wasRunning = isRunning;
     setIsRunning(false);
 
-    if (confirm('Хотите сбросить весь прогресс за смену? (Обнулятся таймеры, готовые детали и прогресс)')) {
+    if (confirm('Хотите сбросить весь прогресс за смену?')) {
       setProcessedCount(0);
       setStopwatchSeconds(0);
+      setTotalRealSeconds(0);
       setTimeLeft(0);
       localStorage.removeItem('p_processedCount');
+      localStorage.removeItem('p_totalRealSeconds');
     } else {
-      // Если пользователь передумал, возвращаем прежнее состояние активности
       setIsRunning(wasRunning);
     }
   };
 
-  // КНОПКА: Реально готово (+1 деталь и чистый сброс секундомера)
+  // Kliknutie на кнопку HOTOVO (najvpravo)
   const handleRealItemDone = () => {
     setProcessedCount((prev) => prev + 1);
+    setTotalRealSeconds((prev) => prev + stopwatchSeconds);
     setStopwatchSeconds(0);
+    
     if (timeLeft === 0 && isRunning) {
       setTimeLeft(totalTimerSeconds);
     }
   };
 
-  // КНОПКИ: Ручная корректировка готовых штук
+  // Korekčné tlačidlá (+1, -10 atď.)
   const adjustCount = (amount: number) => {
     setProcessedCount((prev) => Math.max(0, prev + amount));
   };
 
-  // Расчеты для прямоугольника прогресса
+  // 9. Analytické výpočty pre Progress Box
   const spentSecondsByPlan = processedCount * totalTimerSeconds;
-
-  const formatSpentTime = (totalSecs: number) => {
-    const totalMinutes = Math.floor(totalSecs / 60);
-    const hrs = Math.floor(totalMinutes / 60);
-    const mins = totalMinutes % 60;
-    if (hrs > 0) return `${hrs}ч ${mins.toString().padStart(2, '0')}м`;
-    return `${mins} мин`;
-  };
-
+  const timeDifference = spentSecondsByPlan - totalRealSeconds;
   const progressPercent = targetPositions > 0 
     ? Math.round((processedCount / targetPositions) * 100)
     : 0;
 
+  // 10. Сама разметка интерфейса (JSX)
   return (
     <div className={styles.widgetContainer}>
       
-      {/* 1 БЛОК (СЛЕВА): НАСТРОЙКИ (Норма, Смена, План) */}
+      {/* 1 БЛОК (СЛЕВА): НАСТРОЙКИ */}
       <div className={styles.controlsPanel}>
-        {/* Норма в час */}
         <div className={styles.fieldGroup}>
           <label htmlFor="coefficient" className={styles.fieldLabel}>Норма/ч:</label>
           <input
@@ -149,7 +158,6 @@ export default function PomodoroWidget() {
           />
         </div>
 
-        {/* Выбор смены */}
         <div className={styles.fieldGroup}>
           <span className={styles.fieldLabel}>Смена:</span>
           <div className={styles.toggleContainer}>
@@ -185,10 +193,11 @@ export default function PomodoroWidget() {
           </div>
         </div>
 
-        {/* Дневной План */}
         <div className={styles.fieldGroup}>
           <span className={styles.fieldLabel}>План:</span>
-          <div className={styles.targetDisplay}>{targetPositions} <span className={styles.targetUnit}>поз.</span></div>
+          <div className={styles.targetDisplay}>
+            {targetPositions} <span className={styles.targetUnit}>поз.</span>
+          </div>
         </div>
       </div>
 
@@ -215,13 +224,11 @@ export default function PomodoroWidget() {
           СБРОС
         </button>
 
-        {/* Табло ТЕМП */}
         <div className={styles.timeDisplay}>
           <span className={styles.timeLabel}>ТЕМП</span>
           <span className={styles.timeNumbers}>{formatTime(timeLeft)}</span>
         </div>
 
-        {/* Табло СЕКУНДОМЕР */}
         <div className={styles.stopwatchDisplay}>
           <span className={styles.stopwatchLabel}>СЕКУНДОМЕР</span>
           <span className={styles.stopwatchNumbers}>{formatTime(stopwatchSeconds)}</span>
@@ -230,35 +237,49 @@ export default function PomodoroWidget() {
 
       <div className={styles.divider}></div>
 
-      {/* 3 БЛОК (СПРАВА): РЕЗУЛЬТАТЫ И САМАЯ ПРАВАЯ КНОПКА ГОТОВО */}
-      <div className={styles.resultsSection}>
-        {/* Прогресс */}
-        <div className={styles.fieldGroup}>
-          <span className={styles.fieldLabel}>Прогресс:</span>
-          <div className={styles.progressDisplay}>
-            <span className={styles.progressTime}>{formatSpentTime(spentSecondsByPlan)}</span>
-            <span className={styles.progressPercent}>{progressPercent}%</span>
-          </div>
-        </div>
+      {/* 3 БЛОК (СПРАВА): РЕЗУЛЬТАТЫ С КОРРЕКЦИЕЙ */}
+      {/* 3 БЛОК (СПРАВА): РЕЗУЛЬТАТЫ С КОРРЕКЦИЕЙ */}
+<div className={styles.resultsSection}>
+  
+  {/* Окошко прогресса */}
+  <div className={styles.fieldGroup}>
+    <span className={styles.fieldLabel}>Прогресс ({progressPercent}%):</span>
+    <div className={styles.progressDisplayContainer}>
+      <div className={styles.progressRow}>
+        <span className={styles.rowLabel}>План:</span>
+        <span className={styles.rowValue}>{formatAccumulatedTime(spentSecondsByPlan)}</span>
+      </div>
+      <div className={styles.progressRow}>
+        <span className={styles.rowLabel}>Fact:</span>
+        <span className={styles.rowValue}>{formatAccumulatedTime(totalRealSeconds)}</span>
+      </div>
+      <div className={styles.progressRow}>
+        <span className={styles.rowLabel}>Итог:</span>
+        <span className={`${styles.rowValue} ${timeDifference >= 0 ? styles.textGreen : styles.textRed}`}>
+          {timeDifference >= 0 ? '+' : ''}{formatAccumulatedTime(timeDifference)}
+        </span>
+      </div>
+    </div>
+  </div>
 
-        {/* Готово со стрелками подгонки */}
-        <div className={styles.fieldGroup}>
-          <span className={styles.fieldLabel}>Готово:</span>
-          <div className={styles.adjustWrapper}>
-            <div className={styles.countDisplayOnly}>
-              {processedCount} <span className={styles.targetUnit}>шт.</span>
-            </div>
-            
-            <div className={styles.adjustButtonsGrid}>
-              <button type="button" onClick={() => adjustCount(-10)} className={styles.adjBtn}>-10</button>
-              <button type="button" onClick={() => adjustCount(-1)} className={styles.adjBtn}>-1</button>
-              <button type="button" onClick={() => adjustCount(1)} className={styles.adjBtn}>+1</button>
-              <button type="button" onClick={() => adjustCount(10)} className={styles.adjBtn}>+10</button>
-            </div>
-          </div>
-        </div>
+  {/* Количество готовых деталей с кнопками ручной подгонки */}
+  <div className={styles.fieldGroup}>
+    <span className={styles.fieldLabel}>Готово:</span>
+    <div className={styles.adjustWrapper}>
+      <div className={styles.countDisplayOnly}>
+        {processedCount} <span className={styles.targetUnit}>шт.</span>
+      </div>
+      
+      <div className={styles.adjustButtonsGrid}>
+        <button type="button" onClick={() => adjustCount(-10)} className={styles.adjBtn}>-10</button>
+        <button type="button" onClick={() => adjustCount(-1)} className={styles.adjBtn}>-1</button>
+        <button type="button" onClick={() => adjustCount(1)} className={styles.adjBtn}>+1</button>
+        <button type="button" onClick={() => adjustCount(10)} className={styles.adjBtn}>+10</button>
+      </div>
+    </div>
+  </div>
 
-        {/* САМАЯ ПРАВАЯ КНОПКА ФИКСАЦИИ ДЕТАЛИ */}
+        {/* Кнопка ГОТОВО на самом правом краю */}
         <button 
           type="button" 
           onClick={handleRealItemDone} 
@@ -266,8 +287,9 @@ export default function PomodoroWidget() {
         >
           ГОТОВО
         </button>
-      </div>
 
-    </div>
-  );
-}
+      </div> {/* <-- Закрываем тег <div className={styles.resultsSection}> */}
+
+    </div> 
+  ); 
+} 
