@@ -1,9 +1,8 @@
-/* Основной контейнер виджета — выстраивает блоки слева направо */
 .widgetContainer {
     display: flex;
     align-items: center;
     gap: 16px;
-    background-color: #1e293b; /* Глубокий темный фон всей панели */
+    background-color: #1e293b;
     padding: 14px 20px;
     border-radius: 12px;
     width: max-content;
@@ -12,101 +11,32 @@
     font-family: system-ui, -apple-system, sans-serif;
   }
   
-  /* ================= ЛЕВАЯ ЗОНА: СТРУКТУРА ТАЙМЕРА ================= */
-  .timerSection {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-  
-  /* Кнопки управления таймером (СТАРТ, ПАУЗА, СБРОС) */
-  .timerControlBtn {
-    height: 38px;
-    padding: 0 14px;
-    border: none;
-    border-radius: 6px;
-    font-size: 0.85rem;
-    font-weight: 700;
-    cursor: pointer;
-    outline: none;
-    transition: background-color 0.15s, transform 0.1s;
-    color: #ffffff;
-  }
-  
-  .timerControlBtn:active {
-    transform: scale(0.96);
-  }
-  
-  .btnStart {
-    background-color: #16a34a; /* Зеленый старт */
-  }
-  .btnStart:hover {
-    background-color: #15803d;
-  }
-  
-  .btnPause {
-    background-color: #eab308; /* Желтая пауза */
-    color: #0f172a;
-  }
-  .btnPause:hover {
-    background-color: #ca8a04;
-  }
-  
-  .btnReset {
-    background-color: #475569; /* Серый сброс */
-  }
-  .btnReset:hover {
-    background-color: #334155;
-  }
-  
-  /* Цифровое табло со временем */
-  .timeDisplay {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    background-color: #0f172a;
-    border: 2px solid #e11d48; /* Красная рамка в режиме работы */
-    border-radius: 8px;
-    min-width: 90px;
-    height: 48px;
-    box-sizing: border-box;
-  }
-  
-  .timeBreak {
-    border-color: #16a34a; /* Зеленая рамка во время отдыха */
-  }
-  
-  .timeLabel {
-    font-size: 0.65rem;
-    font-weight: 700;
-    color: #94a3b8;
-    letter-spacing: 0.05em;
-    margin-top: 2px;
-  }
-  
-  .timeNumbers {
-    font-size: 1.35rem;
-    font-weight: 800;
-    color: #ffffff;
-    font-family: monospace; /* Моноширинный шрифт, чтобы цифры не прыгали */
-    line-height: 1.1;
-    margin-bottom: 2px;
-  }
-  
-  /* Вертикальная серая черта посередине панели */
-  .divider {
-    width: 1px;
-    height: 40px;
-    background-color: #334155;
-    margin: 0 4px;
-  }
-  
-  /* ================= ПРАВАЯ ЗОНА: ПАНЕЛЬ НАСТРОЕК ================= */
+  /* Настройки слева */
   .controlsPanel {
     display: flex;
     align-items: center;
     gap: 12px;
+  }
+  
+  /* Управление и счетчики по центру */
+  .timerSection {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  /* Результаты и кнопка справа */
+  .resultsSection {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  
+  .divider {
+    width: 1px;
+    height: 44px;
+    background-color: #334155;
+    margin: 0 4px;
   }
   
   .fieldGroup {
@@ -123,7 +53,6 @@
     letter-spacing: 0.05em;
   }
   
-  /* Поле ввода числовой нормы */
   .inputNumber {
     background-color: #0f172a;
     border: 1px solid #334155;
@@ -136,14 +65,8 @@
     height: 36px;
     box-sizing: border-box;
     outline: none;
-    transition: border-color 0.2s;
   }
   
-  .inputNumber:focus {
-    border-color: #3b82f6;
-  }
-  
-  /* Скользящий переключатель смен */
   .toggleContainer {
     display: flex;
     align-items: center;
@@ -154,7 +77,7 @@
     padding: 2px;
     height: 36px;
     box-sizing: border-box;
-    min-width: 114px; /* Увеличили базовую ширину контейнера */
+    min-width: 114px;
   }
   
   .radioInput {
@@ -178,8 +101,8 @@
     transition: color 0.15s;
   }
   
-  .radioLabel[htmlFor="val-9"] {
-    width: 50px;
+  .radioLabel[htmlFor="shift-9"] {
+    width: 65px;
   }
   
   .radioInput:checked + .radioLabel {
@@ -197,12 +120,70 @@
     z-index: 1;
   }
   
-  .radioInput[value="9.67"]:checked ~ .slider {
-    transform: translateX(45px);
+  /* Кнопки управления */
+  .timerControlBtn {
+    height: 48px; /* Выравниваем по высоте с табло времени */
+    padding: 0 14px;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    cursor: pointer;
+    outline: none;
+    transition: background-color 0.15s, transform 0.1s;
+    color: #ffffff;
   }
   
-  /* Блоки вывода План, Готово, Прогресс */
-  .targetDisplay, .countDisplay, .progressDisplay {
+  .timerControlBtn:active {
+    transform: scale(0.96);
+  }
+  
+  .btnStart { background-color: #16a34a; }
+  .btnStart:hover { background-color: #15803d; }
+  
+  .btnPause { background-color: #eab308; color: #0f172a; }
+  .btnPause:hover { background-color: #ca8a04; }
+  
+  .btnReset { background-color: #ef4444; } /* СБРОС теперь красный */
+  .btnReset:hover { background-color: #dc2626; }
+  
+  /* Дисплеи времени */
+  .timeDisplay, .stopwatchDisplay {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: #0f172a;
+    border-radius: 8px;
+    min-width: 95px;
+    height: 48px;
+    box-sizing: border-box;
+  }
+  
+  .timeDisplay { border: 2px solid #e11d48; }
+  .stopwatchDisplay { border: 2px solid #3b82f6; }
+  
+  .timeLabel, .stopwatchLabel {
+    font-size: 0.6rem;
+    font-weight: 700;
+    color: #94a3b8;
+    letter-spacing: 0.05em;
+    margin-top: 2px;
+  }
+  
+  .timeNumbers, .stopwatchNumbers {
+    font-size: 1.35rem;
+    font-weight: 800;
+    font-family: monospace;
+    line-height: 1.1;
+    margin-bottom: 2px;
+  }
+  
+  .timeNumbers { color: #ffffff; }
+  .stopwatchNumbers { color: #3b82f6; }
+  
+  /* Вывод План, Готово, Прогресс */
+  .targetDisplay, .countDisplayOnly, .progressDisplay {
     background-color: #0f172a;
     border: 1px solid #334155;
     border-radius: 6px;
@@ -212,168 +193,42 @@
     align-items: center;
     justify-content: center;
     height: 36px;
-    padding: 0 10px;
     min-width: 75px;
     box-sizing: border-box;
   }
   
-  .targetDisplay {
-    color: #3b82f6;
-  }
+  .targetDisplay { color: #3b82f6; }
+  .countDisplayOnly { color: #16a34a; border-color: #16a34a; width: 100px; }
+  .targetUnit { font-size: 0.7rem; font-weight: 500; color: #64748b; margin-left: 2px; }
   
-  .countDisplay {
-    color: #16a34a;
-    border-color: #16a34a;
-    cursor: pointer;
-    outline: none;
-    background: transparent;
-    transition: background-color 0.15s;
-  }
+  .progressDisplay { border-color: #eab308; flex-direction: column; min-width: 90px; }
+  .progressTime { font-size: 0.7rem; font-weight: 600; color: #f8fafc; line-height: 1.1; }
+  .progressPercent { font-size: 0.8rem; font-weight: 800; color: #eab308; line-height: 1.1; }
   
-  .countDisplay:hover {
-    background-color: rgba(22, 163, 74, 0.1);
+  /* Подгонка значений готово */
+  .adjustWrapper { display: flex; flex-direction: column; gap: 4px; }
+  .adjustButtonsGrid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2px; width: 100px; }
+  .adjBtn {
+    background-color: #334155; color: #e2e8f0; border: none; border-radius: 4px;
+    font-size: 0.65rem; font-weight: 700; height: 20px; cursor: pointer; padding: 0;
+    display: flex; align-items: center; justify-content: center; transition: background-color 0.1s;
   }
+  .adjBtn:hover { background-color: #475569; }
   
-  .targetUnit {
-    font-size: 0.7rem;
-    font-weight: 500;
-    color: #64748b;
-    margin-left: 2px;
-  }
-  
-  /* Блок Прогресса (Время + Процент) */
-  .progressDisplay {
-    border-color: #eab308;
-    flex-direction: column;
-    min-width: 90px;
-  }
-  
-  .progressTime {
-    font-size: 0.7rem;
-    font-weight: 600;
-    color: #f8fafc;
-    line-height: 1.1;
-  }
-  
-  .progressPercent {
-    font-size: 0.8rem;
-    font-weight: 800;
-    color: #eab308;
-    line-height: 1.1;
-  }
-  /* --- СТИЛИ ДЛЯ НОВОГО БЛОКА СЕКУНДОМЕРА --- */
-.stopwatchSection {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-  
-  .stopwatchDisplay {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    background-color: #0f172a;
-    border: 2px solid #3b82f6; /* Синяя рамка для секундомера */
-    border-radius: 8px;
-    min-width: 100px;
-    height: 48px;
-    box-sizing: border-box;
-  }
-  
-  .stopwatchLabel {
-    font-size: 0.6rem;
-    font-weight: 700;
-    color: #94a3b8;
-    letter-spacing: 0.05em;
-    margin-top: 2px;
-  }
-  
-  .stopwatchNumbers {
-    font-size: 1.35rem;
-    font-weight: 800;
-    color: #3b82f6; /* Синие цифры прямого отсчета */
-    font-family: monospace;
-    line-height: 1.1;
-    margin-bottom: 2px;
-  }
-  
-  /* Кнопка ГОТОВО */
+  /* Самая правая кнопка ГОТОВО */
   .realDoneBtn {
-    height: 44px;
-    padding: 0 16px;
-    background-color: #3b82f6;
+    height: 60px; /* Сделали её крупнее и заметнее на краю */
+    padding: 0 20px;
+    background-color: #2563eb;
     color: #ffffff;
     border: none;
     border-radius: 8px;
-    font-size: 0.95rem;
-    font-weight: 800;
+    font-size: 1rem;
+    font-weight: 900;
     cursor: pointer;
-    box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.3);
+    box-shadow: 0 4px 10px rgba(37, 99, 235, 0.4);
     transition: background-color 0.15s, transform 0.1s;
   }
-  
-  .realDoneBtn:hover {
-    background-color: #2563eb;
-  }
-  
-  .realDoneBtn:active {
-    transform: scale(0.95);
-  }
-  
-  /* --- СТИЛИ ДЛЯ КНОПОК ПОДГОНКИ ПО ФАКТУ --- */
-  .adjustWrapper {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-  }
-  
-  /* Поле вывода цифры штук (теперь это не кнопка, а просто блок) */
-  .countDisplayOnly {
-    background-color: #0f172a;
-    border: 1px solid #16a34a;
-    border-radius: 6px;
-    color: #16a34a;
-    font-size: 0.95rem;
-    font-weight: 700;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 36px;
-    width: 100px;
-    box-sizing: border-box;
-  }
-  
-  /* Сетка кнопок под цифрой готово */
-  .adjustButtonsGrid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 2px;
-    width: 100px;
-  }
-  
-  /* Маленькие кнопочки корректировки */
-  .adjBtn {
-    background-color: #334155;
-    color: #e2e8f0;
-    border: none;
-    border-radius: 4px;
-    font-size: 0.65rem;
-    font-weight: 700;
-    height: 20px;
-    cursor: pointer;
-    padding: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: background-color 0.1s;
-  }
-  
-  .adjBtn:hover {
-    background-color: #475569;
-  }
-  
-  .adjBtn:active {
-    background-color: #1e293b;
-  }
+  .realDoneBtn:hover { background-color: #1d4ed8; }
+  .realDoneBtn:active { transform: scale(0.96); }
   

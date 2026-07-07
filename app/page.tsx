@@ -52,7 +52,7 @@ export default function PomodoroWidget() {
     localStorage.setItem('p_processedCount', processedCount.toString());
   }, [processedCount]);
 
-  // Синхронизация основного таймера темпа НА ПАУЗЕ (если время не обнулено сбросом)
+  // Синхронизация основного таймера темпа НА ПАУЗЕ
   useEffect(() => {
     if (!isRunning && timeLeft !== 0) {
       setTimeLeft(totalTimerSeconds);
@@ -64,14 +64,11 @@ export default function PomodoroWidget() {
     if (!isRunning) return;
 
     const interval = setInterval(() => {
-      // 1. Прямой отсчет секундомера для текущей детали
       setStopwatchSeconds((prev) => prev + 1);
 
-      // 2. Обратный отсчет таймера темпа
       setTimeLeft((prev) => {
         if (prev <= 1) {
-          // Когда таймер темпа доходит до нуля, он просто идет на следующий круг
-          return totalTimerSeconds;
+          return totalTimerSeconds; // На следующий круг по плану
         }
         return prev - 1;
       });
@@ -87,18 +84,27 @@ export default function PomodoroWidget() {
     return `${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   };
 
-  // ПОЛНЫЙ СБРОС: останавливает всё и жестко сбрасывает оба табло в 0
-  const handleReset = () => {
+  // ИСПРАВЛЕННЫЙ СБРОС: Спрашивает подтверждение и обнуляет абсолютно всё
+  const handleGlobalReset = () => {
+    // Временно ставим на паузу, чтобы таймер не тикал во время вопроса
+    const wasRunning = isRunning;
     setIsRunning(false);
-    setTimeLeft(0);
-    setStopwatchSeconds(0);
+
+    if (confirm('Хотите сбросить весь прогресс за смену? (Обнулятся таймеры, готовые детали и прогресс)')) {
+      setProcessedCount(0);
+      setStopwatchSeconds(0);
+      setTimeLeft(0);
+      localStorage.removeItem('p_processedCount');
+    } else {
+      // Если пользователь передумал, возвращаем прежнее состояние активности
+      setIsRunning(wasRunning);
+    }
   };
 
   // КНОПКА: Реально готово (+1 деталь и чистый сброс секундомера)
   const handleRealItemDone = () => {
     setProcessedCount((prev) => prev + 1);
     setStopwatchSeconds(0);
-    // Если время было сброшено в 0, а мы нажали готово при запущенном трекере — восстанавливаем темп
     if (timeLeft === 0 && isRunning) {
       setTimeLeft(totalTimerSeconds);
     }
@@ -109,8 +115,7 @@ export default function PomodoroWidget() {
     setProcessedCount((prev) => Math.max(0, prev + amount));
   };
 
-  // --- ОБНОВЛЕННЫЕ РАСЧЕТЫ ДЛЯ ПРЯМОУГОЛЬНИКА ПРОГРЕССА ---
-  // Плановое рабочее время (в секундах), которое должно быть затрачено на выполненное число деталей
+  // Расчеты для прямоугольника прогресса
   const spentSecondsByPlan = processedCount * totalTimerSeconds;
 
   const formatSpentTime = (totalSecs: number) => {
@@ -121,7 +126,6 @@ export default function PomodoroWidget() {
     return `${mins} мин`;
   };
 
-  // Процент выполнения плана без ограничения в 100% (для честного отображения перевыполнения)
   const progressPercent = targetPositions > 0 
     ? Math.round((processedCount / targetPositions) * 100)
     : 0;
@@ -129,57 +133,8 @@ export default function PomodoroWidget() {
   return (
     <div className={styles.widgetContainer}>
       
-      {/* ================= ЛЕВАЯ ЗОНА: УПРАВЛЕНИЕ ТЕМПОМ ================= */}
-      <div className={styles.timerSection}>
-        <button 
-          type="button" 
-          onClick={() => {
-            // Если запускаем после сброса (когдаtimeLeft === 0), инициализируем время заново
-            if (!isRunning && timeLeft === 0) setTimeLeft(totalTimerSeconds);
-            setIsRunning(!isRunning);
-          }} 
-          className={`${styles.timerControlBtn} ${isRunning ? styles.btnPause : styles.btnStart}`}
-        >
-          {isRunning ? 'ПАУЗА' : 'СТАРТ'}
-        </button>
-
-        <div className={styles.timeDisplay}>
-          <span className={styles.timeLabel}>ТЕМП</span>
-          <span className={styles.timeNumbers}>{formatTime(timeLeft)}</span>
-        </div>
-
-        <button 
-          type="button" 
-          onClick={handleReset} 
-          className={`${styles.timerControlBtn} ${styles.btnReset}`}
-        >
-          СБРОС
-        </button>
-      </div>
-
-      <div className={styles.divider}></div>
-
-      {/* ================= СРЕДНЯЯ ЗОНА: СЕКУНДОМЕР И КНОПКА ГОТОВО ================= */}
-      <div className={styles.stopwatchSection}>
-        <div className={styles.stopwatchDisplay}>
-          <span className={styles.stopwatchLabel}>СЕКУНДОМЕР</span>
-          <span className={styles.stopwatchNumbers}>{formatTime(stopwatchSeconds)}</span>
-        </div>
-
-        <button 
-          type="button" 
-          onClick={handleRealItemDone} 
-          className={styles.realDoneBtn}
-        >
-          ГОТОВО
-        </button>
-      </div>
-
-      <div className={styles.divider}></div>
-
-      {/* ================= ПРАВАЯ ЗОНА: НАСТРОЙКИ И КОРРЕКТИРОВКА ================= */}
+      {/* 1 БЛОК (СЛЕВА): НАСТРОЙКИ (Норма, Смена, План) */}
       <div className={styles.controlsPanel}>
-        
         {/* Норма в час */}
         <div className={styles.fieldGroup}>
           <label htmlFor="coefficient" className={styles.fieldLabel}>Норма/ч:</label>
@@ -235,8 +190,58 @@ export default function PomodoroWidget() {
           <span className={styles.fieldLabel}>План:</span>
           <div className={styles.targetDisplay}>{targetPositions} <span className={styles.targetUnit}>поз.</span></div>
         </div>
+      </div>
 
-        {/* Поле Готово с кнопками ручной подгонки */}
+      <div className={styles.divider}></div>
+
+      {/* 2 БЛОК (ЦЕНТР): УПРАВЛЕНИЕ И ТАЙМЕРЫ */}
+      <div className={styles.timerSection}>
+        <button 
+          type="button" 
+          onClick={() => {
+            if (!isRunning && timeLeft === 0) setTimeLeft(totalTimerSeconds);
+            setIsRunning(!isRunning);
+          }} 
+          className={`${styles.timerControlBtn} ${isRunning ? styles.btnPause : styles.btnStart}`}
+        >
+          {isRunning ? 'ПАУЗА' : 'СТАРТ'}
+        </button>
+
+        <button 
+          type="button" 
+          onClick={handleGlobalReset} 
+          className={`${styles.timerControlBtn} ${styles.btnReset}`}
+        >
+          СБРОС
+        </button>
+
+        {/* Табло ТЕМП */}
+        <div className={styles.timeDisplay}>
+          <span className={styles.timeLabel}>ТЕМП</span>
+          <span className={styles.timeNumbers}>{formatTime(timeLeft)}</span>
+        </div>
+
+        {/* Табло СЕКУНДОМЕР */}
+        <div className={styles.stopwatchDisplay}>
+          <span className={styles.stopwatchLabel}>СЕКУНДОМЕР</span>
+          <span className={styles.stopwatchNumbers}>{formatTime(stopwatchSeconds)}</span>
+        </div>
+      </div>
+
+      <div className={styles.divider}></div>
+
+      {/* 3 БЛОК (СПРАВА): РЕЗУЛЬТАТЫ И САМАЯ ПРАВАЯ КНОПКА ГОТОВО */}
+      <div className={styles.resultsSection}>
+        {/* Прогресс */}
+        <div className={styles.fieldGroup}>
+          <span className={styles.fieldLabel}>Прогресс:</span>
+          <div className={styles.progressDisplay}>
+            <span className={styles.progressTime}>{formatSpentTime(spentSecondsByPlan)}</span>
+            <span className={styles.progressPercent}>{progressPercent}%</span>
+          </div>
+        </div>
+
+        {/* Готово со стрелками подгонки */}
         <div className={styles.fieldGroup}>
           <span className={styles.fieldLabel}>Готово:</span>
           <div className={styles.adjustWrapper}>
@@ -253,15 +258,14 @@ export default function PomodoroWidget() {
           </div>
         </div>
 
-        {/* ИСПРАВЛЕННЫЙ ПРОГРЕСС: Без лимита 100% + Плановое время с учетом простоя */}
-        <div className={styles.fieldGroup}>
-          <span className={styles.fieldLabel}>Прогресс:</span>
-          <div className={styles.progressDisplay}>
-            <span className={styles.progressTime}>{formatSpentTime(spentSecondsByPlan)}</span>
-            <span className={styles.progressPercent}>{progressPercent}%</span>
-          </div>
-        </div>
-
+        {/* САМАЯ ПРАВАЯ КНОПКА ФИКСАЦИИ ДЕТАЛИ */}
+        <button 
+          type="button" 
+          onClick={handleRealItemDone} 
+          className={styles.realDoneBtn}
+        >
+          ГОТОВО
+        </button>
       </div>
 
     </div>
