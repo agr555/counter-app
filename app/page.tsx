@@ -127,127 +127,133 @@ export default function PomodoroWidget() {
     : 0;
 
   return (
-    <div className={styles.widgetContainer}>
+    /* ВНЕШНИЙ КОНТЕЙНЕР: Занимает весь экран по высоте и прижимает контент вниз и вправо */
+    <div className={styles.layoutWrapper}>
       
-      {/* 1. SETTINGS BLOCK */}
-      <div className={styles.flexRow}>
-        <div className={styles.fieldGroup}>
-          <label htmlFor="coefficient" className={styles.fieldLabel}>Rate/h</label>
-          <input
-            id="coefficient"
-            type="number"
-            step="1"
-            min="1"
-            value={coefficient}
-            onChange={(e) => setCoefficient(parseInt(e.target.value) || 0)}
-            className={styles.inputNumber}
-          />
-        </div>
-
-        <div className={styles.fieldGroup}>
-          <span className={styles.fieldLabel}>Shift</span>
-          <div className={styles.toggleContainer}>
+      {/* САМА СТРОКА ВИДЖЕТА */}
+      <div className={styles.widgetContainer}>
+        
+        {/* 1. SETTINGS BLOCK */}
+        <div className={styles.flexRow}>
+          <div className={styles.fieldGroup}>
+            <label htmlFor="coefficient" className={styles.fieldLabel}>Rate/h</label>
             <input
-              type="radio"
-              id="shift-8"
-              name="shiftValue"
-              value="8h"
-              checked={shift === '8h'}
-              onChange={() => setShift('8h')}
-              className={styles.radioInput}
+              id="coefficient"
+              type="number"
+              step="1"
+              min="1"
+              value={coefficient}
+              onChange={(e) => setCoefficient(parseInt(e.target.value) || 0)}
+              className={styles.inputNumber}
             />
-            <label htmlFor="shift-8" className={styles.radioLabel}>8h</label>
-
-            <input
-              type="radio"
-              id="shift-9"
-              name="shiftValue"
-              value="9h40m"
-              checked={shift === '9h40m'}
-              onChange={() => setShift('9h40m')}
-              className={styles.radioInput}
-            />
-            <label htmlFor="shift-9" className={styles.radioLabel} style={{ width: '60px' }}>9h40m</label>
-            
-            <div 
-              className={styles.slider} 
-              style={{ 
-                width: shift === '9h40m' ? '60px' : '40px',
-                transform: shift === '9h40m' ? 'translateX(40px)' : 'translateX(0px)'
-              }}
-            ></div>
           </div>
-        </div>
 
-        <div className={styles.fieldGroup}>
-          <span className={styles.fieldLabel}>Target</span>
-          <div className={styles.targetDisplay}>{targetPositions}<span className={styles.targetUnit}>pcs</span></div>
-        </div>
-      </div>
+          <div className={styles.fieldGroup}>
+            <span className={styles.fieldLabel}>Shift</span>
+            <div className={styles.toggleContainer}>
+              <input
+                type="radio"
+                id="shift-8"
+                name="shiftValue"
+                value="8h"
+                checked={shift === '8h'}
+                onChange={() => setShift('8h')}
+                className={styles.radioInput}
+              />
+              <label htmlFor="shift-8" className={styles.radioLabel}>8h</label>
 
-      <div className={styles.divider}></div>
-
-      {/* 2. TIMERS BLOCK */}
-      <div className={styles.flexRow}>
-        <div className={styles.buttonsColumn}>
-          <button 
-            type="button" 
-            onClick={() => setIsRunning(!isRunning)} 
-            className={`${styles.timerControlBtn} ${isRunning ? styles.btnPause : styles.btnStart}`}
-          >
-            {isRunning ? 'PAUSE' : 'START'}
-          </button>
-          <button type="button" onClick={handleGlobalReset} className={`${styles.timerControlBtn} ${styles.btnReset}`}>
-            RESET
-          </button>
-        </div>
-
-        <div className={styles.timeDisplay}>
-          <span className={styles.timeLabel}>PACE</span>
-          <span className={styles.timeNumbers}>{formatTime(timeLeft)}</span>
-        </div>
-
-        <div className={styles.stopwatchDisplay}>
-          <span className={styles.stopwatchLabel}>STOPWATCH</span>
-          <span className={styles.stopwatchNumbers}>{formatTime(stopwatchSeconds)}</span>
-        </div>
-      </div>
-
-      <div className={styles.divider}></div>
-
-      {/* 3. PROGRESS & DONE BLOCK */}
-      <div className={styles.flexRow} style={{ paddingRight: '0' }}>
-        <div className={styles.fieldGroup}>
-          <span className={styles.fieldLabel}>Progress ({progressPercent}%)</span>
-          <div className={styles.progressDisplayContainer}>
-            <div className={styles.progressRow}><span className={styles.rowLabel}>P:</span><span className={styles.rowValue}>{formatAccumulatedTime(spentSecondsByPlan)}</span></div>
-            <div className={styles.progressRow}><span className={styles.rowLabel}>F:</span><span className={styles.rowValue}>{formatAccumulatedTime(totalRealSeconds)}</span></div>
-            <div className={styles.progressRow}>
-              <span className={styles.rowLabel}>D:</span>
-              <span className={`${styles.rowValue} ${timeDifference >= 0 ? styles.textGreen : styles.textRed}`}>
-                {timeDifference > 0 ? '+' : timeDifference < 0 ? '-' : ''}{formatAccumulatedTime(timeDifference)}
-              </span>
+              <input
+                type="radio"
+                id="shift-9"
+                name="shiftValue"
+                value="9h40m"
+                checked={shift === '9h40m'}
+                onChange={() => setShift('9h40m')}
+                className={styles.radioInput}
+              />
+              <label htmlFor="shift-9" className={styles.radioLabel} style={{ width: '60px' }}>9h40m</label>
+              
+              <div 
+                className={styles.slider} 
+                style={{ 
+                  width: shift === '9h40m' ? '60px' : '40px',
+                  transform: shift === '9h40m' ? 'translateX(40px)' : 'translateX(0px)'
+                }}
+              ></div>
             </div>
           </div>
-        </div>
 
-        <div className={styles.fieldGroup}>
-          <span className={styles.fieldLabel}>Done</span>
-          <div className={styles.adjustWrapper}>
-            <div className={styles.countDisplayOnly}>{processedCount}<span className={styles.targetUnit}>pcs</span></div>
-            <div className={styles.adjustButtonsGrid}>
-              <button type="button" onClick={() => adjustCount(-10)} className={styles.adjBtn}>-10</button>
-              <button type="button" onClick={() => adjustCount(-1)} className={styles.adjBtn}>-1</button>
-              <button type="button" onClick={() => adjustCount(1)} className={styles.adjBtn}>+1</button>
-              <button type="button" onClick={() => adjustCount(10)} className={styles.adjBtn}>+10</button>
-            </div>
+          <div className={styles.fieldGroup}>
+            <span className={styles.fieldLabel}>Target</span>
+            <div className={styles.targetDisplay}>{targetPositions}<span className={styles.targetUnit}>pcs</span></div>
           </div>
         </div>
 
-        {/* ШИРОКАЯ КНОПКА DONE, УДОБНАЯ ДЛЯ НАЖАТИЯ НА САМОМ КРАЮ */}
-        <button type="button" onClick={handleRealItemDone} className={styles.realDoneBtn}>
-          DONE
-        </button>
+        <div className={styles.divider}></div>
+
+        {/* 2. TIMERS BLOCK */}
+        <div className={styles.flexRow}>
+          <div className={styles.buttonsColumn}>
+            <button 
+              type="button" 
+              onClick={() => setIsRunning(!isRunning)} 
+              className={`${styles.timerControlBtn} ${isRunning ? styles.btnPause : styles.btnStart}`}
+            >
+              {isRunning ? 'PAUSE' : 'START'}
+            </button>
+            <button type="button" onClick={handleGlobalReset} className={`${styles.timerControlBtn} ${styles.btnReset}`}>
+              RESET
+            </button>
+          </div>
+
+          <div className={styles.timeDisplay}>
+            <span className={styles.timeLabel}>PACE</span>
+            <span className={styles.timeNumbers}>{formatTime(timeLeft)}</span>
+          </div>
+
+          <div className={styles.stopwatchDisplay}>
+            <span className={styles.stopwatchLabel}>STOPWATCH</span>
+            <span className={styles.stopwatchNumbers}>{formatTime(stopwatchSeconds)}</span>
+          </div>
+        </div>
+
+        <div className={styles.divider}></div>
+
+        {/* 3. PROGRESS & DONE BLOCK */}
+        <div className={styles.flexRow} style={{ paddingRight: '0' }}>
+          <div className={styles.fieldGroup}>
+            <span className={styles.fieldLabel}>Progress ({progressPercent}%)</span>
+            <div className={styles.progressDisplayContainer}>
+              <div className={styles.progressRow}><span className={styles.rowLabel}>P:</span><span className={styles.rowValue}>{formatAccumulatedTime(spentSecondsByPlan)}</span></div>
+              <div className={styles.progressRow}><span className={styles.rowLabel}>F:</span><span className={styles.rowValue}>{formatAccumulatedTime(totalRealSeconds)}</span></div>
+              <div className={styles.progressRow}>
+                <span className={styles.rowLabel}>D:</span>
+                <span className={`${styles.rowValue} ${timeDifference >= 0 ? styles.textGreen : styles.textRed}`}>
+                  {timeDifference > 0 ? '+' : timeDifference < 0 ? '-' : ''}{formatAccumulatedTime(timeDifference)}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div className={styles.fieldGroup}>
+            <span className={styles.fieldLabel}>Done</span>
+            <div className={styles.adjustWrapper}>
+              <div className={styles.countDisplayOnly}>{processedCount}<span className={styles.targetUnit}>pcs</span></div>
+              <div className={styles.adjustButtonsGrid}>
+                <button type="button" onClick={() => adjustCount(-10)} className={styles.adjBtn}>-10</button>
+                <button type="button" onClick={() => adjustCount(-1)} className={styles.adjBtn}>-1</button>
+                <button type="button" onClick={() => adjustCount(1)} className={styles.adjBtn}>+1</button>
+                <button type="button" onClick={() => adjustCount(10)} className={styles.adjBtn}>+10</button>
+              </div>
+            </div>
+          </div>
+
+          {/* Самая правая широкая кнопка DONE */}
+          <button type="button" onClick={handleRealItemDone} className={styles.realDoneBtn}>
+            DONE
+          </button>
+        </div>
+
       </div>
 
     </div>

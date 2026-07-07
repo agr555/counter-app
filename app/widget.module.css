@@ -1,15 +1,28 @@
-.widgetContainer {
+/* Внешняя невидимая оболочка: выталкивает контент вниз и вправо */
+.layoutWrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end; /* Все элементы летят вниз */
+    align-items: flex-end;     /* Все элементы летят вправо */
+    min-height: 100vh;         /* Занимает 100% высоты экрана браузера */
+    background-color: #ffffff; /* Чистый белый фон сверху */
+    box-sizing: border-box;
+    padding: 10px;             /* Небольшой отступ от самого края экрана */
+  }
+  
+  /* Сама горизонтальная строка виджета */
+  .widgetContainer {
     display: flex;
     align-items: center;
     background-color: #ffffff;
     border: 1px solid #e2e8f0;
     border-radius: 6px;
     width: max-content;
-    margin: 10px auto;
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
     font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-    height: 54px; /* Сделали виджет ультра-тонким по вертикали */
+    height: 54px; 
     overflow: hidden;
+    padding-left: 12px;
   }
   
   .flexRow {
@@ -52,6 +65,8 @@
     text-align: center;
     outline: none;
   }
+  
+  .inputNumber:focus { border-color: #0f766e; }
   
   .toggleContainer {
     display: flex;
@@ -105,7 +120,7 @@
   .countDisplayOnly { border-color: #14b8a6; color: #0f766e; }
   .targetUnit { font-size: 0.65rem; color: #94a3b8; margin-left: 1px; }
   
-  /* Компактная аналитика */
+  /* Компактный прогресс */
   .progressDisplayContainer {
     border: 1px solid #e2e8f0;
     border-radius: 4px;
@@ -122,7 +137,7 @@
   .textGreen { color: #16a34a !important; }
   .textRed { color: #dc2626 !important; }
   
-  /* Кнопки корректировки */
+  /* Подгонка значений */
   .adjustWrapper { display: flex; flex-direction: column; gap: 1px; }
   .adjustButtonsGrid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; width: 65px; }
   .adjBtn {
@@ -130,7 +145,7 @@
     font-size: 0.5rem; font-weight: 700; height: 11px; cursor: pointer; padding: 0;
   }
   
-  /* Таймеры */
+  /* Блок таймеров */
   .buttonsColumn { display: flex; flex-direction: column; gap: 1px; }
   .timerControlBtn {
     height: 18px; padding: 0 4px; background-color: transparent;
@@ -151,11 +166,11 @@
   .timeNumbers { color: #0f766e; }
   .stopwatchNumbers { color: #14b8a6; }
   
-  /* УДОБНАЯ ШИРОКАЯ КНОПКА НА КРАЮ */
+  /* УДОБНАЯ КНОПКА DONE НА САМОМ КРАЮ */
   .realDoneBtn {
     width: 80px;
     height: 100%;
-    background-color: #0f766e; /* Заливка темно-зеленым, чтобы сразу видеть кнопку */
+    background-color: #0f766e;
     border: none;
     color: #ffffff;
     font-size: 1rem;
