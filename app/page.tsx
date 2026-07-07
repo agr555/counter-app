@@ -40,15 +40,16 @@ export default function PomodoroWidget() {
   }, [processedCount]);
 
   // Математические расчеты времени на 1 деталь
-  const hours = parseFloat(switchValue);
+  const hours = parseFloat(switchValue) || 8.0;
+  const netWorkingMinutes = (hours * 60) - 45; // Минус 45 минут простоя
   const targetPositions = Math.round(coefficient * hours);
-  const netWorkingMinutes = (hours * 60) - 45;
   
   const computedSecondsPerPosition = targetPositions > 0 
     ? Math.round((netWorkingMinutes * 60) / targetPositions)
-    : 25 * 60;
+    : 2 * 60;
 
-  const totalSeconds = mode === 'work' ? computedSecondsPerPosition : 5 * 60;
+ // Теперь общее время таймера всегда равно времени на 1 деталь
+const totalSeconds = computedSecondsPerPosition;
 
   // Обновление таймера на паузе при смене настроек
   useEffect(() => {
@@ -75,34 +76,28 @@ export default function PomodoroWidget() {
   };
 
   // Интервал обратного отсчета
-  useEffect(() => {
-    if (!isRunning) return;
+// 2. Исправленный интервал: работает по кругу без остановки и без отдыха
+useEffect(() => {
+  if (!isRunning) return;
 
-    const interval = setInterval(() => {
-      setTimeLeft((prev) => {
-        if (prev <= 1) {
-          clearInterval(interval);
-          playSound();
-          
-          startTransition(() => {
-            setIsRunning(false);
-            if (mode === 'work') {
-              setProcessedCount((prevCount) => prevCount + 1);
-              setMode('shortBreak');
-              setTimeLeft(5 * 60); 
-            } else {
-              setMode('work');
-              setTimeLeft(computedSecondsPerPosition);
-            }
-          });
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
+  const interval = setInterval(() => {
+    setTimeLeft((prev) => {
+      if (prev <= 1) {
+        // Время на текущую деталь вышло!
+        playSound();
+        
+        // Автоматически добавляем +1 к готовым деталям
+        setProcessedCount((prevCount) => prevCount + 1);
+        
+        // Сразу сбрасываем таймер на полную длительность для СЛЕДУЮЩЕЙ детали
+        return computedSecondsPerPosition; 
+      }
+      return prev - 1;
+    });
+  }, 1000);
 
-    return () => clearInterval(interval);
-  }, [isRunning, mode, computedSecondsPerPosition]);
+  return () => clearInterval(interval);
+}, [isRunning, computedSecondsPerPosition]);
 
   const formatTime = (seconds: number) => {
     const minutes = Math.floor(seconds / 60);
