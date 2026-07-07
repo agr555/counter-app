@@ -7,7 +7,7 @@
     height: 100px;
     border-radius: 20px;
     display: flex;
-    alignItems: center;
+    align-items: center;
     justify-content: center;
     cursor: pointer;
     user-select: none;
