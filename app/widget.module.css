@@ -1,26 +1,17 @@
-.layoutWrapper {
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end; 
-    align-items: flex-end;     
-    min-height: 100vh;         
-    background-color: #ffffff; 
-    box-sizing: border-box;
-    padding: 10px;             
-  }
+
   
-  .widgetContainer {
+/* Главный контейнер теперь растягивается на 100% самого окна без обрезки */
+.widgetContainer {
     display: flex;
     align-items: center;
+    justify-content: flex-start;
     background-color: #ffffff;
-    border: 1px solid #e2e8f0;
-    border-radius: 8px;
-    width: max-content;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
     font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-    height: 54px; 
+    height: 100vh; /* Строго во всю высоту доступного окна */
+    width: 100vw;  /* Строго во всю ширину доступного окна */
+    box-sizing: border-box;
     overflow: hidden;
-    padding-left: 12px;
+    padding-left: 8px;
   }
   
   .flexRow {

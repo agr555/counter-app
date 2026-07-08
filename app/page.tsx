@@ -134,8 +134,7 @@ export default function PomodoroWidget() {
     ? Math.min(100, Math.round((Math.abs(timeDifference) / maxDiffThreshold) * 100))
     : 0;
 
-  return (
-    <div className={styles.layoutWrapper}>
+    return (
       <div className={styles.widgetContainer}>
         
         {/* 1. SETTINGS BLOCK */}
@@ -152,7 +151,7 @@ export default function PomodoroWidget() {
               className={styles.inputNumber}
             />
           </div>
-
+  
           <div className={styles.fieldGroup}>
             <span className={styles.fieldLabel}>Shift</span>
             <div className={styles.toggleContainer}>
@@ -166,7 +165,7 @@ export default function PomodoroWidget() {
                 className={styles.radioInput}
               />
               <label htmlFor="shift-8" className={styles.radioLabel}>8h</label>
-
+  
               <input
                 type="radio"
                 id="shift-9"
@@ -187,15 +186,15 @@ export default function PomodoroWidget() {
               ></div>
             </div>
           </div>
-
+  
           <div className={styles.fieldGroup}>
             <span className={styles.fieldLabel}>Target</span>
             <div className={styles.targetDisplay}>{targetPositions}<span className={styles.targetUnit}>pcs</span></div>
           </div>
         </div>
-
+  
         <div className={styles.divider}></div>
-
+  
         {/* 2. TIMERS BLOCK */}
         <div className={styles.timerSection}>
           <div className={styles.buttonsColumn}>
@@ -210,20 +209,20 @@ export default function PomodoroWidget() {
               RESET
             </button>
           </div>
-
+  
           <div className={styles.timeDisplay}>
             <span className={styles.timeLabel}>PACE</span>
             <span className={styles.timeNumbers}>{formatTime(timeLeft)}</span>
           </div>
-
+  
           <div className={styles.stopwatchDisplay}>
             <span className={styles.stopwatchLabel}>STOPWATCH</span>
             <span className={styles.stopwatchNumbers}>{formatTime(stopwatchSeconds)}</span>
           </div>
         </div>
-
+  
         <div className={styles.divider}></div>
-
+  
         {/* 3. PROGRESS, STATISTICS & DONE */}
         <div className={styles.resultsSection}>
           
@@ -247,40 +246,38 @@ export default function PomodoroWidget() {
               </div>
             </div>
           </div>
-
           <div className={styles.fieldGroup}>
-            <span className={styles.fieldLabel}>Advanced Stats</span>
-            <div className={styles.statsDisplayContainer}>
-              <div className={styles.progressRow}>
-                <span className={styles.rowLabel}>Left:</span>
-                <span className={styles.rowValue} style={{ color: '#0f766e' }}>{pcsLeft} pcs</span>
-              </div>
-              <div className={styles.progressRow}>
-                <span className={styles.rowLabel}>Avg R:</span>
-                <span className={styles.rowValue}>{formatTime(avgRealTimeSeconds)}</span>
-              </div>
+          <span className={styles.fieldLabel}>Advanced Stats</span>
+          <div className={styles.statsDisplayContainer}>
+            <div className={styles.progressRow}>
+              <span className={styles.rowLabel}>Left:</span>
+              <span className={styles.rowValue} style={{ color: '#0f766e' }}>{pcsLeft} pcs</span>
+            </div>
+            <div className={styles.progressRow}>
+              <span className={styles.rowLabel}>Avg R:</span>
+              <span className={styles.rowValue}>{formatTime(avgRealTimeSeconds)}</span>
             </div>
           </div>
-
-          <div className={styles.fieldGroup}>
-            <span className={styles.fieldLabel}>Done</span>
-            <div className={styles.adjustWrapper}>
-              <div className={styles.countDisplayOnly}>{processedCount}<span className={styles.targetUnit}>pcs</span></div>
-              <div className={styles.adjustButtonsGrid}>
-                <button type="button" onClick={() => adjustCount(-10)} className={styles.adjBtn}>-10</button>
-                <button type="button" onClick={() => adjustCount(-1)} className={styles.adjBtn}>-1</button>
-                <button type="button" onClick={() => adjustCount(1)} className={styles.adjBtn}>+1</button>
-                <button type="button" onClick={() => adjustCount(10)} className={styles.adjBtn}>+10</button>
-              </div>
-            </div>
-          </div>
-
-          <button type="button" onClick={handleRealItemDone} className={styles.realDoneBtn}>
-            DONE
-          </button>
         </div>
 
+        <div className={styles.fieldGroup}>
+          <span className={styles.fieldLabel}>Done</span>
+          <div className={styles.adjustWrapper}>
+            <div className={styles.countDisplayOnly}>{processedCount}<span className={styles.targetUnit}>pcs</span></div>
+            <div className={styles.adjustButtonsGrid}>
+              <button type="button" onClick={() => adjustCount(-10)} className={styles.adjBtn}>-10</button>
+              <button type="button" onClick={() => adjustCount(-1)} className={styles.adjBtn}>-1</button>
+              <button type="button" onClick={() => adjustCount(1)} className={styles.adjBtn}>+1</button>
+              <button type="button" onClick={() => adjustCount(10)} className={styles.adjBtn}>+10</button>
+            </div>
+          </div>
+        </div>
+
+        <button type="button" onClick={handleRealItemDone} className={styles.realDoneBtn}>
+          DONE
+        </button>
       </div>
+
     </div>
   );
 }
