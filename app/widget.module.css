@@ -1,16 +1,14 @@
-/* Внешняя невидимая оболочка: прижимает компактную строку в правый нижний угол окна */
 .layoutWrapper {
     display: flex;
     flex-direction: column;
     justify-content: flex-end; 
     align-items: flex-end;     
     min-height: 100vh;         
-    background-color: transparent; /* Не перекрывает задний фон окна */
+    background-color: transparent; 
     box-sizing: border-box;
-    padding: 4px; /* Минимальный зазор от границ экрана */
+    padding: 4px; 
   }
   
-  /* Сама горизонтальная строка виджета сжимается строго по контенту */
   .widgetContainer {
     display: flex;
     align-items: center;
@@ -18,10 +16,10 @@
     background-color: #ffffff;
     border: 1px solid #e2e8f0;
     border-radius: 6px;
-    width: max-content; /* Сжимается до минимальной ширины */
+    width: max-content; 
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
     font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-    height: 48px; /* Оптимальная фиксированная высота под два этажа кнопок */
+    height: 48px; 
     overflow: hidden;
     padding-left: 8px;
   }
@@ -56,22 +54,24 @@
     letter-spacing: 0.02em;
   }
   
-  /* Поле ввода нормы до 6 знаков */
+  /* Шрифты в полях уменьшены под размер таймеров */
   .inputNumberWide {
     background-color: transparent;
     border: 1px solid #cbd5e1;
     border-radius: 4px;
     color: #1e293b;
-    font-size: 0.85rem;
+    font-size: 0.8rem; /* Шрифт уменьшен до размера таймеров */
     font-weight: 700;
+    font-family: monospace;
     width: 62px;
     height: 24px;
     text-align: center;
     outline: none;
   }
   .inputNumberWide:focus { border-color: #0f766e; }
+  .inputNumberWide:disabled { opacity: 0.6; cursor: not-allowed; background-color: #f8fafc; }
   
-  /* Переключатель смен */
+  /* ИСПРАВЛЕННЫЙ ОДИНАКОВЫЙ ПЕРЕКЛЮЧАТЕЛЬ СМЕН */
   .toggleContainer {
     display: flex;
     align-items: center;
@@ -80,33 +80,35 @@
     border: 1px solid #e2e8f0;
     border-radius: 4px;
     height: 24px;
-    min-width: 94px;
+    min-width: 94px; /* Ровно 45px + 45px + рамки */
     box-sizing: border-box;
   }
   
   .radioInput { position: absolute; opacity: 0; width: 0; height: 0; }
+  
   .radioLabel {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 34px;
+    width: 45px; /* ОДИНАКОВАЯ ШИРИНА ДЛЯ ОБЕИХ КНОПОК */
     height: 100%;
     font-size: 0.75rem;
     font-weight: 700;
     color: #64748b;
     cursor: pointer;
     z-index: 2;
+    transition: color 0.15s;
   }
-  .radioLabel[htmlFor="shift-9"] { width: 56px; }
   .radioInput:checked + .radioLabel { color: #ffffff; }
   
   .slider {
     position: absolute;
     top: 2px; left: 2px;
     height: calc(100% - 4px);
+    width: 45px; /* ШИРИНА ПОЛЗУНКА ТЕПЕРЬ ВСЕГДА ОДИНАКОВАЯ */
     background-color: #0f766e;
     border-radius: 3px;
-    transition: transform 0.15s ease-in-out, width 0.15s ease-in-out;
+    transition: transform 0.15s ease-in-out;
     z-index: 1;
   }
   
@@ -114,8 +116,9 @@
     background-color: transparent;
     border: 1px solid #cbd5e1;
     border-radius: 4px;
-    font-size: 0.85rem;
+    font-size: 0.8rem; /* Шрифт уменьшен до размера таймеров */
     font-weight: 700;
+    font-family: monospace;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -124,8 +127,8 @@
     box-sizing: border-box;
   }
   .targetDisplay { color: #1e293b; }
-  .countDisplayOnly { border-color: #14b8a6; color: #0f766e; font-family: monospace; }
-  .unitText { font-size: 0.65rem; color: #94a3b8; font-weight: 500; margin-left: 1px; }
+  .countDisplayOnly { border-color: #14b8a6; color: #0f766e; }
+  .unitText { font-size: 0.65rem; color: #94a3b8; font-weight: 500; margin-left: 1px; font-family: sans-serif; }
   
   /* Управление и подгонка */
   .controlAndAdjustColumn {
@@ -186,9 +189,9 @@
   .bgBarGreen { background-color: #16a34a; }
   .bgBarRed { background-color: #dc2626; }
   
-  /* ДИЗАЙН КНОПКИ DONE С ОГРАНИЧЕННОЙ ШИРИНОЙ НА КРАЮ */
+  /* Кнопка DONE */
   .bigSquareDoneBtn {
-    width: 60px; /* Кнопка строго ограничена по ширине и больше не разлетается */
+    width: 60px;
     height: 100%;
     background-color: #0f766e;
     border: none;
