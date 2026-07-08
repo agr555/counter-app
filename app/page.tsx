@@ -6,87 +6,101 @@ import styles from './widget.module.css';
 type ShiftType = '8h' | '9h40m';
 
 export default function PomodoroWidget() {
+  // Текущие изменяемые настройки
   const [coefficient, setCoefficient] = useState<number>(21);
   const [shift, setShift] = useState<ShiftType>('9h40m');
   const [processedCount, setProcessedCount] = useState<number>(0);
 
+  // Замороженные настройки смены (фиксируются строго при нажатии START)
   const [lockedCoefficient, setLockedCoefficient] = useState<number>(21);
   const [lockedShift, setLockedShift] = useState<ShiftType>('9h40m');
   const [lockedTarget, setLockedTarget] = useState<number>(203);
 
+  // Состояния активности и времени
   const [isRunning, setIsRunning] = useState<boolean>(false);
   const [stopwatchSeconds, setStopwatchSeconds] = useState<number>(0);
   const [totalRealSeconds, setTotalRealSeconds] = useState<number>(0);
+  
+  // Внутренний счетчик секунд смены для расчета идеального ежесекундного плана
+  const [shiftElapsedSeconds, setShiftAdjustmentSeconds] = useState<number>(0);
 
+  // Математическая база на основе замороженных данных
   const totalShiftMinutes = lockedShift === '9h40m' ? (9 * 60 + 40) : (8 * 60);
   const netWorkingMinutes = totalShiftMinutes - 45; 
   const decimalHours = totalShiftMinutes / 60;
   
+  // Секунд на одну деталь по норме
   const totalTimerSeconds = lockedTarget > 0 
     ? Math.round((netWorkingMinutes * 60) / lockedTarget) 
     : 25 * 60;
 
   const [timeLeft, setTimeLeft] = useState<number>(totalTimerSeconds);
 
+  // Визуальный текущий план для полей ввода до нажатия СТАРТ
   const currentShiftMinutes = shift === '9h40m' ? (9 * 60 + 40) : (8 * 60);
   const currentTargetPositions = Math.round(coefficient * (currentShiftMinutes / 60));
 
+  // Загрузка данных из памяти браузера при старте страницы
   useEffect(() => {
-    const savedCoefficient = localStorage.getItem('p_coefficient');
-    const savedShift = localStorage.getItem('p_shift') as ShiftType;
-    const savedProcessedCount = localStorage.getItem('p_processedCount');
-    const savedRealSeconds = localStorage.getItem('p_totalRealSeconds');
+    if (typeof window !== 'undefined') {
+      const savedCoefficient = localStorage.getItem('p_coefficient');
+      const savedShift = localStorage.getItem('p_shift') as ShiftType;
+      const savedProcessedCount = localStorage.getItem('p_processedCount');
+      const savedRealSeconds = localStorage.getItem('p_totalRealSeconds');
+      const savedElapsed = localStorage.getItem('p_shiftElapsedSeconds');
 
-    if (savedCoefficient) {
-      setCoefficient(parseInt(savedCoefficient, 10));
-      setLockedCoefficient(parseInt(savedCoefficient, 10));
+      if (savedCoefficient) {
+        setCoefficient(parseInt(savedCoefficient, 10));
+        setLockedCoefficient(parseInt(savedCoefficient, 10));
+      }
+      if (savedShift) {
+        setShift(savedShift);
+        setLockedShift(savedShift);
+      }
+      if (savedProcessedCount) setProcessedCount(parseInt(savedProcessedCount, 10));
+      if (savedRealSeconds) setTotalRealSeconds(parseInt(savedRealSeconds, 10));
+      if (savedElapsed) setShiftAdjustmentSeconds(parseInt(savedElapsed, 10));
     }
-    if (savedShift) {
-      setShift(savedShift);
-      setLockedShift(savedShift);
-    }
-    if (savedProcessedCount) setProcessedCount(parseInt(savedProcessedCount, 10));
-    if (savedRealSeconds) setTotalRealSeconds(parseInt(savedRealSeconds, 10));
   }, []);
 
+  // Синхронизация замороженных параметров, пока кнопка СТАРТ не нажата
   useEffect(() => {
-    if (!isRunning) {
+    if (!isRunning && timeLeft === totalTimerSeconds) {
       setLockedCoefficient(coefficient);
       setLockedShift(shift);
       setLockedTarget(currentTargetPositions);
     }
-  }, [coefficient, shift, isRunning, currentTargetPositions]);
+  }, [coefficient, shift, isRunning, currentTargetPositions, timeLeft, totalTimerSeconds]);
 
+  // Автосохранение состояний в localStorage
   useEffect(() => {
     localStorage.setItem('p_coefficient', coefficient.toString());
-  }, [coefficient]);
-
-  useEffect(() => {
     localStorage.setItem('p_shift', shift);
-  }, [shift]);
-
-  useEffect(() => {
     localStorage.setItem('p_processedCount', processedCount.toString());
-  }, [processedCount]);
-
-  useEffect(() => {
     localStorage.setItem('p_totalRealSeconds', totalRealSeconds.toString());
-  }, [totalRealSeconds]);
+    localStorage.setItem('p_shiftElapsedSeconds', shiftElapsedSeconds.toString());
+  }, [coefficient, shift, processedCount, totalRealSeconds, shiftElapsedSeconds]);
 
+  // Восстановление времени темпа на паузе
   useEffect(() => {
     if (!isRunning && timeLeft !== 0) {
       setTimeLeft(totalTimerSeconds);
     }
   }, [totalTimerSeconds, isRunning, timeLeft]);
 
+  // Единый главный интервал времени (работает с точностью до секунды)
   useEffect(() => {
     if (!isRunning) return;
 
     const interval = setInterval(() => {
       setStopwatchSeconds((prev) => prev + 1);
+      setShiftAdjustmentSeconds((prev) => prev + 1);
 
       setTimeLeft((prev) => {
-        if (prev <= 1) return totalTimerSeconds;
+        if (prev <= 1) {
+          playQuietPeep(); // Тихий пип при обнулении темпа детали
+          return totalTimerSeconds;
+        }
         return prev - 1;
       });
     }, 1000);
@@ -94,35 +108,63 @@ export default function PomodoroWidget() {
     return () => clearInterval(interval);
   }, [isRunning, totalTimerSeconds]);
 
+  // Функция воспроизведения тихого короткого пика (Quiet Peep)
+  const playQuietPeep = () => {
+    if (typeof window === 'undefined') return;
+    try {
+      const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
+      if (!AudioCtx) return;
+      const ctx = new AudioCtx();
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(600, ctx.currentTime); // Мягкая частота пика
+      gain.gain.setValueAtTime(0.08, ctx.currentTime);     // Сверх-тихая громкость (8%)
+      
+      osc.start();
+      osc.stop(ctx.currentTime + 0.12); // Короткая длительность (120мс)
+    } catch (e) {
+      console.warn('Audio contextual block:', e);
+    }
+  };
+
+  // Слушатель глобальной горячей клавиши Shift + A для DONE
+  useEffect(() => {
+    const handleGlobalKey = (e: KeyboardEvent) => {
+      if (e.shiftKey && (e.key === 'A' || e.key === 'a' || e.key === 'ф' || e.key === 'Ф')) {
+        if (document.activeElement?.tagName !== 'INPUT') {
+          e.preventDefault();
+          handleRealItemDone();
+        }
+      }
+    };
+    window.addEventListener('keydown', handleGlobalKey);
+    return () => window.removeEventListener('keydown', handleGlobalKey);
+  }, [stopwatchSeconds, isRunning, totalTimerSeconds]);
+
   const formatTime = (seconds: number) => {
     const minutes = Math.floor(seconds / 60);
     const secs = seconds % 60;
     return `${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   };
 
-  const formatAccumulatedTime = (totalSecs: number) => {
-    const absoluteSecs = Math.abs(totalSecs);
-    const hrs = Math.floor(absoluteSecs / 3600);
-    const mins = Math.floor((absoluteSecs % 3600) / 60);
-    const secs = absoluteSecs % 60;
-    
-    if (hrs > 0) return `${hrs}h ${mins}m`;
-    return `${mins}m ${secs}s`;
-  };
-
   const handleGlobalReset = () => {
-    const wasRunning = isRunning;
+    const wasActive = isRunning;
     setIsRunning(false);
 
-    if (confirm('Reset all progress for this shift?')) {
+    if (confirm('Reset all shift progress and configuration?')) {
       setProcessedCount(0);
       setStopwatchSeconds(0);
       setTotalRealSeconds(0);
+      setShiftAdjustmentSeconds(0);
       setTimeLeft(totalTimerSeconds);
-      localStorage.removeItem('p_processedCount');
-      localStorage.removeItem('p_totalRealSeconds');
+      localStorage.clear();
     } else {
-      setIsRunning(wasRunning);
+      setIsRunning(wasActive);
     }
   };
   const handleRealItemDone = () => {
@@ -139,20 +181,48 @@ export default function PomodoroWidget() {
     setProcessedCount((prev) => Math.max(0, prev + amount));
   };
 
-  const spentSecondsByPlan = processedCount * totalTimerSeconds;
-  const timeDifference = spentSecondsByPlan - totalRealSeconds;
-  const progressPercent = lockedTarget > 0 
-    ? Math.round((processedCount / lockedTarget) * 100)
+  // --- ТОЧНЫЙ МАТЕМАТИЧЕСКИЙ РАСЧЕТ ОТКЛОНЕНИЯ ПО СЕКУНДАМ ---
+  // Идеальный план штук к текущей секунде смены
+  const exactCurrentPlanPcs = totalTimerSeconds > 0 
+    ? shiftElapsedSeconds / totalTimerSeconds 
     : 0;
+
+  // 1. Строка ПЛАНА (Сколько % от дневной нормы и сколько штук должно быть сделано сейчас)
+  const planPercent = lockedTarget > 0 
+    ? Math.round((exactCurrentPlanPcs / lockedTarget) * 100) 
+    : 0;
+  const planPcsRounded = Math.round(exactCurrentPlanPcs);
+
+  // 2. Строка ФАКТА (Ваш реальный текущий прогресс от дневного плана)
+  const factPercent = lockedTarget > 0 
+    ? Math.round((processedCount / lockedTarget) * 100) 
+    : 0;
+
+  // 3. Строка ОТКЛОНЕНИЯ (Diff) в % от дневной нормы и в штуках
+  const diffPercent = factPercent - planPercent;
+  const diffPcs = processedCount - planPcsRounded;
 
   const pcsLeft = Math.max(0, lockedTarget - processedCount);
   const avgRealTimeSeconds = processedCount > 0 ? Math.round(totalRealSeconds / processedCount) : 0;
 
-  // Расчет прогресс-бара отклонения (100% при разнице в 5 деталей)
-  const maxDiffThreshold = totalTimerSeconds * 5; 
-  const barWidthPercent = spentSecondsByPlan > 0 
-    ? Math.min(100, Math.round((Math.abs(timeDifference) / maxDiffThreshold) * 100))
+  // Расчет ширины шкалы отклонения (100% заполнения при сдвиге в 5 деталей от нормы)
+  const maxDiffThreshold = 5; 
+  const barWidthPercent = exactCurrentPlanPcs > 0 
+    ? Math.min(100, Math.round((Math.abs(diffPcs) / maxDiffThreshold) * 100))
     : 0;
+
+  // --- ДИНАМИЧЕСКИЙ ЦВЕТОВОЙ ALARM ДЛЯ ТАЙМЕРА PACE ---
+  const paceRatio = totalTimerSeconds > 0 ? timeLeft / totalTimerSeconds : 1;
+  let paceColorClass = styles.paceGreen; // Больше 50% времени — зеленый
+
+  if (paceRatio <= 0.5 && paceRatio > 0.2) {
+    paceColorClass = styles.paceOrange; // От 50% до 20% — оранжевый
+  } else if (paceRatio <= 0.2) {
+    paceColorClass = styles.paceBlack; // Меньше 20% — плавно чернеет
+  }
+
+  // Процент заполнения микро-шкалы внутри таймера PACE
+  const paceBarWidth = Math.round(paceRatio * 100);
 
   const handleStartToggle = () => {
     if (!isRunning && timeLeft === totalTimerSeconds) {
@@ -166,160 +236,175 @@ export default function PomodoroWidget() {
   const isSettingsDisabled = timeLeft !== totalTimerSeconds || isRunning;
 
   return (
-    <div className={styles.layoutWrapper}>
-      <div className={styles.widgetContainer}>
-        
-        {/* BLOCK 1: SETTINGS (Rate, Shift, Target) */}
-        <div className={styles.concaveBlock}>
-          <div className={styles.fieldGroup}>
-            <label htmlFor="coefficient" className={styles.fieldLabel}>Rate/h</label>
+    <div className={styles.widgetContainer}>
+      
+      {/* PANEL 1: CONFIGURATION (Concave Border) */}
+      <div className={styles.concaveBlock}>
+        <div className={styles.fieldGroup}>
+          <label htmlFor="coefficient" className={styles.fieldLabel}>Rate / Hour</label>
+          <input
+            id="coefficient"
+            type="number"
+            step="1"
+            min="1"
+            max="999999"
+            value={isSettingsDisabled ? lockedCoefficient : coefficient}
+            onChange={(e) => setCoefficient(parseInt(e.target.value) || 0)}
+            disabled={isSettingsDisabled}
+            className={styles.inputNumberWide}
+          />
+        </div>
+
+        <div className={styles.fieldGroup}>
+          <span className={styles.fieldLabel}>Shift Time</span>
+          <div className={styles.toggleContainer} style={{ opacity: isSettingsDisabled ? 0.7 : 1 }}>
             <input
-              id="coefficient"
-              type="number"
-              step="1"
-              min="1"
-              max="999999"
-              value={isSettingsDisabled ? lockedCoefficient : coefficient}
-              onChange={(e) => setCoefficient(parseInt(e.target.value) || 0)}
+              type="radio"
+              id="shift-8"
+              name="shiftValue"
+              value="8h"
+              checked={(isSettingsDisabled ? lockedShift : shift) === '8h'}
+              onChange={() => setShift('8h')}
               disabled={isSettingsDisabled}
-              className={styles.inputNumberWide}
+              className={styles.radioInput}
             />
-          </div>
+            <label htmlFor="shift-8" className={styles.radioLabel}>8h</label>
 
-          <div className={styles.fieldGroup}>
-            <span className={styles.fieldLabel}>Shift</span>
-            <div className={styles.toggleContainer} style={{ opacity: isSettingsDisabled ? 0.7 : 1 }}>
-              <input
-                type="radio"
-                id="shift-8"
-                name="shiftValue"
-                value="8h"
-                checked={(isSettingsDisabled ? lockedShift : shift) === '8h'}
-                onChange={() => setShift('8h')}
-                disabled={isSettingsDisabled}
-                className={styles.radioInput}
-              />
-              <label htmlFor="shift-8" className={styles.radioLabel}>8h</label>
-
-              <input
-                type="radio"
-                id="shift-9"
-                name="shiftValue"
-                value="9h40m"
-                checked={(isSettingsDisabled ? lockedShift : shift) === '9h40m'}
-                onChange={() => setShift('9h40m')}
-                disabled={isSettingsDisabled}
-                className={styles.radioInput}
-              />
-              <label htmlFor="shift-9" className={styles.radioLabel}>9:40</label>
-              
-              <div 
-                className={styles.slider} 
-                style={{ 
-                  transform: (isSettingsDisabled ? lockedShift : shift) === '9h40m' ? 'translateX(45px)' : 'translateX(0px)'
-                }}
-              ></div>
-            </div>
-          </div>
-
-          <div className={styles.fieldGroup}>
-            <span className={styles.fieldLabel}>Target</span>
-            <div className={styles.targetDisplayDisabled}>
-              {isSettingsDisabled ? lockedTarget : currentTargetPositions} <span className={styles.unitText}>pcs</span>
-            </div>
+            <input
+              type="radio"
+              id="shift-9"
+              name="shiftValue"
+              value="9h40m"
+              checked={(isSettingsDisabled ? lockedShift : shift) === '9h40m'}
+              onChange={() => setShift('9h40m')}
+              disabled={isSettingsDisabled}
+              className={styles.radioInput}
+            />
+            <label htmlFor="shift-9" className={styles.radioLabel}>9:40</label>
+            
+            <div 
+              className={styles.slider} 
+              style={{ 
+                transform: (isSettingsDisabled ? lockedShift : shift) === '9h40m' ? 'translateX(45px)' : 'translateX(0px)'
+              }}
+            ></div>
           </div>
         </div>
 
-        {/* BLOCK 2: CONTROLS & ADJUSTMENTS */}
-        <div className={styles.concaveBlock}>
-          <div className={styles.controlAndAdjustColumn}>
-            <div className={styles.gridRow}>
-              <button 
-                type="button" 
-                onClick={handleStartToggle} 
-                className={`${styles.shadowBtn} ${isRunning ? styles.btnPause : styles.btnStart}`}
-                title={isRunning ? 'Pause' : 'Start'}
-              >
-                {isRunning ? '||' : '▶ START'}
-              </button>
-              <button 
-                type="button" 
-                onClick={handleGlobalReset} 
-                className={`${styles.shadowBtn} ${styles.btnReset}`}
-                title="Reset Shift"
-              >
-                ✖ STOP
-              </button>
-            </div>
-
-            <div className={styles.gridRow}>
-              <button type="button" onClick={() => adjustCount(-10)} className={styles.adjBtn}>-10</button>
-              <button type="button" onClick={() => adjustCount(-1)} className={styles.adjBtn}>-1</button>
-              <button type="button" onClick={() => adjustCount(1)} className={styles.adjBtn}>+1</button>
-              <button type="button" onClick={() => adjustCount(10)} className={styles.adjBtn}>+10</button>
-            </div>
+        <div className={styles.fieldGroup}>
+          <span className={styles.fieldLabel}>Shift Target</span>
+          <div className={styles.targetDisplayDisabled}>
+            {isSettingsDisabled ? lockedTarget : currentTargetPositions}
+            <span className={styles.unitText}>pcs</span>
           </div>
         </div>
+      </div>
 
-        {/* BLOCK 3: TIMERS & LIVE PACE */}
-        <div className={styles.concaveBlock}>
-          <div className={styles.timeDisplay}>
-            <span className={styles.timeLabel}>PACE</span>
-            <span className={styles.timeNumbers}>{formatTime(timeLeft)}</span>
+      {/* PANEL 2: CURRENT PROGRESS & TIME VARIANCE (Concave Border) */}
+      <div className={styles.concaveBlock}>
+        <div className={styles.compactStatsBox}>
+          <div className={styles.progressRow}>
+            <span className={styles.rowLabel}>Plan:</span>
+            <span className={styles.rowValue}>{planPercent}% ({planPcsRounded} pcs)</span>
           </div>
-
-          <div className={styles.stopwatchDisplay}>
-            <span className={styles.stopwatchLabel}>STOPWATCH</span>
-            <span className={styles.stopwatchNumbers}>{formatTime(stopwatchSeconds)}</span>
+          <div className={styles.progressRow}>
+            <span className={styles.rowLabel}>Fact:</span>
+            <span className={styles.rowValue}>{factPercent}% ({processedCount} pcs)</span>
           </div>
-        </div>
-
-        {/* BLOCK 4: ANALYTICS, PROCESSED & ACTION DONE BUTTON */}
-        <div className={styles.concaveBlock} style={{ paddingRight: '0', gap: '8px' }}>
+          <div className={styles.progressRow}>
+            <span className={styles.rowLabel}>Diff:</span>
+            <span className={`${styles.rowValue} ${diffPcs >= 0 ? styles.textGreen : styles.textRed}`}>
+              {diffPercent >= 0 ? '+' : ''}{diffPercent}% ({diffPcs >= 0 ? '+' : ''}{diffPcs} pcs)
+            </span>
+          </div>
           
-          <div className={styles.compactStatsBox}>
-            <div className={styles.statLine}>
-              <span>Prg:</span>
-              <span className={styles.boldVal}>{progressPercent}%</span>
-            </div>
-            <div className={styles.statLine}>
-              <span>Dif:</span>
-              <span className={`${styles.boldVal} ${timeDifference >= 0 ? styles.textGreen : styles.textRed}`}>
-                {timeDifference > 0 ? '+' : timeDifference < 0 ? '-' : ''}{formatAccumulatedTime(timeDifference)}
-              </span>
-            </div>
-            <div className={styles.statusBarTrack}>
-              <div 
-                className={`${styles.statusBarFill} ${timeDifference >= 0 ? styles.bgBarGreen : styles.bgBarRed}`}
-                style={{ width: `${barWidthPercent}%` }}
-              ></div>
-            </div>
+          {/* Шкала отклонения от ежесекундного плана */}
+          <div className={styles.statusBarTrack}>
+            <div 
+              className={`${styles.statusBarFill} ${diffPcs >= 0 ? styles.bgBarGreen : styles.bgBarRed}`}
+              style={{ width: `${barWidthPercent}%` }}
+            ></div>
           </div>
-
-          <div className={styles.compactStatsBox}>
-            <div className={styles.statLine}>
-              <span>Left:</span>
-              <span className={styles.boldVal}>{pcsLeft}</span>
-            </div>
-            <div className={styles.statLine}>
-              <span>Avg:</span>
-              <span className={styles.boldVal}>{formatTime(avgRealTimeSeconds)}</span>
-            </div>
-          </div>
-
-          <div className={styles.fieldGroup}>
-            <span className={styles.fieldLabel}>Done</span>
-            <div className={styles.countDisplayOnly}>{processedCount}</div>
-          </div>
-
-          {/* Имя класса заменено на валидное .dDoneBtn */}
-          <button type="button" onClick={handleRealItemDone} className={styles.dDoneBtn}>
-            DONE
-          </button>
-
         </div>
+      </div>
+
+      {/* PANEL 3: CONTROLS & MANUAL ADJUSTMENTS (Concave Border) */}
+      <div className={styles.concaveBlock}>
+        <div className={styles.controlAndAdjustColumn}>
+          <div className={styles.gridRow}>
+            <button 
+              type="button" 
+              onClick={handleStartToggle} 
+              className={`${styles.shadowBtn} ${isRunning ? styles.btnPause : styles.btnStart}`}
+            >
+              {isRunning ? '|| PAUSE' : '▶ START'}
+            </button>
+            <button 
+              type="button" 
+              onClick={handleGlobalReset} 
+              className={`${styles.shadowBtn} ${styles.btnReset}`}
+            >
+              ✖ STOP
+            </button>
+          </div>
+
+          <div className={styles.gridRow}>
+            <button type="button" onClick={() => adjustCount(-10)} className={styles.adjBtn}>-10</button>
+            <button type="button" onClick={() => adjustCount(-1)} className={styles.adjBtn}>-1</button>
+            <button type="button" onClick={() => adjustCount(1)} className={styles.adjBtn}>+1</button>
+            <button type="button" onClick={() => adjustCount(10)} className={styles.adjBtn}>+10</button>
+          </div>
+        </div>
+      </div>
+
+      {/* PANEL 4: STATS, TIMERS & ACTION BUTTON (Concave Border) */}
+      <div className={styles.concaveBlock} style={{ paddingRight: '0', gap: '6px' }}>
+        
+        {/* Остатки и средняя скорость */}
+        <div className={styles.compactStatsBox} style={{ minWidth: '60px' }}>
+          <div className={styles.progressRow}>
+            <span className={styles.rowLabel}>Left:</span>
+            <span className={styles.rowValue}>{pcsLeft}</span>
+          </div>
+          <div className={styles.progressRow}>
+            <span className={styles.rowLabel}>Avg:</span>
+            <span className={styles.rowValue}>{formatTime(avgRealTimeSeconds)}</span>
+          </div>
+        </div>
+
+        {/* Счётчик готово (Done) */}
+        <div className={styles.fieldGroup}>
+          <span className={styles.fieldLabel}>Done</span>
+          <div className={styles.countDisplayOnly}>{processedCount}</div>
+        </div>
+
+        {/* Секундомер STOPWATCH (Слева) */}
+        <div className={styles.stopwatchDisplay}>
+          <span className={styles.stopwatchLabel}>STOPWATCH</span>
+          <span className={styles.stopwatchNumbers}>{formatTime(stopwatchSeconds)}</span>
+        </div>
+
+        {/* Обратный таймер PACE (Справа) с динамическим цветом и микро-полосой */}
+        <div className={styles.timeDisplay}>
+          <span className={styles.timeLabel}>PACE</span>
+          <span className={`${styles.timeNumbers} ${paceColorClass}`}>{formatTime(timeLeft)}</span>
+          
+          {/* Встроенная микро-полоса оставшегося времени на 1 деталь */}
+          <div className={styles.paceBarTrack}>
+            <div 
+              className={styles.paceBarFill} 
+              style={{ width: `${paceBarWidth}%` }}
+            ></div>
+          </div>
+        </div>
+
+        {/* Объемная кнопка фиксации детали */}
+        <button type="button" onClick={handleRealItemDone} className={styles.dDoneBtn}>
+          DONE
+        </button>
 
       </div>
+
     </div>
   );
 }
