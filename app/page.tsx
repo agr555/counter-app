@@ -9,7 +9,6 @@ export default function PomodoroWidget() {
   const [coefficient, setCoefficient] = useState<number>(21);
   const [shift, setShift] = useState<ShiftType>('9h40m');
   const [processedCount, setProcessedCount] = useState<number>(0);
-  const [showSettings, setShowSettings] = useState<boolean>(false);
 
   const [isRunning, setIsRunning] = useState<boolean>(false);
   const [stopwatchSeconds, setStopwatchSeconds] = useState<number>(0);
@@ -135,158 +134,151 @@ export default function PomodoroWidget() {
     : 0;
 
   return (
-    <div className={styles.widgetContainer}>
-      
-      {/* 1 БЛОК: НАСТРОЙКИ (Rate/h до 6 знаков, Смена, План) */}
-      <div className={styles.flexRow}>
-        {/* Поле ввода нормы расширено до 6 знаков */}
-        <div className={styles.fieldGroup}>
-          <label htmlFor="coefficient" className={styles.fieldLabel}>Rate/h</label>
-          <input
-            id="coefficient"
-            type="number"
-            step="1"
-            min="1"
-            max="999999"
-            value={coefficient}
-            onChange={(e) => setCoefficient(parseInt(e.target.value) || 0)}
-            className={styles.inputNumberWide}
-          />
-        </div>
-
-        {/* Исправленный переключатель смен с ползунком */}
-        <div className={styles.fieldGroup}>
-          <span className={styles.fieldLabel}>Shift</span>
-          <div className={styles.toggleContainer}>
-            <input
-              type="radio"
-              id="shift-8"
-              name="shiftValue"
-              value="8h"
-              checked={shift === '8h'}
-              onChange={() => setShift('8h')}
-              className={styles.radioInput}
-            />
-            <label htmlFor="shift-8" className={styles.radioLabel}>8h</label>
-
-            <input
-              type="radio"
-              id="shift-9"
-              name="shiftValue"
-              value="9h40m"
-              checked={shift === '9h40m'}
-              onChange={() => setShift('9h40m')}
-              className={styles.radioInput}
-            />
-            <label htmlFor="shift-9" className={styles.radioLabel} style={{ width: '56px' }}>9:40</label>
-            
-            <div 
-              className={styles.slider} 
-              style={{ 
-                width: shift === '9h40m' ? '56px' : '34px',
-                transform: shift === '9h40m' ? 'translateX(34px)' : 'translateX(0px)'
-              }}
-            ></div>
-          </div>
-        </div>
-
-        <div className={styles.fieldGroup}>
-          <span className={styles.fieldLabel}>Target</span>
-          <div className={styles.targetDisplay}>{targetPositions} <span className={styles.unitText}>pcs</span></div>
-        </div>
-      </div>
-
-      <div className={styles.divider}></div>
-
-      {/* 2 БЛОК: УПРАВЛЕНИЕ И ТАЙМЕРЫ (ДВА ЭТАЖА) */}
-      <div className={styles.controlAndAdjustColumn}>
-        {/* 1 ЭТАЖ: Старт и Сброс */}
-        <div className={styles.gridRow}>
-          <button 
-            type="button" 
-            onClick={() => setIsRunning(!isRunning)} 
-            className={`${styles.timerControlBtn} ${isRunning ? styles.btnPause : styles.btnStart}`}
-          >
-            {isRunning ? '||' : '▶'}
-          </button>
-          <button type="button" onClick={handleGlobalReset} className={`${styles.timerControlBtn} ${styles.btnReset}`}>
-            ✖
-          </button>
-        </div>
-
-        {/* 2 ЭТАЖ: Ручная подгонка (-10, -1, +1, +10) строго под кнопками */}
-        <div className={styles.gridRow}>
-          <button type="button" onClick={() => adjustCount(-10)} className={styles.adjBtn}>-10</button>
-          <button type="button" onClick={() => adjustCount(-1)} className={styles.adjBtn}>-1</button>
-          <button type="button" onClick={() => adjustCount(1)} className={styles.adjBtn}>+1</button>
-          <button type="button" onClick={() => adjustCount(10)} className={styles.adjBtn}>+10</button>
-        </div>
-      </div>
-
-      {/* Дисплеи времени PACE и STOPWATCH */}
-      <div className={styles.flexRow}>
-        <div className={styles.timeDisplay}>
-          <span className={styles.timeLabel}>PACE</span>
-          <span className={styles.timeNumbers}>{formatTime(timeLeft)}</span>
-        </div>
-
-        <div className={styles.stopwatchDisplay}>
-          <span className={styles.stopwatchLabel}>STOPWATCH</span>
-          <span className={styles.stopwatchNumbers}>{formatTime(stopwatchSeconds)}</span>
-        </div>
-      </div>
-
-      <div className={styles.divider}></div>
-
-      {/* 3 БЛОК: ПРОГРЕСС, АНАЛИТИКА И ГОТОВО */}
-      <div className={styles.resultsSection}>
+    <div className={styles.layoutWrapper}>
+      <div className={styles.widgetContainer}>
         
-        {/* Аналитика прогресса времени */}
-        <div className={styles.compactStatsBox}>
-          <div className={styles.statLine}>
-            <span>Prg:</span>
-            <span className={styles.boldVal}>{progressPercent}%</span>
+        {/* 1 БЛОК: НАСТРОЙКИ (Rate/h до 6 знаков, Смена, План) */}
+        <div className={styles.flexRow}>
+          <div className={styles.fieldGroup}>
+            <label htmlFor="coefficient" className={styles.fieldLabel}>Rate/h</label>
+            <input
+              id="coefficient"
+              type="number"
+              step="1"
+              min="1"
+              max="999999"
+              value={coefficient}
+              onChange={(e) => setCoefficient(parseInt(e.target.value) || 0)}
+              className={styles.inputNumberWide}
+            />
           </div>
-          <div className={styles.statLine}>
-            <span>Dif:</span>
-            <span className={`${styles.boldVal} ${timeDifference >= 0 ? styles.textGreen : styles.textRed}`}>
-              {timeDifference > 0 ? '+' : timeDifference < 0 ? '-' : ''}{formatAccumulatedTime(timeDifference)}
-            </span>
+
+          <div className={styles.fieldGroup}>
+            <span className={styles.fieldLabel}>Shift</span>
+            <div className={styles.toggleContainer}>
+              <input
+                type="radio"
+                id="shift-8"
+                name="shiftValue"
+                value="8h"
+                checked={shift === '8h'}
+                onChange={() => setShift('8h')}
+                className={styles.radioInput}
+              />
+              <label htmlFor="shift-8" className={styles.radioLabel}>8h</label>
+
+              <input
+                type="radio"
+                id="shift-9"
+                name="shiftValue"
+                value="9h40m"
+                checked={shift === '9h40m'}
+                onChange={() => setShift('9h40m')}
+                className={styles.radioInput}
+              />
+              <label htmlFor="shift-9" className={styles.radioLabel} style={{ width: '56px' }}>9:40</label>
+              
+              <div 
+                className={styles.slider} 
+                style={{ 
+                  width: shift === '9h40m' ? '56px' : '34px',
+                  transform: shift === '9h40m' ? 'translateX(34px)' : 'translateX(0px)'
+                }}
+              ></div>
+            </div>
           </div>
-          {/* Шкала Time Status Bar */}
-          <div className={styles.statusBarTrack}>
-            <div 
-              className={`${styles.statusBarFill} ${timeDifference >= 0 ? styles.bgBarGreen : styles.bgBarRed}`}
-              style={{ width: `${barWidthPercent}%` }}
-            ></div>
+
+          <div className={styles.fieldGroup}>
+            <span className={styles.fieldLabel}>Target</span>
+            <div className={styles.targetDisplay}>{targetPositions} <span className={styles.unitText}>pcs</span></div>
           </div>
         </div>
 
-        {/* Расширенная статистика сменных остатков */}
-        <div className={styles.compactStatsBox}>
-          <div className={styles.statLine}>
-            <span>Left:</span>
-            <span className={styles.boldVal}>{pcsLeft}</span>
+        <div className={styles.divider}></div>
+
+        {/* 2 БЛОК: УПРАВЛЕНИЕ И ТАЙМЕРЫ (ДВА ЭТАЖА) */}
+        <div className={styles.controlAndAdjustColumn}>
+          <div className={styles.gridRow}>
+            <button 
+              type="button" 
+              onClick={() => setIsRunning(!isRunning)} 
+              className={`${styles.timerControlBtn} ${isRunning ? styles.btnPause : styles.btnStart}`}
+            >
+              {isRunning ? '||' : '▶'}
+            </button>
+            <button type="button" onClick={handleGlobalReset} className={`${styles.timerControlBtn} ${styles.btnReset}`}>
+              ✖
+            </button>
           </div>
-          <div className={styles.statLine}>
-            <span>Avg:</span>
-            <span className={styles.boldVal}>{formatTime(avgRealTimeSeconds)}</span>
+
+          <div className={styles.gridRow}>
+            <button type="button" onClick={() => adjustCount(-10)} className={styles.adjBtn}>-10</button>
+            <button type="button" onClick={() => adjustCount(-1)} className={styles.adjBtn}>-1</button>
+            <button type="button" onClick={() => adjustCount(1)} className={styles.adjBtn}>+1</button>
+            <button type="button" onClick={() => adjustCount(10)} className={styles.adjBtn}>+10</button>
           </div>
         </div>
 
-        {/* Поле количества готовых штук */}
-        <div className={styles.fieldGroup}>
-          <span className={styles.fieldLabel}>Done</span>
-          <div className={styles.countDisplayOnly}>{processedCount}</div>
+        {/* Дисплеи времени PACE и STOPWATCH */}
+        <div className={styles.flexRow}>
+          <div className={styles.timeDisplay}>
+            <span className={styles.timeLabel}>PACE</span>
+            <span className={styles.timeNumbers}>{formatTime(timeLeft)}</span>
+          </div>
+
+          <div className={styles.stopwatchDisplay}>
+            <span className={styles.stopwatchLabel}>STOPWATCH</span>
+            <span className={styles.stopwatchNumbers}>{formatTime(stopwatchSeconds)}</span>
+          </div>
         </div>
 
-        {/* Самая правая широкая и удобная кнопка DONE */}
-        <button type="button" onClick={handleRealItemDone} className={styles.bigSquareDoneBtn}>
-          DONE
-        </button>
+        <div className={styles.divider}></div>
+
+        {/* 3 БЛОК: ПРОГРЕСС, АНАЛИТИКА И ГОТОВО */}
+        <div className={styles.resultsSection}>
+          
+          <div className={styles.compactStatsBox}>
+            <div className={styles.statLine}>
+              <span>Prg:</span>
+              <span className={styles.boldVal}>{progressPercent}%</span>
+            </div>
+            <div className={styles.statLine}>
+              <span>Dif:</span>
+              <span className={`${styles.boldVal} ${timeDifference >= 0 ? styles.textGreen : styles.textRed}`}>
+                {timeDifference > 0 ? '+' : timeDifference < 0 ? '-' : ''}{formatAccumulatedTime(timeDifference)}
+              </span>
+            </div>
+            <div className={styles.statusBarTrack}>
+              <div 
+                className={`${styles.statusBarFill} ${timeDifference >= 0 ? styles.bgBarGreen : styles.bgBarRed}`}
+                style={{ width: `${barWidthPercent}%` }}
+              ></div>
+            </div>
+          </div>
+
+          <div className={styles.compactStatsBox}>
+            <div className={styles.statLine}>
+              <span>Left:</span>
+              <span className={styles.boldVal}>{pcsLeft}</span>
+            </div>
+            <div className={styles.statLine}>
+              <span>Avg:</span>
+              <span className={styles.boldVal}>{formatTime(avgRealTimeSeconds)}</span>
+            </div>
+          </div>
+
+          <div className={styles.fieldGroup}>
+            <span className={styles.fieldLabel}>Done</span>
+            <div className={styles.countDisplayOnly}>{processedCount}</div>
+          </div>
+
+          <button type="button" onClick={handleRealItemDone} className={styles.bigSquareDoneBtn}>
+            DONE
+          </button>
+
+        </div>
 
       </div>
-
     </div>
   );
 }
