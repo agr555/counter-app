@@ -1,19 +1,31 @@
-/* Главный контейнер строки удерживает 4 блока на одном уровне */
-.widgetContainer {
+/* Внешняя невидимая оболочка: жестко держит компактную строку в правом нижнем углу экрана */
+.layoutWrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end; 
+    align-items: flex-end;     
+    min-height: 100vh;         
+    background-color: transparent; 
+    box-sizing: border-box;
+    padding: 4px; 
+  }
+  
+  /* Сама горизонтальная строка виджета сжимается строго по контенту и больше не растягивается! */
+  .widgetContainer {
     display: flex;
     align-items: center;
     justify-content: flex-start;
     background-color: #ffffff;
+    border-radius: 8px;
+    width: max-content; /* Сжимается ровно под длину кнопок */
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    height: 100vh;
-    width: 100vw;
-    box-sizing: border-box;
+    height: 48px; /* Жестко фиксированная низкая высота */
     overflow: hidden;
     gap: 6px;
     padding: 0;
   }
   
-  /* === ЭЛЕГАНТНЫЕ ВОГНУТЫЕ РАМКИ ДЛЯ СЕКЦИЙ === */
+  /* Изящные вогнутые блоки */
   .concaveBlock {
     display: flex;
     align-items: center;
@@ -44,7 +56,7 @@
     text-align: center;
   }
   
-  /* Унифицированные поля и цифры (размер строго 0.85rem) */
+  /* Поля и цифры (размер строго 0.85rem) */
   .inputNumberWide {
     background-color: #ffffff;
     border: 1px solid #cbd5e1;
@@ -132,7 +144,7 @@
     height: 18px;
   }
   
-  /* === СТИЛЬНЫЕ ОБЪЕМНЫЕ КНОПКИ С МЯГКОЙ ТЕНЬЮ === */
+  /* Объемные кнопки с тенью */
   .shadowBtn {
     height: 18px;
     padding: 0 10px;
@@ -174,7 +186,7 @@
   }
   .adjBtn:hover { background-color: #f1f5f9; }
   
-  /* Дисплеи времени и статистики */
+  /* Дисплеи времени */
   .timeDisplay, .stopwatchDisplay {
     display: flex;
     flex-direction: column;
@@ -187,14 +199,13 @@
   .timeLabel, .stopwatchLabel { font-size: 0.45rem; font-weight: 700; color: #94a3b8; line-height: 1; }
   .timeNumbers, .stopwatchNumbers { font-size: 0.85rem; font-weight: 700; font-family: monospace; line-height: 1.1; margin-top: 1px; }
   
-  .stopwatchNumbers { color: #3b82f6; } /* Синий секундомер */
+  .stopwatchNumbers { color: #3b82f6; }
   
-  /* --- СТИЛИ ДЛЯ АНИМАЦИИ ЦВЕТА PACE --- */
+  /* --- НАСТРОЙКА ЦВЕТОВ PACE ALARM --- */
   .paceGreen { color: #16a34a; }
-  .paceOrange { color: #ea580c; }
-  .paceBlack { color: #090d16; }
+  .paceBlack { color: #0f172a; } /* Текст становится черным перед опасной зоной */
+  .paceRed { color: #dc2626; font-weight: 900; } /* Последние 20% времени — тревожный красный! */
   
-  /* Микро-полоса под цифрами PACE */
   .paceBarTrack {
     width: 100%;
     height: 2px;
@@ -210,7 +221,7 @@
     transition: width 1s linear;
   }
   
-  /* Прямоугольники прогресса */
+  /* Блоки прогресса и статистики */
   .compactStatsBox {
     display: flex;
     flex-direction: column;
@@ -247,7 +258,7 @@
   }
   .unitText { font-size: 0.65rem; color: #94a3b8; font-weight: 500; font-family: sans-serif; }
   
-  /* === ШИРОКАЯ ОБЪЕМНАЯ КНОПКА DONE С МЯГКОЙ ТЕНЬЮ === */
+  /* Объемная кнопка DONE */
   .dDoneBtn {
     width: 60px;
     height: 100%;
