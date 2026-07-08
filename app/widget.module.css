@@ -9,39 +9,39 @@
     padding: 4px; 
   }
   
+  /* Главный контейнер строки стал плоским, удерживающим 4 блока */
   .widgetContainer {
     display: flex;
     align-items: center;
     justify-content: flex-start;
     background-color: #ffffff;
-    border: 1px solid #e2e8f0;
-    border-radius: 6px;
+    border-radius: 8px;
     width: max-content; 
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
     font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-    height: 48px; 
+    height: 52px; 
     overflow: hidden;
-    padding-left: 8px;
+    gap: 6px;
   }
   
-  .flexRow, .resultsSection {
+  /* === СТИЛЬ 4 ВОГНУТЫХ ИЗЯЩНЫХ БЛОКОВ === */
+  .concaveBlock {
     display: flex;
     align-items: center;
     gap: 8px;
-    height: 100%;
-    padding: 0 4px;
-  }
-  
-  .divider {
-    width: 1px;
-    height: 32px;
-    background-color: #e2e8f0;
-    margin: 0 2px;
+    height: calc(100% - 4px);
+    padding: 0 8px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    /* Изящная внутренняя вогнутая тень */
+    box-shadow: inset 0 2px 4px rgba(148, 163, 184, 0.08); 
+    box-sizing: border-box;
   }
   
   .fieldGroup {
     display: flex;
     flex-direction: column;
+    align-items: center; /* Центрирование названий полей строго по центру */
     justify-content: center;
     gap: 1px;
   }
@@ -49,55 +49,70 @@
   .fieldLabel {
     font-size: 0.58rem;
     font-weight: 700;
-    color: #94a3b8;
+    color: #64748b;
     text-transform: uppercase;
     letter-spacing: 0.02em;
+    text-align: center;
   }
   
-  /* Шрифты в полях уменьшены под размер таймеров */
+  /* Поля ввода и переключатели */
   .inputNumberWide {
-    background-color: transparent;
+    background-color: #ffffff;
     border: 1px solid #cbd5e1;
     border-radius: 4px;
     color: #1e293b;
-    font-size: 0.8rem; /* Шрифт уменьшен до размера таймеров */
+    font-size: 0.8rem;
     font-weight: 700;
     font-family: monospace;
-    width: 62px;
+    width: 58px;
     height: 24px;
     text-align: center;
     outline: none;
   }
   .inputNumberWide:focus { border-color: #0f766e; }
-  .inputNumberWide:disabled { opacity: 0.6; cursor: not-allowed; background-color: #f8fafc; }
   
-  /* ИСПРАВЛЕННЫЙ ОДИНАКОВЫЙ ПЕРЕКЛЮЧАТЕЛЬ СМЕН */
+  /* ТАРГЕТ ДЛЖЕН БЫТЬ ВСЕГДА НЕАКТИВНЫМ ВИЗУАЛЬНО */
+  .targetDisplayDisabled {
+    background-color: #f1f5f9; /* Серый приглушенный фон */
+    border: 1px dashed #cbd5e1; /* Пунктирный контур неактивности */
+    border-radius: 4px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #94a3b8; /* Затененный блеклый шрифт */
+    font-family: monospace;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 24px;
+    width: 52px;
+    box-sizing: border-box;
+    cursor: not-allowed;
+  }
+  
   .toggleContainer {
     display: flex;
     align-items: center;
     position: relative;
-    background-color: #f1f5f9;
-    border: 1px solid #e2e8f0;
+    background-color: #ffffff;
+    border: 1px solid #cbd5e1;
     border-radius: 4px;
     height: 24px;
-    min-width: 94px; /* Ровно 45px + 45px + рамки */
+    min-width: 94px;
     box-sizing: border-box;
   }
   
   .radioInput { position: absolute; opacity: 0; width: 0; height: 0; }
-  
   .radioLabel {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 45px; /* ОДИНАКОВАЯ ШИРИНА ДЛЯ ОБЕИХ КНОПОК */
+    width: 45px;
     height: 100%;
     font-size: 0.75rem;
     font-weight: 700;
     color: #64748b;
     cursor: pointer;
     z-index: 2;
-    transition: color 0.15s;
   }
   .radioInput:checked + .radioLabel { color: #ffffff; }
   
@@ -105,93 +120,119 @@
     position: absolute;
     top: 2px; left: 2px;
     height: calc(100% - 4px);
-    width: 45px; /* ШИРИНА ПОЛЗУНКА ТЕПЕРЬ ВСЕГДА ОДИНАКОВАЯ */
+    width: 45px;
     background-color: #0f766e;
     border-radius: 3px;
     transition: transform 0.15s ease-in-out;
     z-index: 1;
   }
   
-  .targetDisplay, .countDisplayOnly {
-    background-color: transparent;
-    border: 1px solid #cbd5e1;
-    border-radius: 4px;
-    font-size: 0.8rem; /* Шрифт уменьшен до размера таймеров */
-    font-weight: 700;
-    font-family: monospace;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 24px;
-    width: 55px;
-    box-sizing: border-box;
-  }
-  .targetDisplay { color: #1e293b; }
-  .countDisplayOnly { border-color: #14b8a6; color: #0f766e; }
-  .unitText { font-size: 0.65rem; color: #94a3b8; font-weight: 500; margin-left: 1px; font-family: sans-serif; }
-  
-  /* Управление и подгонка */
+  /* --- ОБЪЕМНЫЕ КНОПКИ С ТЕНЬЮ (START/STOP) --- */
   .controlAndAdjustColumn {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    gap: 2px;
+    gap: 3px;
     height: 100%;
   }
   
   .gridRow {
     display: flex;
     align-items: center;
-    gap: 3px;
-    height: 16px;
+    gap: 4px;
+    height: 18px;
   }
   
-  .timerControlBtn {
-    height: 16px; width: 16px; padding: 0; background-color: transparent;
-    border-radius: 3px; font-size: 0.5rem; font-weight: 700; cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
+  .shadowBtn {
+    height: 18px;
+    padding: 0 8px;
+    border: none;
+    border-radius: 4px;
+    font-size: 0.6rem;
+    font-weight: 800;
+    cursor: pointer;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* Мягкая внешняя тень */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12), inset 0 -1px 0 rgba(0, 0, 0, 0.1);
+    transition: transform 0.1s, box-shadow 0.1s;
   }
-  .btnStart { border: 1px solid #16a34a; color: #16a34a; }
-  .btnPause { border: 1px solid #ca8a04; color: #ca8a04; }
-  .btnReset { border: 1px solid #dc2626; color: #dc2626; }
+  .shadowBtn:active {
+    transform: translateY(1px);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+  }
+  
+  .btnStart { background-color: #16a34a; }
+  .btnStart:hover { background-color: #15803d; }
+  .btnPause { background-color: #ca8a04; }
+  .btnPause:hover { background-color: #a16207; }
+  .btnReset { background-color: #dc2626; }
+  .btnReset:hover { background-color: #b91c1c; }
   
   .adjBtn {
-    background-color: transparent; border: 1px solid #cbd5e1; color: #475569;
-    border-radius: 2px; font-size: 0.5rem; font-weight: 700; height: 16px; 
-    padding: 0 2px; cursor: pointer; display: flex; align-items: center; justify-content: center;
+    background-color: #ffffff; 
+    border: 1px solid #cbd5e1; 
+    color: #475569;
+    border-radius: 3px; 
+    font-size: 0.52rem; 
+    font-weight: 700; 
+    height: 16px; 
+    padding: 0 3px; 
+    cursor: pointer; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
   }
-  .adjBtn:hover { background-color: #f8fafc; }
+  .adjBtn:hover { background-color: #f1f5f9; }
   
-  /* Временные дисплеи */
+  /* Дисплеи времени */
   .timeDisplay, .stopwatchDisplay {
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    border: 1px solid #e2e8f0; border-radius: 4px; min-width: 50px; height: 34px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-width: 52px;
+    height: 100%;
   }
-  .timeDisplay { border-color: #14b8a6; }
-  .stopwatchDisplay { border-color: #0f766e; }
-  .timeLabel, .stopwatchLabel { font-size: 0.4rem; font-weight: 700; color: #94a3b8; line-height: 1; }
-  .timeNumbers, .stopwatchNumbers { font-size: 0.8rem; font-weight: 700; font-family: monospace; line-height: 1.1; }
+  .timeLabel, .stopwatchLabel { font-size: 0.45rem; font-weight: 700; color: #94a3b8; line-height: 1; }
+  .timeNumbers, .stopwatchNumbers { font-size: 0.85rem; font-weight: 700; font-family: monospace; line-height: 1.1; margin-top: 1px; }
   .timeNumbers { color: #0f766e; }
   .stopwatchNumbers { color: #14b8a6; }
   
-  /* Аналитические блоки */
+  /* Блок аналитики */
   .compactStatsBox {
     display: flex; flex-direction: column; justify-content: center;
-    min-width: 68px; height: 100%; line-height: 1.1;
+    min-width: 66px; height: 100%; line-height: 1.1;
   }
-  .statLine { display: flex; justify-content: space-between; width: 100%; font-size: 0.65rem; color: #64748b; }
+  .statLine { display: flex; justify-content: space-between; width: 100%; font-size: 0.62rem; color: #64748b; }
   .boldVal { font-weight: 700; color: #334155; font-family: monospace; }
   .textGreen { color: #16a34a !important; }
   .textRed { color: #dc2626 !important; }
   
-  .statusBarTrack { width: 100%; height: 2px; background-color: #f1f5f9; border-radius: 1px; margin-top: 1px; overflow: hidden; }
+  .statusBarTrack { width: 100%; height: 2px; background-color: #e2e8f0; border-radius: 1px; margin-top: 2px; overflow: hidden; }
   .statusBarFill { height: 100%; width: 0%; transition: width 0.2s; }
   .bgBarGreen { background-color: #16a34a; }
   .bgBarRed { background-color: #dc2626; }
   
-  /* Кнопка DONE */
+  .countDisplayOnly {
+    color: #0f766e;
+    font-size: 0.95rem;
+    font-weight: 800;
+    font-family: monospace;
+    text-align: center;
+  }
+  .unitText { font-size: 0.65rem; color: #94a3b8; font-weight: 500; font-family: sans-serif; }
+  
+  /* === ШИРОКАЯ ОБЪЕМНАЯ КНОПКА DONE С ТЕНЬЮ === */
   .bigSquareDoneBtn {
-    width: 60px;
+    width: 54px;
+  } /* обратная совместимость структуры */
+  
+  .dDoneBtn {
+    width: 64px;
     height: 100%;
     background-color: #0f766e;
     border: none;
@@ -199,8 +240,9 @@
     font-size: 0.85rem;
     font-weight: 900;
     cursor: pointer;
+    box-shadow: -2px 0 6px rgba(0, 0, 0, 0.15), inset 1px 0 0 rgba(255, 255, 255, 0.1);
     transition: background-color 0.1s;
   }
-  .bigSquareDoneBtn:hover { background-color: #115e59; }
-  .bigSquareDoneBtn:active { background-color: #134e4a; }
+  .dDoneBtn:hover { background-color: #115e59; }
+  .dDoneBtn:active { background-color: #134e4a; }
   

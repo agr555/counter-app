@@ -148,6 +148,7 @@ export default function PomodoroWidget() {
   const pcsLeft = Math.max(0, lockedTarget - processedCount);
   const avgRealTimeSeconds = processedCount > 0 ? Math.round(totalRealSeconds / processedCount) : 0;
 
+  // Расчет прогресс-бара отклонения (100% при разнице в 5 деталей)
   const maxDiffThreshold = totalTimerSeconds * 5; 
   const barWidthPercent = spentSecondsByPlan > 0 
     ? Math.min(100, Math.round((Math.abs(timeDifference) / maxDiffThreshold) * 100))
@@ -168,8 +169,8 @@ export default function PomodoroWidget() {
     <div className={styles.layoutWrapper}>
       <div className={styles.widgetContainer}>
         
-        {/* 1 БЛОК: НАСТРОЙКИ (Одинаковые размеры кнопок, уменьшенные шрифты) */}
-        <div className={styles.flexRow}>
+        {/* BLOCK 1: SETTINGS (Rate, Shift, Target) */}
+        <div className={styles.concaveBlock}>
           <div className={styles.fieldGroup}>
             <label htmlFor="coefficient" className={styles.fieldLabel}>Rate/h</label>
             <input
@@ -223,39 +224,45 @@ export default function PomodoroWidget() {
 
           <div className={styles.fieldGroup}>
             <span className={styles.fieldLabel}>Target</span>
-            <div className={styles.targetDisplay}>
+            <div className={styles.targetDisplayDisabled}>
               {isSettingsDisabled ? lockedTarget : currentTargetPositions} <span className={styles.unitText}>pcs</span>
             </div>
           </div>
         </div>
 
-        <div className={styles.divider}></div>
+        {/* BLOCK 2: CONTROLS & ADJUSTMENTS */}
+        <div className={styles.concaveBlock}>
+          <div className={styles.controlAndAdjustColumn}>
+            <div className={styles.gridRow}>
+              <button 
+                type="button" 
+                onClick={handleStartToggle} 
+                className={`${styles.shadowBtn} ${isRunning ? styles.btnPause : styles.btnStart}`}
+                title={isRunning ? 'Pause' : 'Start'}
+              >
+                {isRunning ? '||' : '▶ START'}
+              </button>
+              <button 
+                type="button" 
+                onClick={handleGlobalReset} 
+                className={`${styles.shadowBtn} ${styles.btnReset}`}
+                title="Reset Shift"
+              >
+                ✖ STOP
+              </button>
+            </div>
 
-        {/* 2 БЛОК: УПРАВЛЕНИЕ И ТАЙМЕРЫ */}
-        <div className={styles.controlAndAdjustColumn}>
-          <div className={styles.gridRow}>
-            <button 
-              type="button" 
-              onClick={handleStartToggle} 
-              className={`${styles.timerControlBtn} ${isRunning ? styles.btnPause : styles.btnStart}`}
-            >
-              {isRunning ? '||' : '▶'}
-            </button>
-            <button type="button" onClick={handleGlobalReset} className={`${styles.timerControlBtn} ${styles.btnReset}`}>
-              ✖
-            </button>
-          </div>
-
-          <div className={styles.gridRow}>
-            <button type="button" onClick={() => adjustCount(-10)} className={styles.adjBtn}>-10</button>
-            <button type="button" onClick={() => adjustCount(-1)} className={styles.adjBtn}>-1</button>
-            <button type="button" onClick={() => adjustCount(1)} className={styles.adjBtn}>+1</button>
-            <button type="button" onClick={() => adjustCount(10)} className={styles.adjBtn}>+10</button>
+            <div className={styles.gridRow}>
+              <button type="button" onClick={() => adjustCount(-10)} className={styles.adjBtn}>-10</button>
+              <button type="button" onClick={() => adjustCount(-1)} className={styles.adjBtn}>-1</button>
+              <button type="button" onClick={() => adjustCount(1)} className={styles.adjBtn}>+1</button>
+              <button type="button" onClick={() => adjustCount(10)} className={styles.adjBtn}>+10</button>
+            </div>
           </div>
         </div>
 
-        {/* Дисплеи времени PACE и STOPWATCH */}
-        <div className={styles.flexRow}>
+        {/* BLOCK 3: TIMERS & LIVE PACE */}
+        <div className={styles.concaveBlock}>
           <div className={styles.timeDisplay}>
             <span className={styles.timeLabel}>PACE</span>
             <span className={styles.timeNumbers}>{formatTime(timeLeft)}</span>
@@ -267,10 +274,8 @@ export default function PomodoroWidget() {
           </div>
         </div>
 
-        <div className={styles.divider}></div>
-
-        {/* 3 БЛОК: ПРОГРЕСС, АНАЛИТИКА И ГОТОВО */}
-        <div className={styles.resultsSection}>
+        {/* BLOCK 4: ANALYTICS, PROCESSED & ACTION DONE BUTTON */}
+        <div className={styles.concaveBlock} style={{ paddingRight: '0', gap: '8px' }}>
           
           <div className={styles.compactStatsBox}>
             <div className={styles.statLine}>
@@ -307,7 +312,7 @@ export default function PomodoroWidget() {
             <div className={styles.countDisplayOnly}>{processedCount}</div>
           </div>
 
-          <button type="button" onClick={handleRealItemDone} className={styles.bigSquareDoneBtn}>
+          <button type="button" onClick={handleRealItemDone} className={styles.dDoneBtn}>
             DONE
           </button>
 
