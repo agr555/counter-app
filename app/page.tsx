@@ -312,6 +312,7 @@ export default function PomodoroWidget() {
             <div className={styles.countDisplayOnly}>{processedCount}</div>
           </div>
 
+          {/* Имя класса заменено на валидное .dDoneBtn */}
           <button type="button" onClick={handleRealItemDone} className={styles.dDoneBtn}>
             DONE
           </button>
