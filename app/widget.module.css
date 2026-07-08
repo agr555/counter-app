@@ -1,22 +1,20 @@
-/* Внешняя невидимая оболочка: выталкивает контент вниз и вправо */
 .layoutWrapper {
     display: flex;
     flex-direction: column;
-    justify-content: flex-end; /* Все элементы летят вниз */
-    align-items: flex-end;     /* Все элементы летят вправо */
-    min-height: 100vh;         /* Занимает 100% высоты экрана браузера */
-    background-color: #ffffff; /* Чистый белый фон сверху */
+    justify-content: flex-end; 
+    align-items: flex-end;     
+    min-height: 100vh;         
+    background-color: #ffffff; 
     box-sizing: border-box;
-    padding: 10px;             /* Небольшой отступ от самого края экрана */
+    padding: 10px;             
   }
   
-  /* Сама горизонтальная строка виджета */
   .widgetContainer {
     display: flex;
     align-items: center;
     background-color: #ffffff;
     border: 1px solid #e2e8f0;
-    border-radius: 6px;
+    border-radius: 8px;
     width: max-content;
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
     font-family: -apple-system, BlinkMacSystemFont, sans-serif;
@@ -120,24 +118,58 @@
   .countDisplayOnly { border-color: #14b8a6; color: #0f766e; }
   .targetUnit { font-size: 0.65rem; color: #94a3b8; margin-left: 1px; }
   
-  /* Компактный прогресс */
+  /* Компактный прогресс под 4 строки (включая статус-бар) */
   .progressDisplayContainer {
     border: 1px solid #e2e8f0;
     border-radius: 4px;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    padding: 1px 6px;
-    min-width: 100px;
-    height: 38px;
+    padding: 2px 6px 1px 6px;
+    min-width: 110px;
+    height: 44px;
+    box-sizing: border-box;
   }
+  
+  /* Окошко расширенной статистики */
+  .statsDisplayContainer {
+    border: 1px solid #cbd5e1;
+    border-radius: 4px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 2px 6px;
+    min-width: 100px;
+    height: 44px;
+    box-sizing: border-box;
+  }
+  
   .progressRow { display: flex; justify-content: space-between; width: 100%; line-height: 1.1; }
-  .rowLabel { font-size: 0.5rem; font-weight: 700; color: #94a3b8; }
+  .rowLabel { font-size: 0.55rem; font-weight: 700; color: #94a3b8; }
   .rowValue { font-size: 0.6rem; font-weight: 700; color: #334155; font-family: monospace; }
   .textGreen { color: #16a34a !important; }
   .textRed { color: #dc2626 !important; }
   
-  /* Подгонка значений */
+  /* --- СТИЛИ ДЛЯ TIME STATUS BAR --- */
+  .statusBarTrack {
+    width: 100%;
+    height: 3px;
+    background-color: #f1f5f9;
+    border-radius: 2px;
+    margin-top: 2px;
+    overflow: hidden;
+  }
+  
+  .statusBarFill {
+    height: 100%;
+    width: 0%;
+    transition: width 0.3s ease, background-color 0.3s ease;
+  }
+  
+  .bgBarGreen { background-color: #16a34a; }
+  .bgBarRed { background-color: #dc2626; }
+  
+  /* Ручные кнопки */
   .adjustWrapper { display: flex; flex-direction: column; gap: 1px; }
   .adjustButtonsGrid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; width: 65px; }
   .adjBtn {
@@ -145,7 +177,7 @@
     font-size: 0.5rem; font-weight: 700; height: 11px; cursor: pointer; padding: 0;
   }
   
-  /* Блок таймеров */
+  /* Колонки таймеров */
   .buttonsColumn { display: flex; flex-direction: column; gap: 1px; }
   .timerControlBtn {
     height: 18px; padding: 0 4px; background-color: transparent;
@@ -166,7 +198,7 @@
   .timeNumbers { color: #0f766e; }
   .stopwatchNumbers { color: #14b8a6; }
   
-  /* УДОБНАЯ КНОПКА DONE НА САМОМ КРАЮ */
+  /* Кнопка DONE на самом краю */
   .realDoneBtn {
     width: 80px;
     height: 100%;
@@ -181,4 +213,3 @@
   }
   .realDoneBtn:hover { background-color: #115e59; }
   .realDoneBtn:active { background-color: #134e4a; }
-  

@@ -126,15 +126,20 @@ export default function PomodoroWidget() {
     ? Math.round((processedCount / targetPositions) * 100)
     : 0;
 
+  const pcsLeft = Math.max(0, targetPositions - processedCount);
+  const avgRealTimeSeconds = processedCount > 0 ? Math.round(totalRealSeconds / processedCount) : 0;
+
+  const maxDiffThreshold = totalTimerSeconds * 5; 
+  const barWidthPercent = spentSecondsByPlan > 0 
+    ? Math.min(100, Math.round((Math.abs(timeDifference) / maxDiffThreshold) * 100))
+    : 0;
+
   return (
-    /* ВНЕШНИЙ КОНТЕЙНЕР: Занимает весь экран по высоте и прижимает контент вниз и вправо */
     <div className={styles.layoutWrapper}>
-      
-      {/* САМА СТРОКА ВИДЖЕТА */}
       <div className={styles.widgetContainer}>
         
         {/* 1. SETTINGS BLOCK */}
-        <div className={styles.flexRow}>
+        <div className={styles.controlsPanel}>
           <div className={styles.fieldGroup}>
             <label htmlFor="coefficient" className={styles.fieldLabel}>Rate/h</label>
             <input
@@ -171,13 +176,13 @@ export default function PomodoroWidget() {
                 onChange={() => setShift('9h40m')}
                 className={styles.radioInput}
               />
-              <label htmlFor="shift-9" className={styles.radioLabel} style={{ width: '60px' }}>9h40m</label>
+              <label htmlFor="shift-9" className={styles.radioLabel} style={{ width: '65px' }}>9h 40m</label>
               
               <div 
                 className={styles.slider} 
                 style={{ 
-                  width: shift === '9h40m' ? '60px' : '40px',
-                  transform: shift === '9h40m' ? 'translateX(40px)' : 'translateX(0px)'
+                  width: shift === '9h40m' ? '65px' : '45px',
+                  transform: shift === '9h40m' ? 'translateX(45px)' : 'translateX(0px)'
                 }}
               ></div>
             </div>
@@ -192,7 +197,7 @@ export default function PomodoroWidget() {
         <div className={styles.divider}></div>
 
         {/* 2. TIMERS BLOCK */}
-        <div className={styles.flexRow}>
+        <div className={styles.timerSection}>
           <div className={styles.buttonsColumn}>
             <button 
               type="button" 
@@ -219,8 +224,9 @@ export default function PomodoroWidget() {
 
         <div className={styles.divider}></div>
 
-        {/* 3. PROGRESS & DONE BLOCK */}
-        <div className={styles.flexRow} style={{ paddingRight: '0' }}>
+        {/* 3. PROGRESS, STATISTICS & DONE */}
+        <div className={styles.resultsSection}>
+          
           <div className={styles.fieldGroup}>
             <span className={styles.fieldLabel}>Progress ({progressPercent}%)</span>
             <div className={styles.progressDisplayContainer}>
@@ -231,6 +237,27 @@ export default function PomodoroWidget() {
                 <span className={`${styles.rowValue} ${timeDifference >= 0 ? styles.textGreen : styles.textRed}`}>
                   {timeDifference > 0 ? '+' : timeDifference < 0 ? '-' : ''}{formatAccumulatedTime(timeDifference)}
                 </span>
+              </div>
+              
+              <div className={styles.statusBarTrack}>
+                <div 
+                  className={`${styles.statusBarFill} ${timeDifference >= 0 ? styles.bgBarGreen : styles.bgBarRed}`}
+                  style={{ width: `${barWidthPercent}%` }}
+                ></div>
+              </div>
+            </div>
+          </div>
+
+          <div className={styles.fieldGroup}>
+            <span className={styles.fieldLabel}>Advanced Stats</span>
+            <div className={styles.statsDisplayContainer}>
+              <div className={styles.progressRow}>
+                <span className={styles.rowLabel}>Left:</span>
+                <span className={styles.rowValue} style={{ color: '#0f766e' }}>{pcsLeft} pcs</span>
+              </div>
+              <div className={styles.progressRow}>
+                <span className={styles.rowLabel}>Avg R:</span>
+                <span className={styles.rowValue}>{formatTime(avgRealTimeSeconds)}</span>
               </div>
             </div>
           </div>
@@ -248,14 +275,12 @@ export default function PomodoroWidget() {
             </div>
           </div>
 
-          {/* Самая правая широкая кнопка DONE */}
           <button type="button" onClick={handleRealItemDone} className={styles.realDoneBtn}>
             DONE
           </button>
         </div>
 
       </div>
-
     </div>
   );
 }
