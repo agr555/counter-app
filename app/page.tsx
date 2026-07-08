@@ -16,20 +16,21 @@ export default function PomodoroWidget() {
   const [lockedShift, setLockedShift] = useState<ShiftType>('9h40m');
   const [lockedTarget, setLockedTarget] = useState<number>(203);
 
-  // Состояния активности и времени
+  // Состояния активности, времени и звука
   const [isRunning, setIsRunning] = useState<boolean>(false);
   const [stopwatchSeconds, setStopwatchSeconds] = useState<number>(0);
   const [totalRealSeconds, setTotalRealSeconds] = useState<number>(0);
-  
-  // Внутренний счетчик секунд смены для расчета идеального ежесекундного плана
   const [shiftElapsedSeconds, setShiftAdjustmentSeconds] = useState<number>(0);
+  
+  // НОВОЕ: Включение/выключение звукового сигнала (по умолчанию true)
+  const [isSoundEnabled, setIsSoundEnabled] = useState<boolean>(true);
 
   // Математическая база на основе замороженных данных
   const totalShiftMinutes = lockedShift === '9h40m' ? (9 * 60 + 40) : (8 * 60);
   const netWorkingMinutes = totalShiftMinutes - 45; 
   const decimalHours = totalShiftMinutes / 60;
   
-  // Секунд на одну деталь по норме (Плановое среднее время)
+  // Секунд на одну деталь по норме
   const totalTimerSeconds = lockedTarget > 0 
     ? Math.round((netWorkingMinutes * 60) / lockedTarget) 
     : 25 * 60;
@@ -48,6 +49,7 @@ export default function PomodoroWidget() {
       const savedProcessedCount = localStorage.getItem('p_processedCount');
       const savedRealSeconds = localStorage.getItem('p_totalRealSeconds');
       const savedElapsed = localStorage.getItem('p_shiftElapsedSeconds');
+      const savedSound = localStorage.getItem('p_isSoundEnabled');
 
       if (savedCoefficient) {
         setCoefficient(parseInt(savedCoefficient, 10));
@@ -60,6 +62,7 @@ export default function PomodoroWidget() {
       if (savedProcessedCount) setProcessedCount(parseInt(savedProcessedCount, 10));
       if (savedRealSeconds) setTotalRealSeconds(parseInt(savedRealSeconds, 10));
       if (savedElapsed) setShiftAdjustmentSeconds(parseInt(savedElapsed, 10));
+      if (savedSound) setIsSoundEnabled(savedSound === 'true');
     }
   }, []);
 
@@ -79,7 +82,8 @@ export default function PomodoroWidget() {
     localStorage.setItem('p_processedCount', processedCount.toString());
     localStorage.setItem('p_totalRealSeconds', totalRealSeconds.toString());
     localStorage.setItem('p_shiftElapsedSeconds', shiftElapsedSeconds.toString());
-  }, [coefficient, shift, processedCount, totalRealSeconds, shiftElapsedSeconds]);
+    localStorage.setItem('p_isSoundEnabled', isSoundEnabled.toString());
+  }, [coefficient, shift, processedCount, totalRealSeconds, shiftElapsedSeconds, isSoundEnabled]);
 
   // Восстановление времени темпа на паузе
   useEffect(() => {
@@ -88,7 +92,7 @@ export default function PomodoroWidget() {
     }
   }, [totalTimerSeconds, isRunning, timeLeft]);
 
-  // Единый главный интервал времени (работает с точностью до секунды)
+  // Единый главный интервал времени
   useEffect(() => {
     if (!isRunning) return;
 
@@ -98,7 +102,10 @@ export default function PomodoroWidget() {
 
       setTimeLeft((prev) => {
         if (prev <= 1) {
-          playQuietPeep(); // Тихий пик при обнулении темпа детали
+          // Воспроизводим пип, только если переключатель звука активен
+          if (isSoundEnabled) {
+            playQuietPeep();
+          }
           return totalTimerSeconds;
         }
         return prev - 1;
@@ -106,7 +113,7 @@ export default function PomodoroWidget() {
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [isRunning, totalTimerSeconds]);
+  }, [isRunning, totalTimerSeconds, isSoundEnabled]);
 
   // Функция воспроизведения тихого короткого пика (Quiet Peep)
   const playQuietPeep = () => {
@@ -122,21 +129,22 @@ export default function PomodoroWidget() {
       gain.connect(ctx.destination);
       
       osc.type = 'sine';
-      osc.frequency.setValueAtTime(600, ctx.currentTime);
-      gain.gain.setValueAtTime(0.08, ctx.currentTime);
+      osc.frequency.setValueAtTime(650, ctx.currentTime); 
+      gain.gain.setValueAtTime(0.06, ctx.currentTime); // Сверх-тихий пик (6% громкости)
       
       osc.start();
-      osc.stop(ctx.currentTime + 0.12);
+      osc.stop(ctx.currentTime + 0.10); // Очень короткий (100мс)
     } catch (e) {
       console.warn('Audio contextual block:', e);
     }
   };
 
-  // Слушатель глобальной горячей клавиши Shift + A для DONE
+  // Слушатель глобальной горячей клавиши Shift + A для DONE (Защищен от нажатия до старта)
   useEffect(() => {
     const handleGlobalKey = (e: KeyboardEvent) => {
       if (e.shiftKey && (e.key === 'A' || e.key === 'a' || e.key === 'ф' || e.key === 'Ф')) {
-        if (document.activeElement?.tagName !== 'INPUT') {
+        // Кнопка работает ТОЛЬКО если таймер запущен
+        if (document.activeElement?.tagName !== 'INPUT' && isRunning) {
           e.preventDefault();
           handleRealItemDone();
         }
@@ -172,7 +180,9 @@ export default function PomodoroWidget() {
       setTotalRealSeconds(0);
       setShiftAdjustmentSeconds(0);
       setTimeLeft(totalTimerSeconds);
-      localStorage.clear();
+      localStorage.removeItem('p_processedCount');
+      localStorage.removeItem('p_totalRealSeconds');
+      localStorage.removeItem('p_shiftElapsedSeconds');
     } else {
       setIsRunning(wasActive);
     }
@@ -191,7 +201,7 @@ export default function PomodoroWidget() {
     setProcessedCount((prev) => Math.max(0, prev + amount));
   };
 
-  // Ежесекундный расчет идеального плана по секундам смены
+  // Výpočet ideálneho plánu na sekundy
   const exactCurrentPlanPcs = totalTimerSeconds > 0 
     ? shiftElapsedSeconds / totalTimerSeconds 
     : 0;
@@ -211,13 +221,13 @@ export default function PomodoroWidget() {
   const pcsLeft = Math.max(0, lockedTarget - processedCount);
   const avgRealTimeSeconds = processedCount > 0 ? Math.round(totalRealSeconds / processedCount) : 0;
 
-  // Шкала отклонения (100% при разнице в 5 деталей от нормы)
+  // Škála odchýlky (100% pri rozdiele 5 kusov)
   const maxDiffThreshold = 5; 
   const barWidthPercent = exactCurrentPlanPcs > 0 
     ? Math.min(100, Math.round((Math.abs(diffPcs) / maxDiffThreshold) * 100))
     : 0;
 
-  // Цветовой alarm для таймера PACE (Зеленый -> Черный -> Красный)
+  // Zmena farieb pre PACE (Zelená -> Čierna -> Červená)
   const paceRatio = totalTimerSeconds > 0 ? timeLeft / totalTimerSeconds : 1;
   let paceColorClass = styles.paceGreen;
 
@@ -229,8 +239,10 @@ export default function PomodoroWidget() {
 
   const paceBarWidth = Math.round(paceRatio * 100);
   const isSettingsDisabled = timeLeft !== totalTimerSeconds || isRunning;
+  
+  // DONE je zablokované, kým sa zmena nespustí (odpracovaný čas je 0)
+  const isDoneDisabled = shiftElapsedSeconds === 0;
 
-  // Функция переключения таймера, которая фиксирует параметры на СТАРТЕ
   const handleStartToggle = () => {
     if (!isRunning && timeLeft === totalTimerSeconds) {
       setLockedCoefficient(coefficient);
@@ -239,7 +251,6 @@ export default function PomodoroWidget() {
     }
     setIsRunning(!isRunning);
   };
-
   return (
     <div className={styles.layoutWrapper}>
       <div className={styles.widgetContainer}>
@@ -343,6 +354,16 @@ export default function PomodoroWidget() {
               >
                 {isRunning ? '|| PAUSE' : '▶ START'}
               </button>
+
+              {/* КНОПКА ЗВУКА МЕЖДУ СТАРТ И СТОП */}
+              <button 
+                type="button" 
+                onClick={() => setIsSoundEnabled(!isSoundEnabled)} 
+                className={`${styles.shadowBtn} ${isSoundEnabled ? styles.btnSoundOn : styles.btnSoundOff}`}
+              >
+                {isSoundEnabled ? '🔊 BEEP' : '🔇 MUTE'}
+              </button>
+
               <button 
                 type="button" 
                 onClick={handleGlobalReset} 
@@ -400,7 +421,13 @@ export default function PomodoroWidget() {
             </div>
           </div>
 
-          <button type="button" onClick={handleRealItemDone} className={styles.dDoneBtn}>
+          {/* Заблокированная кнопка DONE */}
+          <button 
+            type="button" 
+            onClick={handleRealItemDone} 
+            disabled={isDoneDisabled}
+            className={styles.dDoneBtn}
+          >
             DONE
           </button>
 
