@@ -6,10 +6,15 @@ import styles from './widget.module.css';
 type ShiftType = '8h' | '9h40m';
 
 export default function PomodoroWidget() {
+  // Настройки пользователя и счетчики
   const [coefficient, setCoefficient] = useState<number>(21);
   const [shift, setShift] = useState<ShiftType>('9h40m');
   const [processedCount, setProcessedCount] = useState<number>(0);
 
+  // НОВОЕ: Состояние для выезжающего окна настроек (false = скрыто, true = открыто)
+  const [showSettings, setShowSettings] = useState<boolean>(false);
+
+  // Состояния времени
   const [isRunning, setIsRunning] = useState<boolean>(false);
   const [stopwatchSeconds, setStopwatchSeconds] = useState<number>(0);
   const [totalRealSeconds, setTotalRealSeconds] = useState<number>(0);
@@ -105,7 +110,6 @@ export default function PomodoroWidget() {
       setIsRunning(wasRunning);
     }
   };
-
   const handleRealItemDone = () => {
     setProcessedCount((prev) => prev + 1);
     setTotalRealSeconds((prev) => prev + stopwatchSeconds);
@@ -137,61 +141,10 @@ export default function PomodoroWidget() {
   return (
     <div className={styles.widgetContainer}>
       
-      {/* 1. SETTINGS */}
-      <div className={styles.flexRow}>
-        <div className={styles.fieldGroup}>
-          <input
-            id="coefficient"
-            type="number"
-            step="1"
-            min="1"
-            value={coefficient}
-            onChange={(e) => setCoefficient(parseInt(e.target.value) || 0)}
-            className={styles.inputNumber}
-            title="Rate per hour"
-          />
-        </div>
-
-        <div className={styles.toggleContainer}>
-          <input
-            type="radio"
-            id="shift-8"
-            name="shiftValue"
-            value="8h"
-            checked={shift === '8h'}
-            onChange={() => setShift('8h')}
-            className={styles.radioInput}
-          />
-          <label htmlFor="shift-8" className={styles.radioLabel}>8h</label>
-
-          <input
-            type="radio"
-            id="shift-9"
-            name="shiftValue"
-            value="9h40m"
-            checked={shift === '9h40m'}
-            onChange={() => setShift('9h40m')}
-            className={styles.radioInput}
-          />
-          <label htmlFor="shift-9" className={styles.radioLabel} style={{ width: '42px' }}>9:40</label>
-          
-          <div 
-            className={styles.slider} 
-            style={{ 
-              width: shift === '9h40m' ? '42px' : '30px',
-              transform: shift === '9h40m' ? 'translateX(30px)' : 'translateX(0px)'
-            }}
-          ></div>
-        </div>
-
-        <div className={styles.targetDisplay} title="Target plan">{targetPositions}p</div>
-      </div>
-
-      <div className={styles.divider}></div>
-
-      {/* 2. TIMERS & CONTROLS */}
-      <div className={styles.flexRow}>
-        <div className={styles.buttonsColumn}>
+      {/* 1 БЛОК: СИНХРОННОЕ УПРАВЛЕНИЕ И ПОДГОНКА (ДВА ЭТАЖА) */}
+      <div className={styles.controlAndAdjustColumn}>
+        {/* 1 ЭТАЖ: Основные кнопки управления таймерами */}
+        <div className={styles.gridRow}>
           <button 
             type="button" 
             onClick={() => setIsRunning(!isRunning)} 
@@ -202,31 +155,74 @@ export default function PomodoroWidget() {
           <button type="button" onClick={handleGlobalReset} className={`${styles.timerControlBtn} ${styles.btnReset}`}>
             ✖
           </button>
+          <button 
+            type="button" 
+            onClick={() => setShowSettings(!showSettings)} 
+            className={`${styles.timerControlBtn} ${styles.btnSettings}`}
+            title="Open Settings"
+          >
+            ⚙
+          </button>
         </div>
 
+        {/* 2 ЭТАЖ: Кнопки ручной корректировки строго под верхними */}
+        <div className={styles.gridRow}>
+          <button type="button" onClick={() => adjustCount(-10)} className={styles.adjBtn}>-10</button>
+          <button type="button" onClick={() => adjustCount(-1)} className={styles.adjBtn}>-1</button>
+          <button type="button" onClick={() => adjustCount(1)} className={styles.adjBtn}>+1</button>
+          <button type="button" onClick={() => adjustCount(10)} className={styles.adjBtn}>+10</button>
+        </div>
+      </div>
+
+      <div className={styles.divider}></div>
+
+      {/* 2 БЛОК: ТАБЛО ВРЕМЕНИ (PACE И STOPWATCH) */}
+      <div className={styles.flexRow}>
         <div className={styles.timeDisplay} title="Current Pace">
+          <span className={styles.timeLabel}>PACE</span>
           <span className={styles.timeNumbers}>{formatTime(timeLeft)}</span>
         </div>
 
         <div className={styles.stopwatchDisplay} title="Item Stopwatch">
+          <span className={styles.stopwatchLabel}>STOPWATCH</span>
           <span className={styles.stopwatchNumbers}>{formatTime(stopwatchSeconds)}</span>
         </div>
       </div>
 
       <div className={styles.divider}></div>
 
-      {/* 3. TWO-ROW RESULTS & BIG DONE BUTTON */}
+      {/* 3 БЛОК: PROGRESS & ANALYTICS */}
+      <div className={styles.compactStatsBox}>
+        <div className={styles.statLine}>
+          <span>Prg:</span>
+          <span className={styles.boldVal}>{progressPercent}%</span>
+        </div>
+        <div className={styles.statLine}>
+          <span>Dif:</span>
+          <span className={`${styles.boldVal} ${timeDifference >= 0 ? styles.textGreen : styles.textRed}`}>
+            {timeDifference > 0 ? '+' : timeDifference < 0 ? '-' : ''}{formatAccumulatedTime(timeDifference)}
+          </span>
+        </div>
+        <div className={styles.statusBarTrack}>
+          <div 
+            className={`${styles.statusBarFill} ${timeDifference >= 0 ? styles.bgBarGreen : styles.bgBarRed}`}
+            style={{ width: `${barWidthPercent}%` }}
+          ></div>
+        </div>
+      </div>
+
+      <div className={styles.divider}></div>
+
+      {/* 4 БЛОК: ЧИСЛО ВЫПОЛНЕННЫХ И DONE КНОПКА */}
       <div className={styles.twoRowResultsSection}>
-        
-        {/* ЛЕВАЯ КОЛОНКА: ДВА ЭТАЖА АНАЛИТИКИ И КОРРЕКЦИИ */}
         <div className={styles.analyticsGrid}>
-          
-          {/* 1 ЭТАЖ (ВЕРХНИЙ): Прогресс и Остаток деталей */}
           <div className={styles.gridRow}>
-            <div className={styles.compactStatLine} title="Progress Percent">
-              <span className={styles.statLabel}>Prg:</span>
-              <span className={styles.statVal}>{progressPercent}%</span>
+            <div className={styles.compactStatLine} title="Completed items">
+              <span className={styles.statLabel}>Done:</span>
+              <div className={styles.countDisplayOnly}>{processedCount}</div>
             </div>
+          </div>
+          <div className={styles.gridRow}>
             <div className={styles.compactStatLine} title="Pcs Left to Target">
               <span className={styles.statLabel}>Left:</span>
               <span className={styles.statVal}>{pcsLeft}</span>
@@ -236,42 +232,78 @@ export default function PomodoroWidget() {
               <span className={styles.statVal}>{formatTime(avgRealTimeSeconds)}</span>
             </div>
           </div>
-
-          {/* 2 ЭТАЖ (НИЖНИЙ): Отклонение и Кнопки подгонки */}
-          <div className={styles.gridRow}>
-            <div className={styles.compactStatLine} title="Time Difference">
-              <span className={styles.statLabel}>Dif:</span>
-              <span className={`${styles.statVal} ${timeDifference >= 0 ? styles.textGreen : styles.textRed}`}>
-                {timeDifference > 0 ? '+' : timeDifference < 0 ? '-' : ''}{formatAccumulatedTime(timeDifference)}
-              </span>
-            </div>
-
-            {/* Поле Готово со стрелками корректировки в один ряд */}
-            <div className={styles.inlineAdjustGroup}>
-              <div className={styles.countDisplayOnly} title="Completed items">{processedCount}</div>
-              <button type="button" onClick={() => adjustCount(1)} className={styles.microAdjBtn}>+</button>
-              <button type="button" onClick={() => adjustCount(-1)} className={styles.microAdjBtn}>-</button>
-              <button type="button" onClick={() => adjustCount(10)} className={styles.microAdjBtn}>+10</button>
-              <button type="button" onClick={() => adjustCount(-10)} className={styles.microAdjBtn}>-10</button>
-            </div>
-          </div>
-
-          {/* Шкала Time Status Bar на самом дне сетки */}
-          <div className={styles.statusBarTrack}>
-            <div 
-              className={`${styles.statusBarFill} ${timeDifference >= 0 ? styles.bgBarGreen : styles.bgBarRed}`}
-              style={{ width: `${barWidthPercent}%` }}
-            ></div>
-          </div>
-
         </div>
 
-        {/* ПРАВАЯ КОЛОНКА: ОГРОМНАЯ КВАДРАТНАЯ КНОПКА DONE ВО ВСЮ ВЫСОТУ */}
+        {/* Большая кнопка фиксации детали */}
         <button type="button" onClick={handleRealItemDone} className={styles.bigSquareDoneBtn}>
           DONE
         </button>
-
       </div>
+
+      {/* ВЫЕЗЖАЮЩЕЕ ПОВЕРХ ОКНО НАСТРОЕК (SETTINGS POPUP) */}
+      {showSettings && (
+        <div className={styles.settingsOverlay}>
+          <div className={styles.settingsHeader}>
+            <span>Shift Settings</span>
+            <button type="button" onClick={() => setShowSettings(false)} className={styles.closeSettingsBtn}>✕</button>
+          </div>
+          
+          <div className={styles.settingsBody}>
+            <div className={styles.popFieldGroup}>
+              <label htmlFor="coefficient">Rate / Hour:</label>
+              <input
+                id="coefficient"
+                type="number"
+                step="1"
+                min="1"
+                value={coefficient}
+                onChange={(e) => setCoefficient(parseInt(e.target.value) || 0)}
+                className={styles.popInputNumber}
+              />
+            </div>
+
+            <div className={styles.popFieldGroup}>
+              <label>Shift Duration:</label>
+              <div className={styles.toggleContainer}>
+                <input
+                  type="radio"
+                  id="shift-8"
+                  name="shiftValue"
+                  value="8h"
+                  checked={shift === '8h'}
+                  onChange={() => setShift('8h')}
+                  className={styles.radioInput}
+                />
+                <label htmlFor="shift-8" className={styles.radioLabel}>8h</label>
+
+                <input
+                  type="radio"
+                  id="shift-9"
+                  name="shiftValue"
+                  value="9h40m"
+                  checked={shift === '9h40m'}
+                  onChange={() => setShift('9h40m')}
+                  className={styles.radioInput}
+                />
+                <label htmlFor="shift-9" className={styles.radioLabel} style={{ width: '50px' }}>9:40</label>
+                
+                <div 
+                  className={styles.slider} 
+                  style={{ 
+                    width: shift === '9h40m' ? '50px' : '30px',
+                    transform: shift === '9h40m' ? 'translateX(30px)' : 'translateX(0px)'
+                  }}
+                ></div>
+              </div>
+            </div>
+
+            <div className={styles.popTargetDisplay}>
+              <span>Shift Target Plan:</span>
+              <strong>{targetPositions} pcs</strong>
+            </div>
+          </div>
+        </div>
+      )}
 
     </div>
   );
