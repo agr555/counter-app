@@ -1,61 +1,44 @@
-
-  
-/* Главный контейнер теперь растягивается на 100% самого окна без обрезки */
 .widgetContainer {
     display: flex;
     align-items: center;
     justify-content: flex-start;
     background-color: #ffffff;
     font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-    height: 100vh; /* Строго во всю высоту доступного окна */
-    width: 100vw;  /* Строго во всю ширину доступного окна */
+    height: 100vh;
+    width: 100vw;
     box-sizing: border-box;
     overflow: hidden;
-    padding-left: 8px;
+    padding: 0;
   }
   
   .flexRow {
     display: flex;
     align-items: center;
-    gap: 8px;
-    padding: 0 8px;
+    gap: 6px;
     height: 100%;
+    padding: 0 4px;
   }
   
   .divider {
     width: 1px;
-    height: 34px;
+    height: 32px;
     background-color: #e2e8f0;
+    margin: 0 2px;
   }
   
-  .fieldGroup {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    gap: 1px;
-  }
-  
-  .fieldLabel {
-    font-size: 0.6rem;
-    font-weight: 700;
-    color: #94a3b8;
-    text-transform: uppercase;
-  }
-  
+  /* Настройки и инпуты */
   .inputNumber {
     background-color: transparent;
     border: 1px solid #cbd5e1;
     border-radius: 4px;
     color: #1e293b;
-    font-size: 0.85rem;
+    font-size: 0.8rem;
     font-weight: 700;
-    width: 45px;
+    width: 36px;
     height: 24px;
     text-align: center;
     outline: none;
   }
-  
-  .inputNumber:focus { border-color: #0f766e; }
   
   .toggleContainer {
     display: flex;
@@ -65,7 +48,7 @@
     border: 1px solid #e2e8f0;
     border-radius: 4px;
     height: 24px;
-    min-width: 100px;
+    min-width: 72px;
   }
   
   .radioInput { position: absolute; opacity: 0; }
@@ -73,15 +56,15 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 40px;
+    width: 30px;
     height: 100%;
-    font-size: 0.75rem;
+    font-size: 0.7rem;
     font-weight: 700;
     color: #64748b;
     cursor: pointer;
     z-index: 2;
   }
-  .radioLabel[htmlFor="shift-9"] { width: 60px; }
+  .radioLabel[htmlFor="shift-9"] { width: 42px; }
   .radioInput:checked + .radioLabel { color: #ffffff; }
   
   .slider {
@@ -89,118 +72,142 @@
     top: 2px; left: 2px;
     height: calc(100% - 4px);
     background-color: #0f766e;
-    border-radius: 3px;
-    transition: transform 0.2s ease-in-out, width 0.2s ease-in-out;
+    border-radius: 2px;
+    transition: transform 0.15s ease-in-out, width 0.15s ease-in-out;
     z-index: 1;
   }
   
-  .targetDisplay, .countDisplayOnly {
+  .targetDisplay {
     background-color: transparent;
     border: 1px solid #cbd5e1;
     border-radius: 4px;
-    font-size: 0.85rem;
+    font-size: 0.8rem;
     font-weight: 700;
     display: flex;
     align-items: center;
     justify-content: center;
     height: 24px;
-    width: 65px;
-  }
-  .countDisplayOnly { border-color: #14b8a6; color: #0f766e; }
-  .targetUnit { font-size: 0.65rem; color: #94a3b8; margin-left: 1px; }
-  
-  /* Компактный прогресс под 4 строки (включая статус-бар) */
-  .progressDisplayContainer {
-    border: 1px solid #e2e8f0;
-    border-radius: 4px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    padding: 2px 6px 1px 6px;
-    min-width: 110px;
-    height: 44px;
-    box-sizing: border-box;
+    width: 44px;
+    color: #1e293b;
   }
   
-  /* Окошко расширенной статистики */
-  .statsDisplayContainer {
-    border: 1px solid #cbd5e1;
-    border-radius: 4px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    padding: 2px 6px;
-    min-width: 100px;
-    height: 44px;
-    box-sizing: border-box;
-  }
-  
-  .progressRow { display: flex; justify-content: space-between; width: 100%; line-height: 1.1; }
-  .rowLabel { font-size: 0.55rem; font-weight: 700; color: #94a3b8; }
-  .rowValue { font-size: 0.6rem; font-weight: 700; color: #334155; font-family: monospace; }
-  .textGreen { color: #16a34a !important; }
-  .textRed { color: #dc2626 !important; }
-  
-  /* --- СТИЛИ ДЛЯ TIME STATUS BAR --- */
-  .statusBarTrack {
-    width: 100%;
-    height: 3px;
-    background-color: #f1f5f9;
-    border-radius: 2px;
-    margin-top: 2px;
-    overflow: hidden;
-  }
-  
-  .statusBarFill {
-    height: 100%;
-    width: 0%;
-    transition: width 0.3s ease, background-color 0.3s ease;
-  }
-  
-  .bgBarGreen { background-color: #16a34a; }
-  .bgBarRed { background-color: #dc2626; }
-  
-  /* Ручные кнопки */
-  .adjustWrapper { display: flex; flex-direction: column; gap: 1px; }
-  .adjustButtonsGrid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; width: 65px; }
-  .adjBtn {
-    background-color: transparent; border: 1px solid #e2e8f0; color: #64748b;
-    font-size: 0.5rem; font-weight: 700; height: 11px; cursor: pointer; padding: 0;
-  }
-  
-  /* Колонки таймеров */
+  /* Блок таймеров */
   .buttonsColumn { display: flex; flex-direction: column; gap: 1px; }
   .timerControlBtn {
-    height: 18px; padding: 0 4px; background-color: transparent;
-    border-radius: 3px; font-size: 0.6rem; font-weight: 700; cursor: pointer;
+    height: 12px; width: 18px; padding: 0; background-color: transparent;
+    border-radius: 2px; font-size: 0.5rem; font-weight: 700; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
   }
   .btnStart { border: 1px solid #16a34a; color: #16a34a; }
   .btnPause { border: 1px solid #ca8a04; color: #ca8a04; }
   .btnReset { border: 1px solid #94a3b8; color: #64748b; }
   
   .timeDisplay, .stopwatchDisplay {
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    border: 1px solid #e2e8f0; border-radius: 4px; min-width: 65px; height: 38px;
+    display: flex; align-items: center; justify-content: center;
+    border: 1px solid #e2e8f0; border-radius: 4px; min-width: 44px; height: 26px;
   }
   .timeDisplay { border-color: #14b8a6; }
   .stopwatchDisplay { border-color: #0f766e; }
-  .timeLabel, .stopwatchLabel { font-size: 0.45rem; font-weight: 700; color: #94a3b8; }
-  .timeNumbers, .stopwatchNumbers { font-size: 0.9rem; font-weight: 700; font-family: monospace; }
+  .timeNumbers, .stopwatchNumbers { font-size: 0.85rem; font-weight: 700; font-family: monospace; }
   .timeNumbers { color: #0f766e; }
   .stopwatchNumbers { color: #14b8a6; }
   
-  /* Кнопка DONE на самом краю */
-  .realDoneBtn {
-    width: 80px;
+  /* === НОВАЯ ДВУХРЯДНАЯ СТРУКТУРА РЕЗУЛЬТАТОВ === */
+  .twoRowResultsSection {
+    display: flex;
+    align-items: center;
     height: 100%;
+    flex: 1;
+  }
+  
+  .analyticsGrid {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 3px;
+    padding: 0 6px;
+    height: 100%;
+  }
+  
+  .gridRow {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    height: 18px;
+  }
+  
+  /* Строки мелких показателей */
+  .compactStatLine {
+    display: flex;
+    gap: 2px;
+    font-size: 0.65rem;
+    color: #64748b;
+  }
+  
+  .statLabel { font-weight: 500; }
+  .statVal { font-weight: 700; color: #1e293b; font-family: monospace; }
+  .textGreen { color: #16a34a !important; }
+  .textRed { color: #dc2626 !important; }
+  
+  /* Тонкая линия статус-бара */
+  .statusBarTrack {
+    width: 100%;
+    height: 2px;
+    background-color: #f1f5f9;
+    border-radius: 1px;
+    overflow: hidden;
+    margin-top: 1px;
+  }
+  .statusBarFill { height: 100%; width: 0%; transition: width 0.2s; }
+  .bgBarGreen { background-color: #16a34a; }
+  .bgBarRed { background-color: #dc2626; }
+  
+  /* Компактный горизонтальный блок подгонки */
+  .inlineAdjustGroup {
+    display: flex;
+    align-items: center;
+    gap: 1px;
+  }
+  
+  .countDisplayOnly {
+    border: 1px solid #14b8a6;
+    border-radius: 4px;
+    color: #0f766e;
+    font-size: 0.8rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 18px;
+    width: 32px;
+    background-color: transparent;
+  }
+  
+  .microAdjBtn {
+    background-color: transparent;
+    border: 1px solid #e2e8f0;
+    color: #64748b;
+    font-size: 0.55rem;
+    font-weight: 700;
+    height: 18px;
+    padding: 0 4px;
+    cursor: pointer;
+    border-radius: 3px;
+  }
+  .microAdjBtn:hover { background-color: #f8fafc; }
+  
+  /* БОЛЬШАЯ КВАДРАТНАЯ КНОПКА DONE ВО ВСЮ ВЫСОТУ */
+  .bigSquareDoneBtn {
+    width: 55px;
+    height: 100%; /* Занимает всю высоту двух рядов */
     background-color: #0f766e;
     border: none;
     color: #ffffff;
-    font-size: 1rem;
+    font-size: 0.85rem;
     font-weight: 900;
     cursor: pointer;
-    border-radius: 0;
-    transition: background-color 0.15s;
+    transition: background-color 0.1s;
   }
-  .realDoneBtn:hover { background-color: #115e59; }
-  .realDoneBtn:active { background-color: #134e4a; }
+  .bigSquareDoneBtn:hover { background-color: #115e59; }
+  .bigSquareDoneBtn:active { background-color: #134e4a; }
+  
