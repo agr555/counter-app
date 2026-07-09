@@ -343,7 +343,7 @@
       margin-right: 0 !important;
       margin-bottom: 0 !important;
     }
-  }
+  } 
   
   /* СТУПЕНЬ 2: Точки "840" и "720" (от 1100px до 521px) — ПРОСТОРНЫЕ 2 РЯДА */
   @media (max-width: 1100px) and (min-width: 521px) {
