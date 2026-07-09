@@ -330,7 +330,8 @@
   /* Элементы разметки для мобильной структуры */
   .configGrid { display: flex; align-items: center; gap: 6px; width: 100%; height: 100%; }
   
- /* ==========================================================================
+
+/* ==========================================================================
    2. СИСТЕМНАЯ АДАПТИВНОСТЬ ДЛЯ СРЕДНИХ И МОБИЛЬНЫХ ЭКРАНОВ
    ========================================================================== */
 
@@ -339,7 +340,6 @@
     .widgetContainer {
       transform: scale(0.85);
       transform-origin: bottom right;
-      /* Убрали лишние маргины, так как теперь работает глобальный padding у layoutWrapper */
       margin-right: 0 !important;
       margin-bottom: 0 !important;
     }
@@ -359,7 +359,7 @@
       background-color: #f1f5f9 !important; 
       border: 1px solid #cbd5e1 !important;
       margin-left: auto !important; 
-      margin-right: 0 !important; /* Убран дублирующий маргин */
+      margin-right: 0 !important; 
       align-items: stretch !important;
       overflow: visible !important; 
     }
@@ -416,7 +416,7 @@
     }
   }
   
-  /* СТУПЕНЬ 3: НАСТОЯЩИЙ МОБИЛЬНЫЙ ВИД (Меньше 520px) */
+  /* СТУПЕНЬ 3: НАСТОЯЩИЙ МОБИЛЬНЫЙ ВИД (Меньше 520px, включая 500px и 492px) */
   @media (max-width: 520px) {
     .widgetContainer > .concaveBlock:nth-child(2) {
       display: none !important;
@@ -433,7 +433,7 @@
       padding: 5px !important;
       background-color: #f1f5f9 !important; 
       border: 1px solid #cbd5e1 !important;
-      margin-right: 0 !important; /* Убран дублирующий маргин */
+      margin-right: 0 !important; 
       margin-left: auto !important;
       overflow: visible !important;
     }
@@ -501,17 +501,20 @@
     .slider { width: 41px !important; height: calc(100% - 4px) !important; }
     .radioInput[value="9h40m"]:checked ~ .slider { transform: translateX(41px) !important; }
   
+    /* ИСПРАВЛЕНИЕ ДЛЯ ТАРГЕТА: Текст и цифры встают строго в один горизонтальный ряд (row),
+       никаких наездов на STOPWATCH больше не будет */
     .cfgTarget {
       grid-column: span 2 !important; 
       grid-row: 2 !important;
-      flex-direction: row !important; 
-      gap: 4px !important;
+      flex-direction: row !important; /* Выравниваем в одну линию */
+      gap: 6px !important;            /* Увеличили зазор между словом Target и pcs */
       justify-content: center !important;
       align-items: center !important;
       width: 100% !important;
+      height: 24px !important;       /* Четко ограничиваем высоту */
     }
   
-    /* РЯД 2 */
+    /* РЯД 2 (НИЖНИЙ ЭТАЖ) — Полностью отделен и защищен от наслоения */
     .widgetContainer > .concaveBlock:nth-child(4) {
       grid-column: span 2 !important; 
       grid-row: 2 !important;
@@ -533,12 +536,12 @@
     }
   }
   
-  /* СТУПЕНЬ 4: Ультра-узкие экраны */
+  /* СТУПЕНЬ 4: Экстремально узкие экраны */
   @media (max-width: 340px) {
     .widgetContainer {
       transform: scale(0.9) !important; 
       transform-origin: bottom right !important;
-      margin-right: 0 !important; /* Убран дублирующий маргин */
+      margin-right: 0 !important; 
     }
   }
   
