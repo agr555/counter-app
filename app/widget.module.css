@@ -480,138 +480,102 @@
     }
   }
   
-  /* СТУПЕНЬ 2: Точка "600" (работает от 980px до 541px) — ВСЕ 4 БЛОКА СТРОГО В ОДИН РЯД */
-  @media (max-width: 980px) and (min-width: 541px) {
+ /* СТУПЕНЬ 2: Точка "600" (от 980px до 541px) — ИДЕАЛЬНЫЙ БЛОК 4 + ИСПРАВЛЕНИЕ ЛЕВОЙ ЧАСТИ */
+@media (max-width: 980px) and (min-width: 541px) {
     .widgetContainer {
       transform: scale(1);
       display: flex;
       flex-direction: row;
-      flex-wrap: nowrap;    /* КАТЕГОРИЧЕСКИ ЗАПРЕЩАЕМ ПЕРЕНОС: все 4 блока стоят в одну линию */
-      height: 76px;         /* Высота под две нижние полосы */
+      flex-wrap: nowrap;    /* Строго в одну линию */
+      height: 76px;         /* Фиксированная высота всего виджета */
       max-width: max-content; 
-      gap: 5px;
+      gap: 4px;             /* Минимальный зазор, убирает дыру */
       padding: 0;
       background-color: transparent;
       border: none;
-      justify-content: flex-start;
+      align-items: center;
     }
   
     .concaveBlock {
       height: 100%; 
       box-sizing: border-box;
-      padding: 0 6px;
-      flex: 0 1 auto; /* Блоки сжимаются строго по ширине своего контента, убирая дыры */
+      padding: 0 6px;       
+      flex: 0 1 auto; 
     }
   
-    /* ИСПРАВЛЕНИЕ: Блок 1 (Настройки) теперь очень узкий, без лишних полей */
+    /* --- ИДЕАЛЬНЫЙ БЛОК 4 (НЕ ТРОГАЕМ ЕГО РАЗМЕРЫ) --- */
+    .widgetContainer > .concaveBlock:nth-child(4) {
+      flex: 0 0 310px !important; /* Жестко фиксируем, запрещая сжатие и изменения */
+      min-width: 310px !important;
+      width: 310px !important;
+    }
+  
+    /* --- ИСПРАВЛЕНИЕ ЛЕВОЙ ЧАСТИ (КНОПКИ И НАСТРОЙКИ) --- */
+  
+    /* Блок 1 (Настройки): делаем компактнее по ширине */
     .blockConfig {
-      max-width: 235px;
-      min-width: 220px;
+      max-width: 215px;
+      min-width: 205px;
+      gap: 5px;
     }
   
-    /* ИСПРАВЛЕНИЕ: Блок 2 (План/Факт) делает контент компактным и не раздувается */
+    /* Поля ввода и Target внутри Блока 1 */
+    .blockConfig .inputNumberWide { width: 54px; height: 24px; font-size: 0.85rem; }
+    .blockConfig .targetDisplayDisabled { width: 50px; height: 24px; font-size: 0.85rem; }
+    
+    /* ИСПРАВЛЕНИЕ РАДИОКНОПОК 9:40: возвращаем оригинальный размер, чтобы текст не резался */
+    .blockConfig .toggleContainer {
+      height: 24px;
+      min-width: 94px;
+    }
+    .blockConfig .radioLabel {
+      font-size: 0.75rem;
+      width: 45px;
+    }
+    .blockConfig .slider {
+      width: 45px;
+      height: calc(100% - 4px);
+    }
+    .blockConfig .radioInput[value="9h40m"]:checked ~ .slider {
+      transform: translateX(45px) !important;
+    }
+  
+    /* Блок 2 (План/Факт/Дифф): ужимаем, чтобы освободить место кнопкам */
     .widgetContainer > .concaveBlock:nth-child(2) {
-      min-width: 110px;
-      max-width: 125px;
+      min-width: 105px;
+      max-width: 115px;
+      padding: 0 4px;
     }
   
-    /* Блок 3 (Кнопки) прижимается вплотную без пустого поля справа */
+    /* ИСПРАВЛЕНИЕ КНОПОК START/STOP (Блок 3): возвращаем высоту, убираем урезание текста */
     .blockControls {
       min-width: 165px;
-      max-width: 180px;
+      max-width: 175px;
+      padding: 0 6px;
     }
-  
-    /* Блок 4 (Таймеры и DONE) занимает законное оставшееся место */
-    .widgetContainer > .concaveBlock:nth-child(4) {
-      min-width: 310px;
-    }
-  }
-  
-  /* СТУПЕНЬ 3: Мобильные телефоны (меньше 540px) — только тут скрываем Блок 2 и делим на 2 ряда */
-  @media (max-width: 540px) {
-    /* На телефонах скрываем Блок 2, так как 4 блока физически не влезут в экран мобильного */
-    .widgetContainer > .concaveBlock:nth-child(2) {
-      display: none !important;
-    }
-  
-    .widgetContainer {
-      display: grid;
-      grid-template-columns: 145px 1fr; /* Левая колонка: Управление, Правая: Настройки */
-      grid-template-rows: auto auto;   
-      max-width: 340px;    
-      width: 340px;
-      height: auto;
-      gap: 4px;
-      padding: 4px;
-      background-color: #f1f5f9; 
-      border: 1px solid #cbd5e1;
-      transform: scale(1);
-      transform-origin: bottom right;
-    }
-  
-    .concaveBlock {
-      box-sizing: border-box;
-      height: 76px; 
-    }
-  
-    /* Блок управления (START) — Слева */
-    .blockControls {
-      grid-column: 1;
-      grid-row: 1;
-      width: 172px !important; 
-      transform: scale(0.84);  
-      transform-origin: left center;
-      margin-right: -27px;     
-    }
-  
-    /* Блок настроек — Справа в два ряда */
-    .blockConfig {
-      grid-column: 2;
-      grid-row: 1;
-      width: 122% !important; 
-      transform: scale(0.82);  
-      transform-origin: right center;
-      padding: 4px 6px;
-    }
-  
-    /* Внутренняя сетка Блока 1 на мобильном */
-    .blockConfig .configGrid {
-      display: grid;
-      grid-template-columns: 1fr 1fr; 
-      grid-template-rows: auto auto;   
-      row-gap: 3px;
-      column-gap: 4px; 
-      align-items: center;
-      justify-content: center;
-    }
-  
-    .cfgRate   { grid-column: 1; grid-row: 1; }
-    .cfgTime   { grid-column: 2; grid-row: 1; }
     
-    /* Target — параллельно кнопкам на втором ряду */
-    .cfgTarget {
-      grid-column: span 2; 
-      grid-row: 2;
-      flex-direction: row !important; 
-      gap: 4px;
+    .blockControls .controlAndAdjustColumn {
+      gap: 4px; /* Даем вертикальный отступ между рядами кнопок */
+      height: 100%;
       justify-content: center;
-      align-items: center;
-      width: 100%;
     }
   
-    /* Блок таймеров и DONE — Нижний длинный этаж */
-    .widgetContainer > .concaveBlock:nth-child(4) {
-      grid-column: span 2; 
-      grid-row: 2;
-      width: 100% !important;
+    .blockControls .gridRow {
+      height: 22px; /* Увеличили высоту ряда для кнопок START/STOP */
+    }
+    
+    .blockControls .gridRowFullWidth {
+      height: 18px; /* Высота ряда для мелких корректировок */
+    }
+  
+    .blockControls .shadowBtn {
+      height: 22px; /* Кнопки START, BEEP, STOP теперь высокие, текст влезает полностью */
+      font-size: 0.65rem; /* Четкий читаемый шрифт */
+      padding: 0 8px;
+    }
+  
+    .blockControls .adjBtnWide {
+      height: 18px; /* Корректировки -10... остаются компактными снизу */
+      font-size: 0.55rem;
     }
   }
-  
-  /* СТУПЕНЬ 4: Маленькие смартфоны (меньше 400px) — аккуратное пропорциональное сжатие */
-  @media (max-width: 400px) {
-    .widgetContainer {
-      transform: scale(0.85); 
-      transform-origin: bottom right;
-    }
-  }
-  
