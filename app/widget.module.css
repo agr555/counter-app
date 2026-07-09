@@ -10,7 +10,8 @@
     min-height: 100vh;         
     background-color: transparent; 
     box-sizing: border-box;
-    padding: 4px; 
+    padding-bottom: 12px !important; 
+    padding-right: 24px !important; 
   }
   
   .widgetContainer {
@@ -136,7 +137,7 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
-    gap: 3px;
+    gap: 8px;
     height: 100%;
   }
   
@@ -329,24 +330,23 @@
   /* Элементы разметки для мобильной структуры */
   .configGrid { display: flex; align-items: center; gap: 6px; width: 100%; height: 100%; }
   
-  /* ==========================================================================
-     2. СИСТЕМНАЯ АДАПТИВНОСТЬ (СТРОГИЙ ДВУХРЯДНЫЙ РЕЖИМ БЕЗ СЖАТИЯ ПО ВЫСОТЕ)
-     ========================================================================== */
-  
-  /* СТУПЕНЬ 1: Ноутбуки (меньше 1250px) — пропорционально уменьшаем без изломов */
-  @media (max-width: 1250px) {
+ /* ==========================================================================
+   2. СИСТЕМНАЯ АДАПТИВНОСТЬ ДЛЯ СРЕДНИХ И МОБИЛЬНЫХ ЭКРАНОВ
+   ========================================================================== */
+
+/* СТУПЕНЬ 1: Ноутбуки (меньше 1250px) — пропорционально уменьшаем без изломов */
+@media (max-width: 1250px) {
     .widgetContainer {
       transform: scale(0.85);
       transform-origin: bottom right;
-      margin-right: 16px;
-      margin-bottom: 8px;
+      /* Убрали лишние маргины, так как теперь работает глобальный padding у layoutWrapper */
+      margin-right: 0 !important;
+      margin-bottom: 0 !important;
     }
   }
-/* СТУПЕНЬ 2: Точки "840", "720", "500" и мобильные (Меньше 1100px) — ЖЕЛЕЗОБЕТОННЫЕ 2 РЯДА ДЛЯ ВСЕХ ЭКРАНОВ */
-/* СТУПЕНЬ 2: Точки "840" и "720" (от 1100px до 521px) — ПРОСТОРНЫЕ 2 РЯДА */
-/* СТУПЕНЬ 2: Точки "840" и "720" (от 1100px до 521px) — ПРОСТОРНЫЕ 2 РЯДА */
-/* СТУПЕНЬ 2: Точки "840" и "720" (от 1100px до 521px) — ПРОСТОРНЫЕ 2 РЯДА */
-@media (max-width: 1100px) and (min-width: 521px) {
+  
+  /* СТУПЕНЬ 2: Точки "840" и "720" (от 1100px до 521px) — ПРОСТОРНЫЕ 2 РЯДА */
+  @media (max-width: 1100px) and (min-width: 521px) {
     .widgetContainer {
       transform: scale(1) !important;
       display: flex !important;
@@ -359,7 +359,7 @@
       background-color: #f1f5f9 !important; 
       border: 1px solid #cbd5e1 !important;
       margin-left: auto !important; 
-      margin-right: 16px !important; 
+      margin-right: 0 !important; /* Убран дублирующий маргин */
       align-items: stretch !important;
       overflow: visible !important; 
     }
@@ -403,6 +403,12 @@
     .gridRow { height: 22px !important; }
     .shadowBtn { height: 22px !important; font-size: 0.65rem !important; }
     
+    .blockControls .controlAndAdjustColumn {
+      gap: 7px !important; 
+      height: 100% !important;
+      justify-content: center !important;
+    }
+    
     .dDoneBtn { 
       margin-right: 0 !important; 
       height: calc(100% + 8px) !important; 
@@ -410,17 +416,15 @@
     }
   }
   
-  /* СТУПЕНЬ 3: НАСТОЯЩИЙ МОБИЛЬНЫЙ ВИД (Меньше 520px, включая 500px и 492px) */
+  /* СТУПЕНЬ 3: НАСТОЯЩИЙ МОБИЛЬНЫЙ ВИД (Меньше 520px) */
   @media (max-width: 520px) {
-    /* Прячем Блок 2 (статистику плана) на смартфонах */
     .widgetContainer > .concaveBlock:nth-child(2) {
       display: none !important;
     }
   
-    /* Возвращаем жесткую мобильную Grid-сетку, чтобы блоки не растягивались во весь экран */
     .widgetContainer {
       display: grid !important;
-      grid-template-columns: 145px 1fr !important; /* Четкое деление на левую и правую колонки */
+      grid-template-columns: 145px 1fr !important; 
       grid-template-rows: auto auto !important;   
       max-width: 340px !important;    
       width: 340px !important;
@@ -429,35 +433,33 @@
       padding: 5px !important;
       background-color: #f1f5f9 !important; 
       border: 1px solid #cbd5e1 !important;
-      margin-right: 12px !important; 
+      margin-right: 0 !important; /* Убран дублирующий маргин */
       margin-left: auto !important;
       overflow: visible !important;
     }
   
     .concaveBlock {
       box-sizing: border-box !important;
-      height: 76px !important; /* ЖЕСТКАЯ ВЫСОТА: Защита кнопок старта и радиокнопок от урезания */
+      height: 76px !important; 
     }
   
-    /* РЯД 1, ЛЕВАЯ КОЛОНКА: Блок управления (START/STOP) */
+    /* РЯД 1, ЛЕВАЯ КОЛОНКА */
     .widgetContainer > .concaveBlock:nth-child(3) {
       grid-column: 1 !important;
       grid-row: 1 !important;
-      width: 145px !important; /* Компактная ширина под экран телефона */
+      width: 145px !important; 
       padding: 0 6px !important;
       display: flex !important;
       flex-direction: column !important;
       justify-content: center !important;
-      gap: 3px !important;
     }
   
-    /* Исправление урезания кнопок по высоте внутри Блока 3 */
     .widgetContainer > .concaveBlock:nth-child(3) .controlAndAdjustColumn {
-      gap: 4px !important;
+      gap: 6px !important; 
       width: 100% !important;
     }
     .widgetContainer > .concaveBlock:nth-child(3) .gridRow {
-      height: 22px !important; /* Защита высоты START/STOP от сплющивания */
+      height: 22px !important; 
       width: 100% !important;
     }
     .widgetContainer > .concaveBlock:nth-child(3) .gridRowFullWidth {
@@ -465,7 +467,7 @@
       width: 100% !important;
     }
     .widgetContainer > .concaveBlock:nth-child(3) .shadowBtn {
-      height: 22px !important; /* Кнопки снова высокие и объемные */
+      height: 22px !important; 
       font-size: 0.62rem !important;
       flex: 1 !important;
     }
@@ -474,7 +476,7 @@
       font-size: 0.55rem !important;
     }
   
-    /* РЯД 1, ПРАВАЯ КОЛОНКА: Блок настроек (Блок 1) */
+    /* РЯД 1, ПРАВАЯ КОЛОНКА */
     .widgetContainer > .concaveBlock:nth-child(1) {
       grid-column: 2 !important;
       grid-row: 1 !important;
@@ -482,7 +484,6 @@
       padding: 4px 6px !important;
     }
   
-    /* ВНУТРИ БЛОКА 1: Двухэтажная сетка инпутов с КРАСИВЫМ ЦЕНТРИРОВАНИЕМ */
     .widgetContainer > .concaveBlock:nth-child(1) .configGrid {
       display: grid !important;
       grid-template-columns: 1fr 1fr !important; 
@@ -490,19 +491,17 @@
       row-gap: 3px !important;
       column-gap: 4px !important; 
       align-items: center !important;
-      justify-items: center !important; /* ИСПРАВЛЕНИЕ: Центрируем Rate и Time внутри колонок */
+      justify-items: center !important; 
       width: 100% !important;
       height: 100% !important;
     }
   
-    /* Принудительно держим читаемые размеры для радиокнопок 9:40 на мобильном */
-    .widgetContainer > .concaveBlock:nth-child(1) .toggleContainer { height: 24px !important; min-width: 86px !important; }
-    .widgetContainer > .concaveBlock:nth-child(1) .radioLabel { font-size: 0.7rem !important; width: 41px !important; }
-    .widgetContainer > .concaveBlock:nth-child(1) .slider { width: 41px !important; height: calc(100% - 4px) !important; }
-    .widgetContainer > .concaveBlock:nth-child(1) .radioInput[value="9h40m"]:checked ~ .slider { transform: translateX(41px) !important; }
+    .toggleContainer { height: 24px !important; min-width: 86px !important; }
+    .radioLabel { font-size: 0.7rem !important; width: 41px !important; }
+    .slider { width: 41px !important; height: calc(100% - 4px) !important; }
+    .radioInput[value="9h40m"]:checked ~ .slider { transform: translateX(41px) !important; }
   
-    /* Центрируем Shift Target параллельно кнопкам на втором внутреннем ряду */
-    .widgetContainer > .concaveBlock:nth-child(1) .fieldGroupTarget {
+    .cfgTarget {
       grid-column: span 2 !important; 
       grid-row: 2 !important;
       flex-direction: row !important; 
@@ -512,35 +511,34 @@
       width: 100% !important;
     }
   
-    /* РЯД 2 (НИЖНИЙ ЭТАЖ): Блок таймеров и DONE (Блок 4) */
+    /* РЯД 2 */
     .widgetContainer > .concaveBlock:nth-child(4) {
       grid-column: span 2 !important; 
       grid-row: 2 !important;
       width: 100% !important;
-      padding-top: 4px !important;   /* Отступы от верхней рамки */
-      padding-bottom: 4px !important;/* Отступы от нижней рамки */
-      padding-right: 0 !important;   /* Чтобы DONE прижалась к скруглению */
-      height: 80px !important;       /* Увеличенная высота этажа под новые отступы */
+      padding-top: 4px !important;   
+      padding-bottom: 4px !important;
+      padding-right: 0 !important;   
+      height: 80px !important;       
     }
   
-    /* ИСПРАВЛЕНИЕ КНОПКИ DONE НА МОБИЛЬНОМ (Возвращаем ширину и боковые отступы) */
     .widgetContainer > .concaveBlock:nth-child(4) .dDoneBtn {
       margin-right: 0 !important;
-      width: 65px !important;        /* Фиксируем красивую ширину, чтобы она не была "худой" */
-      padding: 0 10px !important;    /* Добавляем внутренние поля от текста до края кнопки */
-      height: calc(100% + 8px) !important; /* На всю высоту мобильного блока */
+      width: 65px !important;        
+      padding: 0 10px !important;    
+      height: calc(100% + 8px) !important; 
       margin-top: -4px !important;
       border-top-right-radius: 6px !important;
       border-bottom-right-radius: 6px !important;
     }
   }
   
-  /* СТУПЕНЬ 4: Экстремально узкие старые телефоны (меньше 340px) */
+  /* СТУПЕНЬ 4: Ультра-узкие экраны */
   @media (max-width: 340px) {
     .widgetContainer {
       transform: scale(0.9) !important; 
       transform-origin: bottom right !important;
-      margin-right: 4px !important;
+      margin-right: 0 !important; /* Убран дублирующий маргин */
     }
   }
   
