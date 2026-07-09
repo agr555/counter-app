@@ -425,32 +425,8 @@
   }
   
 /* Базовые стили контейнеров (добавьте перед медиа-запросами) */
-.configGrid {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    width: 100%;
-    height: 100%;
-  }
-  .fieldGroupTarget {
-    display: flex;
-    flex-direction: column;
-    align-items: center; 
-    justify-content: center;
-    gap: 2px;
-  }
-  /* ==========================================================================
-   АДАПТИВНОСТЬ И ОТКЛИК ПО ШИРИНЕ ЭКРАНА
-  /* ==========================================================================
-   ФИНАЛЬНАЯ РЕЗИНОВАЯ АДАПТИВНОСТЬ (ВСЕ 4 БЛОКА В ОДИН РЯД НА 600px)
-   ========================================================================== */
-/* ==========================================================================
-   ПОЛНАЯ ИСПРАВЛЕННАЯ АДАПТИВНОСТЬ (СТРОГО ОДИН РЯД НА 600px БЕЗ ДЫР И СЖАТИЯ)
-   ========================================================================== */
 
-/* ==========================================================================
-   ПОЛНАЯ ИСПРАВЛЕННАЯ АДАПТИВНОСТЬ (ЗАЩИТА ОТ УРЕЗАНИЯ НА 840px)
-   ========================================================================== */
+  
 
    .configGrid {
     display: flex;
@@ -477,143 +453,227 @@
     height: 18px;
   }
   
-  /* СТУПЕНЬ 1: Большие экраны ноутбуков — легкое пропорциональное сжатие */
+  
+  /* ==========================================================================
+   ИСПРАВЛЕННАЯ СИСТЕМНАЯ АДАПТИВНОСТЬ И ЦЕНТРИРОВАНИЕ БЛОКОВ
+   ========================================================================== */
+
+/* ИСПРАВЛЕНИЕ: Добавляем отступ справа (margin-right), чтобы виджет отлепился от полосы прокрутки экрана */
+.layoutWrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end; 
+    align-items: flex-end;     
+    min-height: 100vh;         
+    background-color: transparent; 
+    box-sizing: border-box;
+    padding: 4px; 
+  }
+  
+  /* СТУПЕНЬ 1: Большие экраны ноутбуков (меньше 1250px) — пропорциональное сжатие */
   @media (max-width: 1250px) {
     .widgetContainer {
       transform: scale(0.85);
       transform-origin: bottom right;
-      margin-right: 8px;
-      margin-bottom: 4px;
+      margin-right: 16px; /* ИСПРАВЛЕНИЕ: Отличный безопасный зазор от полосы прокрутки */
+      margin-bottom: 8px;
     }
   }
   
-  /* СТУПЕНЬ 2: Точка "840" (работает от 1100px до 621px) — ДВА РЯДА БЕЗ УРЕЗАНИЯ КОНТЕНТА */
-  @media (max-width: 1100px) and (min-width: 621px) {
+  /* СТУПЕНЬ 2: Точки "840", "720", "590" (работает от 1100px до 501px) — ВСЕ 4 БЛОКА ОДНИМ СБАЛАНСИРОВАННЫМ ЦЕНТРИРОВАННЫМ РЯДОМ */
+  @media (max-width: 1100px) and (min-width: 501px) {
     .widgetContainer {
       transform: scale(1);
       display: flex;
       flex-direction: row;
-      flex-wrap: wrap;       /* ИСПРАВЛЕНИЕ: Разрешаем перенос на 2 ряда, чтобы на 840px ничего не резалось! */
-      height: auto;          /* Высота подстраивается автоматически под два ряда */
-      max-width: 540px;      /* Жестко зажимаем ширину, чтобы блоки разбились ровно 2 на 2 */
-      gap: 5px;
-      padding: 5px;
-      background-color: #f1f5f9; 
-      border: 1px solid #cbd5e1;
-      justify-content: flex-start;
+      flex-wrap: nowrap;     /* Строго одна горизонтальная линия */
+      height: 76px;          /* Защита высоты кнопок START/STOP и 9:40 от урезания */
+      max-width: max-content; 
+      gap: 4px;              
+      padding: 0;
+      background-color: transparent;
+      border: none;
+      
+      /* ИСПРАВЛЕНИЕ ДЛЯ 720px: Автоматически центрирует весь блок-виджет внутри отведенного ему пространства справа */
+      margin-left: auto;
+      margin-right: 16px;    /* Держим отступ от края экрана */
+      align-items: center;
     }
   
     .concaveBlock {
-      height: 76px;          /* Фиксируем высоту каждого ряда, защищая кнопки от урезания */
+      height: 100%; 
       box-sizing: border-box;
-      padding: 0 8px;       
-      flex: none !important;
+      padding: 0 6px;       
+      flex: 0 1 auto; 
     }
   
-    /* РЯД 1: Настройки и План-Факт */
+    /* ИСПРАВЛЕНИЕ ДЛЯ 590px: Зажимаем минимальную ширину Блока 1 (без слова Shift он супер-узкий), 
+       теперь поле Rate физически не сможет вылезти влево за рамку */
     .blockConfig {
-      width: calc(58% - 3px) !important; /* Отдаем настройкам больше места, чтобы влезло "9:40" */
-    }
-    .widgetContainer > .concaveBlock:nth-child(2) {
-      width: calc(42% - 3px) !important;
-    }
-  
-    /* РЯД 2: Кнопки START/STOP и Идеальный Блок 4 (Таймеры) */
-    .blockControls {
-      width: calc(40% - 3px) !important; /* Управлению возвращаем полную ширину и высоту */
-      order: 3;
-    }
-    .widgetContainer > .concaveBlock:nth-child(4) {
-      width: calc(60% - 3px) !important; /* Блок 4 зафиксирован и встает ровно справа внизу */
-      order: 4;
+      max-width: 215px;
+      min-width: 210px;
+      gap: 5px;
     }
   
-    /* Восстанавливаем оригинальные размеры инпутов и ползунков для Ряда 1 */
+    /* Поля внутри Блока 1 */
+    .blockConfig .inputNumberWide { width: 54px; height: 24px; font-size: 0.85rem; }
+    .blockConfig .targetDisplayDisabled { width: 50px; height: 24px; font-size: 0.85rem; }
     .blockConfig .toggleContainer { height: 24px; min-width: 94px; }
     .blockConfig .radioLabel { font-size: 0.75rem; width: 45px; }
     .blockConfig .slider { width: 45px; height: calc(100% - 4px); }
     .blockConfig .radioInput[value="9h40m"]:checked ~ .slider { transform: translateX(45px) !important; }
+  
+    /* Блок 2 (План/Факт/Дифф): Всегда на экране, стоит плотно и компактно */
+    .blockStats {
+      min-width: 105px;
+      max-width: 115px;
+      padding: 0 4px;
+    }
+  
+    /* Блок 3 (Кнопки START/STOP): Защищен от урезания высоты */
+    .blockControls {
+      min-width: 165px;
+      max-width: 175px;
+      padding: 0 6px;
+    }
+    .blockControls .controlAndAdjustColumn { gap: 4px; height: 100%; justify-content: center; }
+    .blockControls .gridRow { height: 22px; }
+    .blockControls .gridRowFullWidth { height: 18px; }
+    .blockControls .shadowBtn { height: 22px; font-size: 0.65rem; padding: 0 8px; }
+    .blockControls .adjBtnWide { height: 18px; font-size: 0.55rem; }
+  
+    /* Блок 4 (Таймеры и DONE): Зафиксирован намертво по вашему шаблону */
+    .widgetContainer > .concaveBlock:nth-child(4) {
+      flex: 0 0 310px !important; 
+      min-width: 310px !important;
+      width: 310px !important;
+    }
   }
   
-  /* СТУПЕНЬ 3: Мобильные телефоны (меньше 620px) — скрываем Блок 2, уходим в чистый резиновый Flex */
-  @media (max-width: 620px) {
+  /* СТУПЕНЬ 3: Мобильные телефоны (меньше 500px) — складываем в 2 ряда, Блок 2 убираем только ради ширины экрана телефона */
+  @media (max-width: 500px) {
     .widgetContainer > .concaveBlock:nth-child(2) {
       display: none !important;
     }
   
     .widgetContainer {
-      display: flex;
-      flex-direction: row;
-      flex-wrap: wrap;     
-      max-width: 350px;    
-      width: 350px;
-      height: auto;        
+      display: grid;
+      grid-template-columns: 145px 1fr; 
+      grid-template-rows: auto auto;   
+      max-width: 340px;    
+      width: 340px;
+      height: auto;
       gap: 4px;
       padding: 4px;
       background-color: #f1f5f9; 
       border: 1px solid #cbd5e1;
-      justify-content: space-between;
+      margin-right: 12px; /* Компактный зазор на мобильном */
+      margin-left: auto;
     }
   
-    .concaveBlock {
-      box-sizing: border-box;
-      height: 76px; 
-      flex: none !important;
-    }
+    .concaveBlock { box-sizing: border-box; height: 76px; }
   
-    /* РЯД 1, СЛЕВА: Блок управления (START/STOP) — чистый резиновый процент */
     .blockControls {
-      order: 1;
-      width: calc(52% - 2px) !important; 
+      grid-column: 1; grid-row: 1;
+      width: 172px !important; transform: scale(0.84); transform-origin: left center; margin-right: -27px;     
     }
   
-    /* РЯД 1, СПРАВА: Блок настроек в два ряда — чистый резиновый процент */
     .blockConfig {
-      order: 2;
-      width: calc(48% - 2px) !important;
-      padding: 4px 6px;
+      grid-column: 2; grid-row: 1;
+      width: 122% !important; transform: scale(0.82); transform-origin: right center; padding: 4px 6px;
     }
   
-    /* Внутренняя сетка инпутов */
     .blockConfig .configGrid {
-      display: grid;
-      grid-template-columns: 1fr 1fr; 
-      grid-template-rows: auto auto;   
-      row-gap: 3px;
-      column-gap: 4px; 
-      align-items: center;
-      justify-content: center;
-      width: 100%;
-      height: 100%;
+      display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: auto auto; row-gap: 3px; column-gap: 4px; align-items: center; justify-content: center;
     }
   
-    .cfgRate   { grid-column: 1; grid-row: 1; }
-    .cfgTime   { grid-column: 2; grid-row: 1; }
-    
-    /* Target — параллельно кнопкам на втором ряду */
-    .cfgTarget {
-      grid-column: span 2; 
-      grid-row: 2;
-      flex-direction: row !important; 
-      gap: 4px;
-      justify-content: center;
-      align-items: center;
-      width: 100%;
-    }
+    .cfgRate { grid-column: 1; grid-row: 1; }
+    .cfgTime { grid-column: 2; grid-row: 1; }
+    .cfgTarget { grid-column: span 2; grid-row: 2; flex-direction: row !important; gap: 4px; justify-content: center; align-items: center; width: 100%; }
   
-    /* РЯД 2: Блок таймеров и DONE — на всю ширину нижнего этажа */
-    .widgetContainer > .concaveBlock:nth-child(4) {
-      order: 3;
-      width: 100% !important;
-    }
+    .widgetContainer > .concaveBlock:nth-child(4) { grid-column: span 2; grid-row: 2; width: 100% !important; }
   }
   
-  /* СТУПЕНЬ 4: Маленькие смартфоны (меньше 400px) — аккуратное пропорциональное сжатие */
-  @media (max-width: 400px) {
+  /* СТУПЕНЬ 4: Ультра-маленькие смартфоны (меньше 380px) */
+  @media (max-width: 380px) {
     .widgetContainer {
       transform: scale(0.85); 
       transform-origin: bottom right;
+      margin-right: 4px;
     }
   }
   
   
+  /* ==========================================================================
+     ИСПРАВЛЕНИЕ ВИДА ПОЛОС ПРОГРЕССА (ОДИНАКОВЫЕ СКРУГЛЕНИЯ И ОБЪЕМ)
+     ========================================================================== */
+  
+  /* 1. ПОЛОСА ТЕМПА (PACE) */
+  .extendedPaceTrack {
+    width: calc(100% - 12px);
+    height: 10px;
+    background-color: #e2e8f0;
+    border-radius: 4px; /* Мягкое скругление */
+    position: relative;
+    overflow: hidden;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.08); /* Эффект утопленности */
+  }
+  
+  .extendedPaceFill {
+    height: 100%;
+    transition: width 1s linear, background-color 0.2s ease;
+    border-radius: 4px; /* Одинаковое скругление у заливки */
+  }
+  
+  .extendedPaceText {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.52rem;
+    font-weight: 800;
+    color: #1e293b;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    mix-blend-mode: difference; /* Авто-контраст */
+  }
+  
+  /* Динамические фоны полосы темпа */
+  .bgPaceGreen { background-color: #16a34a; }
+  .bgPaceBlack { background-color: #0f172a; }
+  .bgPaceRed   { background-color: #dc2626; }
+  
+  
+  /* 2. ИСПРАВЛЕННАЯ ОБЩАЯ ПОЛОСА СМЕНЫ (ТЕПЕРЬ ОДИН В ОДИН КАК PACE) */
+  .bottomProgressBarTrack {
+    width: calc(100% - 12px);
+    height: 10px; 
+    background-color: #e2e8f0;
+    border-radius: 4px; /* ИСПРАВЛЕНИЕ: Скругление точно как у Pace (было 2px) */
+    position: relative;
+    overflow: hidden;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.08); /* ИСПРАВЛЕНИЕ: Тот же эффект утопленности */
+  }
+  
+  .bottomProgressBarFill {
+    height: 100%;
+    background-color: #2563eb; 
+    transition: width 0.3s ease-out;
+    border-radius: 4px; /* ИСПРАВЛЕНИЕ: Скругление заливки как у Pace */
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15); /* Объемный блик сверху */
+  }
+  
+  .bottomProgressBarText {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.52rem; /* Одинаковый размер шрифта подписи */
+    font-weight: 800;
+    color: #1e293b;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    mix-blend-mode: difference; /* ИСПРАВЛЕНИЕ: Тот же эффект инверсии текста */
+  }

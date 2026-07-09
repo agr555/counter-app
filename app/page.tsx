@@ -246,8 +246,8 @@ export default function PomodoroWidget() {
     <div className={styles.layoutWrapper}>
       <div className={styles.widgetContainer}>
         
-        {/* BLOCK 1: CONFIGURATION */}
-        <div className={`${styles.concaveBlock} ${styles.blockConfig}`}>
+               {/* BLOCK 1: CONFIGURATION (Слово Shift полностью убрано из подписей) */}
+               <div className={`${styles.concaveBlock} ${styles.blockConfig}`}>
           <div className={styles.configGrid}>
             
             <div className={`${styles.fieldGroup} ${styles.cfgRate}`}>
@@ -266,7 +266,8 @@ export default function PomodoroWidget() {
             </div>
 
             <div className={`${styles.fieldGroup} ${styles.cfgTime}`}>
-              <span className={styles.fieldLabel}>Shift Time</span>
+              {/* ИСПРАВЛЕНИЕ: Просто "Time" */}
+              <span className={styles.fieldLabel}>Time</span>
               <div className={styles.toggleContainer} style={{ opacity: isSettingsDisabled ? 0.7 : 1 }}>
                 <input
                   type="radio"
@@ -312,9 +313,9 @@ export default function PomodoroWidget() {
               </div>
             </div>
 
-            {/* Элемент Shift Target, который уйдет на второй ряд */}
+            {/* ИСПРАВЛЕНИЕ: Просто "Target" */}
             <div className={`${styles.fieldGroupTarget} ${styles.cfgTarget}`}>
-              <span className={styles.fieldLabel}>Shift Target</span>
+              <span className={styles.fieldLabel}>Target</span>
               <div className={styles.targetDisplayDisabled}>
                 {isSettingsDisabled ? lockedTarget : currentTargetPositions}
                 <span className={styles.unitText}>pcs</span>
@@ -324,8 +325,8 @@ export default function PomodoroWidget() {
           </div>
         </div>
 
-        {/* BLOCK 2: CURRENT PROGRESS & TIME VARIANCE (Concave Border) */}
-        <div className={styles.concaveBlock}>
+        {/* BLOCK 2: CURRENT PROGRESS & TIME VARIANCE (Всегда на экране!) */}
+        <div className={`${styles.concaveBlock} ${styles.blockStats}`}>
           <div className={styles.compactStatsBox}>
             <div className={styles.progressRow}>
               <span className={styles.rowLabel}>Plan:</span>
@@ -350,8 +351,8 @@ export default function PomodoroWidget() {
           </div>
         </div>
 
-         {/* BLOCK 3: CONTROLS & MANUAL ADJUSTMENTS */}
-         <div className={`${styles.concaveBlock} ${styles.blockControls}`} style={{ padding: '0 6px' }}>
+        {/* BLOCK 3: CONTROLS & MANUAL ADJUSTMENTS */}
+        <div className={`${styles.concaveBlock} ${styles.blockControls}`} style={{ padding: '0 6px' }}>
           <div className={styles.controlAndAdjustColumn}>
             <div className={styles.gridRow}>
               <button 
@@ -388,6 +389,7 @@ export default function PomodoroWidget() {
             </div>
           </div>
         </div>
+
 
         {/* BLOCK 4: STATS, TIMERS & ACTION DONE BUTTON */}
         <div 
