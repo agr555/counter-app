@@ -383,54 +383,73 @@ export default function PomodoroWidget() {
           </div>
         </div>
 
-        {/* BLOCK 4: STATS, TIMERS & ACTION DONE BUTTON (Concave Border) */}
-        <div className={styles.concaveBlock} style={{ paddingRight: '0', gap: '6px' }}>
-          
-          <div className={styles.compactStatsBox} style={{ minWidth: '78px' }}>
-            <div className={styles.progressRow}>
-              <span className={styles.rowLabel}>Left:</span>
-              <span className={styles.rowValue}>{pcsLeft}</span>
+ {/* BLOCK 4: STATS, TIMERS & ACTION DONE BUTTON (Оригинальные стили + прогресс смены внизу) */}
+ <div 
+          className={styles.concaveBlock} 
+          style={{ paddingRight: '0', gap: '6px', flexDirection: 'column', alignItems: 'stretch' }}
+        >
+          {/* Контейнер-обертка для сохранения оригинального горизонтального расположения элементов */}
+          <div style={{ display: 'flex', width: '100%', alignItems: 'center', gap: '6px', justifyContent: 'space-between' }}>
+            
+            <div className={styles.compactStatsBox} style={{ minWidth: '78px' }}>
+              <div className={styles.progressRow}>
+                <span className={styles.rowLabel}>Left:</span>
+                <span className={styles.rowValue}>{pcsLeft}</span>
+              </div>
+              <div className={styles.progressRow}>
+                <span className={styles.rowLabel}>Avg P:</span>
+                <span className={styles.rowValue}>{formatTime(totalTimerSeconds)}</span>
+              </div>
+              <div className={styles.progressRow}>
+                <span className={styles.rowLabel}>Avg R:</span>
+                <span className={styles.rowValue}>{formatTime(avgRealTimeSeconds)}</span>
+              </div>
             </div>
-            <div className={styles.progressRow}>
-              <span className={styles.rowLabel}>Avg P:</span>
-              <span className={styles.rowValue}>{formatTime(totalTimerSeconds)}</span>
+
+            <div className={styles.fieldGroup}>
+              <span className={styles.fieldLabel}>Done</span>
+              <div className={styles.countDisplayOnly}>{processedCount}</div>
             </div>
-            <div className={styles.progressRow}>
-              <span className={styles.rowLabel}>Avg R:</span>
-              <span className={styles.rowValue}>{formatTime(avgRealTimeSeconds)}</span>
+
+            <div className={styles.stopwatchDisplay}>
+              <span className={styles.stopwatchLabel}>STOPWATCH</span>
+              <span className={styles.stopwatchNumbers}>{formatTime(stopwatchSeconds)}</span>
             </div>
+
+            {/* Оригинальный блок PACE с вашим прогресс-баром темпа */}
+            <div className={styles.timeDisplay}>
+              <span className={styles.timeLabel}>PACE</span>
+              <span className={`${styles.timeNumbers} ${paceColorClass}`}>{formatTime(timeLeft)}</span>
+              <div className={styles.paceBarTrack}>
+                <div 
+                  className={styles.paceBarFill} 
+                  style={{ width: `${paceBarWidth}%` }}
+                ></div>
+              </div>
+            </div>
+
+            {/* Оригинальная кнопка DONE */}
+            <button 
+              type="button" 
+              onClick={handleRealItemDone} 
+              disabled={isDoneDisabled}
+              className={styles.dDoneBtn}
+              style={{ marginRight: '12px' }}
+            >
+              DONE
+            </button>
           </div>
 
-          <div className={styles.fieldGroup}>
-            <span className={styles.fieldLabel}>Done</span>
-            <div className={styles.countDisplayOnly}>{processedCount}</div>
+          {/* НОВАЯ ОБЩАЯ СТРОКА ПРОГРЕССА СМЕНЫ — Идет под всем блоком на всю длину */}
+          <div className={styles.bottomProgressBarTrack} style={{ marginRight: '12px', marginTop: '6px' }}>
+            <div 
+              className={styles.bottomProgressBarFill} 
+              style={{ width: `${Math.min(100, Math.max(0, factPercent))}%` }}
+            />
+            <span className={styles.bottomProgressBarText}>
+              Shift Progress: {factPercent}%
+            </span>
           </div>
-
-          <div className={styles.stopwatchDisplay}>
-            <span className={styles.stopwatchLabel}>STOPWATCH</span>
-            <span className={styles.stopwatchNumbers}>{formatTime(stopwatchSeconds)}</span>
-          </div>
-
-          <div className={styles.timeDisplay}>
-            <span className={styles.timeLabel}>PACE</span>
-            <span className={`${styles.timeNumbers} ${paceColorClass}`}>{formatTime(timeLeft)}</span>
-            <div className={styles.paceBarTrack}>
-              <div 
-                className={styles.paceBarFill} 
-                style={{ width: `${paceBarWidth}%` }}
-              ></div>
-            </div>
-          </div>
-
-          {/* Заблокированная кнопка DONE */}
-          <button 
-            type="button" 
-            onClick={handleRealItemDone} 
-            disabled={isDoneDisabled}
-            className={styles.dDoneBtn}
-          >
-            DONE
-          </button>
 
         </div>
 
