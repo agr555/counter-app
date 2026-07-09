@@ -10,7 +10,7 @@
     padding: 4px; 
   }
   
-  /* ИЗМЕНЕНИЕ: Высота увеличена до 62px, чтобы поместилась нижняя полоса прогресса */
+  /* Общая высота увеличена до 76px под две нижние полосы */
   .widgetContainer {
     display: flex;
     align-items: center;
@@ -19,13 +19,13 @@
     border-radius: 8px;
     width: max-content; 
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    height: 76px; /* Было 62px, стало 76px */
+    height: 76px; 
     overflow: hidden;
     gap: 6px;
     padding: 0;
   }
   
-  /* ИЗМЕНЕНИЕ: height теперь 100%, чтобы блоки тянулись по новой высоте контейнера */
+  /* Вогнутые блоки */
   .concaveBlock {
     display: flex;
     align-items: center;
@@ -102,6 +102,8 @@
   }
   
   .radioInput { position: absolute; opacity: 0; width: 0; height: 0; }
+  
+  /* ИСПРАВЛЕНИЕ СЛЕПОГО ТЕКСТА: Неактивный текст серый, с плавным переходом */
   .radioLabel {
     display: flex;
     align-items: center;
@@ -113,6 +115,12 @@
     color: #64748b;
     cursor: pointer;
     z-index: 2;
+    transition: color 0.12s ease-in-out;
+  }
+  
+  /* Активный текст под зеленым ползунком теперь четко белый */
+  .radioLabelActive {
+    color: #ffffff !important;
   }
   
   .slider {
@@ -125,12 +133,13 @@
     transition: transform 0.15s ease-in-out;
     z-index: 1;
   }
+  
   /* Колонки управления */
-.controlAndAdjustColumn {
+  .controlAndAdjustColumn {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    gap: 2px;
+    gap: 3px;
     height: 100%;
   }
   
@@ -139,6 +148,16 @@
     align-items: center;
     gap: 4px;
     height: 18px;
+  }
+  
+  /* Новый контейнер для распределения корректировок на всю ширину */
+  .gridRowFullWidth {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 3px;
+    height: 18px;
+    width: 100%;
   }
   
   /* Объемные кнопки с тенью */
@@ -169,32 +188,34 @@
   .btnReset { background-color: #dc2626; }
   .btnReset:hover { background-color: #b91c1c; }
   
-  /* Кастомные стили для кнопок управления звуком */
+  /* Кастомные стили для кнопок MUTE/BEEP */
   .btnSoundOn {
     background-color: #f0fdf4 !important;
-    color: #166534 !important;
-    border: 1px solid #cbd5e1 !important;
+    border: 1px solid #bbf7d0 !important;
   }
   .btnSoundOff {
     background-color: #f1f5f9 !important;
-    color: #64748b !important;
     border: 1px solid #cbd5e1 !important;
   }
   
-  .adjBtn {
+  /* Увеличенные кнопки -10 -1 +1 +10 распределяются равномерно */
+  .adjBtnWide {
+    flex: 1;
     background-color: #ffffff; 
     border: 1px solid #cbd5e1; 
     color: #475569;
     border-radius: 3px; 
-    font-size: 0.52rem; 
-    font-weight: 700; 
-    height: 16px; 
-    width: 25px;
-    padding: 0 4px; 
+    font-size: 0.58rem; 
+    font-weight: 800; 
+    height: 18px; 
+    padding: 0; 
     cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
   }
-  .adjBtn:hover { background-color: #f1f5f9; }
+  .adjBtnWide:hover { background-color: #f1f5f9; }
   
   /* Дисплеи времени */
   .timeDisplay, .stopwatchDisplay {
@@ -211,25 +232,10 @@
   
   .stopwatchNumbers { color: #3b82f6; }
   
-  /* --- НАСТРОЙКА ЦВЕТОВ PACE ALARM --- */
+  /* Цвета текста PACE */
   .paceGreen { color: #16a34a; }
   .paceBlack { color: #0f172a; } 
   .paceRed { color: #dc2626; font-weight: 900; } 
-  
-  .paceBarTrack {
-    width: 100%;
-    height: 2px;
-    background-color: #e2e8f0;
-    border-radius: 1px;
-    margin-top: 1px;
-    overflow: hidden;
-  }
-  .paceBarFill {
-    height: 100%;
-    background-color: #0f766e;
-    width: 100%;
-    transition: width 1s linear;
-  }
   
   /* Блоки прогресса и статистики */
   .compactStatsBox {
@@ -284,10 +290,45 @@
   .dDoneBtn:hover { background-color: #115e59; }
   .dDoneBtn:active { background-color: #134e4a; }
   
-  /* --- НОВАЯ НИЖНЯЯ СТРОКА ПРОГРЕССА СМЕНЫ --- */
+  /* ДЛИННАЯ ПОЛОСА ТЕМПА (PACE) — Растет вправо, дедлайн у кнопки DONE */
+  .extendedPaceTrack {
+    width: calc(100% - 12px);
+    height: 10px;
+    background-color: #e2e8f0;
+    border-radius: 2px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.08);
+  }
+  
+  .extendedPaceFill {
+    height: 100%;
+    transition: width 1s linear, background-color 0.2s ease;
+  }
+  
+  .extendedPaceText {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.52rem;
+    font-weight: 800;
+    color: #1e293b;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    mix-blend-mode: difference;
+  }
+  
+  /* Динамические фоны для заполнения полосы темпа */
+  .bgPaceGreen { background-color: #16a34a; }
+  .bgPaceBlack { background-color: #0f172a; }
+  .bgPaceRed   { background-color: #dc2626; }
+  
+  /* ОБЩАЯ СТРОКА ПРОГРЕССА СМЕНЫ (СИНЯЯ) */
   .bottomProgressBarTrack {
     width: calc(100% - 12px);
-    height: 10px; /* Идеально вписывается в измененную высоту 62px */
+    height: 10px; 
     background-color: #e2e8f0;
     border-radius: 2px;
     position: relative;
@@ -307,45 +348,11 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 0.52rem; /* Ультра-компактный шрифт под стать остальному виджету */
+    font-size: 0.52rem; 
     font-weight: 800;
     color: #1e293b;
     text-transform: uppercase;
     letter-spacing: 0.02em;
-    mix-blend-mode: difference; /* Автоматический контраст на стыке синего и серого */
+    mix-blend-mode: difference; 
   }
   
-
-  .extendedPaceTrack {
-    width: calc(100% - 12px);
-    height: 12px;
-    background-color: #e2e8f0;
-    border-radius: 3px;
-    position: relative;
-    overflow: hidden;
-    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.08);
-  }
-  
-  .extendedPaceFill {
-    height: 100%;
-    transition: width 1s linear, background-color 0.3s ease; /* Плавное изменение цвета */
-  }
-  
-  .extendedPaceText {
-    position: absolute;
-    inset: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.52rem;
-    font-weight: 800;
-    color: #ffffff;
-    text-transform: uppercase;
-    letter-spacing: 0.02em;
-    mix-blend-mode: difference; /* Текст будет отлично виден и на черном, и на красном, и на зеленом */
-  }
-  
-  /* 3. Классы динамических цветов для фона полосы PACE */
-  .bgPaceGreen { background-color: #16a34a; }
-  .bgPaceBlack { background-color: #0f172a; }
-  .bgPaceRed   { background-color: #dc2626; }

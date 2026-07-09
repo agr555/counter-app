@@ -65,6 +65,7 @@ export default function PomodoroWidget() {
       if (savedSound) setIsSoundEnabled(savedSound === 'true');
     }
   }, []);
+
   // Синхронизация замороженных параметров, пока кнопка СТАРТ не нажата
   useEffect(() => {
     if (!isRunning && timeLeft === totalTimerSeconds) {
@@ -101,7 +102,6 @@ export default function PomodoroWidget() {
 
       setTimeLeft((prev) => {
         if (prev <= 1) {
-          // Воспроизводим звук, только если переключатель звука активен
           if (isSoundEnabled) {
             playQuietPeep();
           }
@@ -114,7 +114,6 @@ export default function PomodoroWidget() {
     return () => clearInterval(interval);
   }, [isRunning, totalTimerSeconds, isSoundEnabled]);
 
-  // Функция воспроизведения тихого короткого пика (Quiet Peep)
   const playQuietPeep = () => {
     if (typeof window === 'undefined') return;
     try {
@@ -138,16 +137,13 @@ export default function PomodoroWidget() {
     }
   };
 
-  // По нажатию кнопки DONE или Shift+A оба секундомера сбрасываются в 0 без сигнала
   const handleRealItemDone = useCallback(() => {
     setProcessedCount((prev) => prev + 1);
     setTotalRealSeconds((prev) => prev + stopwatchSeconds);
-    
     setStopwatchSeconds(0);
     setTimeLeft(totalTimerSeconds); 
   }, [stopwatchSeconds, totalTimerSeconds]);
 
-  // Слушатель глобальной горячей клавиши Shift + A для DONE
   useEffect(() => {
     const handleGlobalKey = (e: KeyboardEvent) => {
       if (e.shiftKey && (e.key === 'A' || e.key === 'a' || e.key === 'ф' || e.key === 'Ф')) {
@@ -160,6 +156,7 @@ export default function PomodoroWidget() {
     window.addEventListener('keydown', handleGlobalKey);
     return () => window.removeEventListener('keydown', handleGlobalKey);
   }, [isRunning, handleRealItemDone]);
+
   const formatTime = (seconds: number) => {
     const minutes = Math.floor(seconds / 60);
     const secs = seconds % 60;
@@ -198,7 +195,6 @@ export default function PomodoroWidget() {
     setProcessedCount((prev) => Math.max(0, prev + amount));
   };
 
-  // Výpočet ideálneho plánu na sekundy
   const exactCurrentPlanPcs = totalTimerSeconds > 0 
     ? shiftElapsedSeconds / totalTimerSeconds 
     : 0;
@@ -218,13 +214,11 @@ export default function PomodoroWidget() {
   const pcsLeft = Math.max(0, lockedTarget - processedCount);
   const avgRealTimeSeconds = processedCount > 0 ? Math.round(totalRealSeconds / processedCount) : 0;
 
-  // Škála odchýlky (100% pri rozdiele 5 kusov)
   const maxDiffThreshold = 5; 
   const barWidthPercent = exactCurrentPlanPcs > 0 
     ? Math.min(100, Math.round((Math.abs(diffPcs) / maxDiffThreshold) * 100))
     : 0;
 
-  // Zmena farieb pre PACE (Zelená -> Čierna -> Červená)
   const paceRatio = totalTimerSeconds > 0 ? timeLeft / totalTimerSeconds : 1;
   let paceColorClass = styles.paceGreen;
 
@@ -234,7 +228,9 @@ export default function PomodoroWidget() {
     paceColorClass = styles.paceRed;   
   }
 
-  const paceBarWidth = Math.round(paceRatio * 100);
+  // НОВОЕ: Инвертируем проценты, чтобы полоса заполнялась ВПРАВО (от 0% до 100%) по мере истечения времени
+  const paceBarWidth = Math.round((1 - paceRatio) * 100);
+  
   const isSettingsDisabled = timeLeft !== totalTimerSeconds || isRunning;
   const isDoneDisabled = shiftElapsedSeconds === 0;
 
@@ -246,7 +242,6 @@ export default function PomodoroWidget() {
     }
     setIsRunning(!isRunning);
   };
-
   return (
     <div className={styles.layoutWrapper}>
       <div className={styles.widgetContainer}>
@@ -281,7 +276,12 @@ export default function PomodoroWidget() {
                 disabled={isSettingsDisabled}
                 className={styles.radioInput}
               />
-              <label htmlFor="shift-8" className={styles.radioLabel}>8h</label>
+              <label 
+                htmlFor="shift-8" 
+                className={`${styles.radioLabel} ${(isSettingsDisabled ? lockedShift : shift) === '8h' ? styles.radioLabelActive : ''}`}
+              >
+                8h
+              </label>
 
               <input
                 type="radio"
@@ -293,7 +293,13 @@ export default function PomodoroWidget() {
                 disabled={isSettingsDisabled}
                 className={styles.radioInput}
               />
-              <label htmlFor="shift-9" className={styles.radioLabel} style={{ width: '56px' }}>9:40</label>
+              <label 
+                htmlFor="shift-9" 
+                className={`${styles.radioLabel} ${(isSettingsDisabled ? lockedShift : shift) === '9h40m' ? styles.radioLabelActive : ''}`}
+                style={{ width: '56px' }}
+              >
+                9:40
+              </label>
               
               <div 
                 className={styles.slider} 
@@ -338,8 +344,9 @@ export default function PomodoroWidget() {
             </div>
           </div>
         </div>
+
         {/* BLOCK 3: CONTROLS & MANUAL ADJUSTMENTS (Concave Border) */}
-        <div className={styles.concaveBlock}>
+        <div className={styles.concaveBlock} style={{ padding: '0 6px' }}>
           <div className={styles.controlAndAdjustColumn}>
             <div className={styles.gridRow}>
               <button 
@@ -350,13 +357,14 @@ export default function PomodoroWidget() {
                 {isRunning ? '|| PAUSE' : '▶ START'}
               </button>
 
-              {/* КНОПКА ЗВУКА ДЛЯ ВКЛЮЧЕНИЯ/ОТКЛЮЧЕНИЯ СИГНАЛА КОНЦА PACE */}
+              {/* УБРАЛИ ТЕКСТ: Кнопка стала уже, а иконки крупнее и ярче */}
               <button 
                 type="button" 
                 onClick={() => setIsSoundEnabled(!isSoundEnabled)} 
                 className={`${styles.shadowBtn} ${isSoundEnabled ? styles.btnSoundOn : styles.btnSoundOff}`}
+                style={{ fontSize: '0.85rem', padding: '0 6px' }}
               >
-                {isSoundEnabled ? '🔊 BEEP' : '🔇 MUTE'}
+                {isSoundEnabled ? '🔊' : '🔇'}
               </button>
 
               <button 
@@ -368,21 +376,21 @@ export default function PomodoroWidget() {
               </button>
             </div>
 
-            <div className={styles.gridRow}>
-              <button type="button" onClick={() => adjustCount(-10)} className={styles.adjBtn}>-10</button>
-              <button type="button" onClick={() => adjustCount(-1)} className={styles.adjBtn}>-1</button>
-              <button type="button" onClick={() => adjustCount(1)} className={styles.adjBtn}>+1</button>
-              <button type="button" onClick={() => adjustCount(10)} className={styles.adjBtn}>+10</button>
+            {/* РАВНОМЕРНОЕ РАСПРЕДЕЛЕНИЕ: Кнопки увеличили и выровняли по ширине */}
+            <div className={styles.gridRowFullWidth}>
+              <button type="button" onClick={() => adjustCount(-10)} className={styles.adjBtnWide}>-10</button>
+              <button type="button" onClick={() => adjustCount(-1)} className={styles.adjBtnWide}>-1</button>
+              <button type="button" onClick={() => adjustCount(1)} className={styles.adjBtnWide}>+1</button>
+              <button type="button" onClick={() => adjustCount(10)} className={styles.adjBtnWide}>+10</button>
             </div>
           </div>
         </div>
 
-       {/* BLOCK 4: STATS, TIMERS & ACTION DONE BUTTON */}
-       <div 
+        {/* BLOCK 4: STATS, TIMERS & ACTION DONE BUTTON */}
+        <div 
           className={styles.concaveBlock} 
           style={{ paddingRight: '0', gap: '6px', flexDirection: 'column', alignItems: 'stretch' }}
         >
-          {/* Верхняя строка элементов внутри Блока 4 */}
           <div style={{ display: 'flex', width: '100%', alignItems: 'center', gap: '6px', justifyContent: 'space-between' }}>
             
             <div className={styles.compactStatsBox} style={{ minWidth: '78px' }}>
@@ -410,13 +418,11 @@ export default function PomodoroWidget() {
               <span className={styles.stopwatchNumbers}>{formatTime(stopwatchSeconds)}</span>
             </div>
 
-            {/* Обновленный блок PACE (теперь без микро-полоски внутри) */}
             <div className={styles.timeDisplay}>
               <span className={styles.timeLabel}>PACE</span>
               <span className={`${styles.timeNumbers} ${paceColorClass}`}>{formatTime(timeLeft)}</span>
             </div>
 
-            {/* Оригинальная кнопка DONE */}
             <button 
               type="button" 
               onClick={handleRealItemDone} 
@@ -428,7 +434,7 @@ export default function PomodoroWidget() {
             </button>
           </div>
 
-          {/* 1. ДОРАБОТАННЫЙ ПРОГРЕСС-БАР ТЕМПА (PACE) — Теперь длинный, под контентом, меняет цвет */}
+          {/* ПОЛОСА ТЕМПА (PACE): Теперь растет вправо, дедлайн оказывается рядом с DONE */}
           <div className={styles.extendedPaceTrack} style={{ marginRight: '12px', marginTop: '6px' }}>
             <div 
               className={`${styles.extendedPaceFill} ${
@@ -437,17 +443,17 @@ export default function PomodoroWidget() {
               }`} 
               style={{ width: `${paceBarWidth}%` }}
             />
-            <span className={styles.extendedPaceText}>Time Left</span>
+            <span className={styles.extendedPaceText}>Time Elapsed</span>
           </div>
 
-          {/* 2. СТРОКА ПРОГРЕССА СМЕНЫ — Идет самым нижним слоем */}
+          {/* СТРОКА ПРОГРЕССА СМЕНЫ */}
           <div className={styles.bottomProgressBarTrack} style={{ marginRight: '12px', marginTop: '4px' }}>
             <div 
               className={styles.bottomProgressBarFill} 
               style={{ width: `${Math.min(100, Math.max(0, factPercent))}%` }}
             />
             <span className={styles.bottomProgressBarText}>
-              Shift Progress: {factPercent}%
+              Progress: {factPercent}%
             </span>
           </div>
 
