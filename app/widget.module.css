@@ -444,8 +444,11 @@
   /* ==========================================================================
    ФИНАЛЬНАЯ РЕЗИНОВАЯ АДАПТИВНОСТЬ (ВСЕ 4 БЛОКА В ОДИН РЯД НА 600px)
    ========================================================================== */
+/* ==========================================================================
+   ПОЛНАЯ ИСПРАВЛЕННАЯ АДАПТИВНОСТЬ (СТРОГО ОДИН РЯД НА 600px БЕЗ ДЫР И СЖАТИЯ)
+   ========================================================================== */
 
-.configGrid {
+   .configGrid {
     display: flex;
     align-items: center;
     gap: 6px;
@@ -480,16 +483,16 @@
     }
   }
   
- /* СТУПЕНЬ 2: Точка "600" (от 980px до 541px) — ИДЕАЛЬНЫЙ БЛОК 4 + ИСПРАВЛЕНИЕ ЛЕВОЙ ЧАСТИ */
-@media (max-width: 980px) and (min-width: 541px) {
+  /* СТУПЕНЬ 2: Точка "600" (работает от 980px до 541px) — ИДЕАЛЬНЫЙ БЛОК 4 + ИСПРАВЛЕНИЕ ЛЕВОЙ ЧАСТИ */
+  @media (max-width: 980px) and (min-width: 541px) {
     .widgetContainer {
       transform: scale(1);
       display: flex;
       flex-direction: row;
-      flex-wrap: nowrap;    /* Строго в одну линию */
-      height: 76px;         /* Фиксированная высота всего виджета */
+      flex-wrap: nowrap;    /* КАТЕГОРИЧЕСКИ ЗАПРЕЩАЕМ ПЕРЕНОС: все 4 блока стоят в одну линию */
+      height: 76px;         /* Фиксированная высота всего виджета — защита от урезания */
       max-width: max-content; 
-      gap: 4px;             /* Минимальный зазор, убирает дыру */
+      gap: 4px;             /* Минимальный зазор, полностью убирает дыру */
       padding: 0;
       background-color: transparent;
       border: none;
@@ -503,16 +506,16 @@
       flex: 0 1 auto; 
     }
   
-    /* --- ИДЕАЛЬНЫЙ БЛОК 4 (НЕ ТРОГАЕМ ЕГО РАЗМЕРЫ) --- */
+    /* --- ИДЕАЛЬНЫЙ БЛОК 4 (ЖЕСТКО ФИКСИРОВАН, НЕ ТРОГАЕМ ЕГО) --- */
     .widgetContainer > .concaveBlock:nth-child(4) {
-      flex: 0 0 310px !important; /* Жестко фиксируем, запрещая сжатие и изменения */
+      flex: 0 0 310px !important; 
       min-width: 310px !important;
       width: 310px !important;
     }
   
     /* --- ИСПРАВЛЕНИЕ ЛЕВОЙ ЧАСТИ (КНОПКИ И НАСТРОЙКИ) --- */
   
-    /* Блок 1 (Настройки): делаем компактнее по ширине */
+    /* Блок 1 (Настройки): делаем компактнее по ширине за счет убранного слова Shift */
     .blockConfig {
       max-width: 215px;
       min-width: 205px;
@@ -579,3 +582,91 @@
       font-size: 0.55rem;
     }
   }
+  
+  /* СТУПЕНЬ 3: Мобильные телефоны (меньше 540px) — складываем в 2 компактных ряда, скрывая Блок 2 */
+  @media (max-width: 540px) {
+    .widgetContainer > .concaveBlock:nth-child(2) {
+      display: none !important;
+    }
+  
+    .widgetContainer {
+      display: grid;
+      grid-template-columns: 145px 1fr; /* Левая колонка: Управление, Правая: Настройки */
+      grid-template-rows: auto auto;   
+      max-width: 340px;    
+      width: 340px;
+      height: auto;
+      gap: 4px;
+      padding: 4px;
+      background-color: #f1f5f9; 
+      border: 1px solid #cbd5e1;
+      transform: scale(1);
+      transform-origin: bottom right;
+    }
+  
+    .concaveBlock {
+      box-sizing: border-box;
+      height: 76px; 
+    }
+  
+    /* Блок управления (START) — Слева */
+    .blockControls {
+      grid-column: 1;
+      grid-row: 1;
+      width: 172px !important; 
+      transform: scale(0.84);  
+      transform-origin: left center;
+      margin-right: -27px;     
+    }
+  
+    /* Блок настроек — Справа в два ряда */
+    .blockConfig {
+      grid-column: 2;
+      grid-row: 1;
+      width: 122% !important; 
+      transform: scale(0.82);  
+      transform-origin: right center;
+      padding: 4px 6px;
+    }
+  
+    /* Внутренняя сетка Блока 1 на мобильном */
+    .blockConfig .configGrid {
+      display: grid;
+      grid-template-columns: 1fr 1fr; 
+      grid-template-rows: auto auto;   
+      row-gap: 3px;
+      column-gap: 4px; 
+      align-items: center;
+      justify-content: center;
+    }
+  
+    .cfgRate   { grid-column: 1; grid-row: 1; }
+    .cfgTime   { grid-column: 2; grid-row: 1; }
+    
+    /* Target — параллельно кнопкам на втором ряду */
+    .cfgTarget {
+      grid-column: span 2; 
+      grid-row: 2;
+      flex-direction: row !important; 
+      gap: 4px;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+    }
+  
+    /* Блок таймеров и DONE — Нижний длинный этаж */
+    .widgetContainer > .concaveBlock:nth-child(4) {
+      grid-column: span 2; 
+      grid-row: 2;
+      width: 100% !important;
+    }
+  }
+  
+  /* СТУПЕНЬ 4: Маленькие смартфоны (меньше 400px) — аккуратное пропорциональное сжатие */
+  @media (max-width: 400px) {
+    .widgetContainer {
+      transform: scale(0.85); 
+      transform-origin: bottom right;
+    }
+  }
+  
