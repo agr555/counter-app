@@ -290,7 +290,7 @@
   .dDoneBtn:hover { background-color: #115e59; }
   .dDoneBtn:active { background-color: #134e4a; }
   
-  /* ДЛИННАЯ ПОЛОСА ТЕМПА (PACE) — Растет вправо, дедлайн у кнопки DONE */
+  /* --- ДЛИННАЯ ПОЛОСА ТЕМПА (PACE) --- */
   .extendedPaceTrack {
     width: calc(100% - 12px);
     height: 10px;
