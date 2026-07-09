@@ -377,12 +377,12 @@ export default function PomodoroWidget() {
           </div>
         </div>
 
-        {/* BLOCK 4: STATS, TIMERS & ACTION DONE BUTTON (С флекс-структурой для строки прогресса внизу) */}
-        <div 
+       {/* BLOCK 4: STATS, TIMERS & ACTION DONE BUTTON */}
+       <div 
           className={styles.concaveBlock} 
           style={{ paddingRight: '0', gap: '6px', flexDirection: 'column', alignItems: 'stretch' }}
         >
-          {/* Верхняя строка элементов внутри Блока 4 (сохраняет оригинальную структуру) */}
+          {/* Верхняя строка элементов внутри Блока 4 */}
           <div style={{ display: 'flex', width: '100%', alignItems: 'center', gap: '6px', justifyContent: 'space-between' }}>
             
             <div className={styles.compactStatsBox} style={{ minWidth: '78px' }}>
@@ -410,16 +410,10 @@ export default function PomodoroWidget() {
               <span className={styles.stopwatchNumbers}>{formatTime(stopwatchSeconds)}</span>
             </div>
 
-            {/* Оригинальный блок PACE с прогресс-баром темпа */}
+            {/* Обновленный блок PACE (теперь без микро-полоски внутри) */}
             <div className={styles.timeDisplay}>
               <span className={styles.timeLabel}>PACE</span>
               <span className={`${styles.timeNumbers} ${paceColorClass}`}>{formatTime(timeLeft)}</span>
-              <div className={styles.paceBarTrack}>
-                <div 
-                  className={styles.paceBarFill} 
-                  style={{ width: `${paceBarWidth}%` }}
-                ></div>
-              </div>
             </div>
 
             {/* Оригинальная кнопка DONE */}
@@ -434,14 +428,26 @@ export default function PomodoroWidget() {
             </button>
           </div>
 
-          {/* Строка прогресса смены — теперь идет на всю длину под контентом Блока 4 */}
-          <div className={styles.bottomProgressBarTrack} style={{ marginRight: '12px', marginTop: '6px' }}>
+          {/* 1. ДОРАБОТАННЫЙ ПРОГРЕСС-БАР ТЕМПА (PACE) — Теперь длинный, под контентом, меняет цвет */}
+          <div className={styles.extendedPaceTrack} style={{ marginRight: '12px', marginTop: '6px' }}>
+            <div 
+              className={`${styles.extendedPaceFill} ${
+                paceColorClass === styles.paceGreen ? styles.bgPaceGreen :
+                paceColorClass === styles.paceBlack ? styles.bgPaceBlack : styles.bgPaceRed
+              }`} 
+              style={{ width: `${paceBarWidth}%` }}
+            />
+            <span className={styles.extendedPaceText}>Time Left</span>
+          </div>
+
+          {/* 2. СТРОКА ПРОГРЕССА СМЕНЫ — Идет самым нижним слоем */}
+          <div className={styles.bottomProgressBarTrack} style={{ marginRight: '12px', marginTop: '4px' }}>
             <div 
               className={styles.bottomProgressBarFill} 
               style={{ width: `${Math.min(100, Math.max(0, factPercent))}%` }}
             />
             <span className={styles.bottomProgressBarText}>
-              Progress: {factPercent}%
+              Shift Progress: {factPercent}%
             </span>
           </div>
 
