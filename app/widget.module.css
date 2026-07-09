@@ -391,17 +391,22 @@
   }
   
   /* СТУПЕНЬ 2: Точка "00" (меньше 980px) — делим на 2 ряда с умным распределением ширины */
-  @media (max-width: 980px) {
+  /* ==========================================================================
+   АДАПТИВНОСТЬ: СТУПЕНЬ 2 И СТУПЕНЬ 3 (БЕЗ ИЗЛОМА НА 470px)
+   ========================================================================== */
+
+/* СТУПЕНЬ 2: Экран планшета/ноутбука (меньше 980px) — делим на 2 ряда */
+@media (max-width: 980px) and (min-width: 541px) {
     .widgetContainer {
-      transform: scale(1); /* Возвращаем 100% размер для читаемости */
+      transform: scale(1); 
       flex-wrap: wrap;
       height: auto; 
-      max-width: 580px; /* Немного увеличили, чтобы точно всё влезло */
+      max-width: 580px; 
       gap: 6px;
       padding: 6px;
       background-color: #f1f5f9; 
       border: 1px solid #cbd5e1;
-      justify-content: flex-end; /* Держим привязку к правому краю */
+      justify-content: flex-end; 
     }
   
     .concaveBlock {
@@ -409,113 +414,111 @@
       box-sizing: border-box;
     }
   
-    /* ИСПРАВЛЕНИЕ: Ограничиваем Блок 1 и Блок 2, чтобы они не раздувались */
-    .widgetContainer > .concaveBlock:nth-child(1) {
-      flex: 0 1 190px; /* Жестко фиксируем аккуратную ширину для настроек */
-    }
-    
-    .widgetContainer > .concaveBlock:nth-child(2) {
-      flex: 1 1 180px; /* Статистика плана */
-    }
-  
-    /* ИСПРАВЛЕНИЕ: Отдаем максимум места кнопкам и таймерам, чтобы DONE не пряталась */
-    .widgetContainer > .concaveBlock:nth-child(3) {
-      flex: 2 1 200px; /* Блок управления */
-    }
-  
-    .widgetContainer > .concaveBlock:nth-child(4) {
-      flex: 3 1 310px; /* Блок таймеров и кнопка DONE теперь имеют приоритет по ширине */
-      min-width: 310px;
-    }
+    .widgetContainer > .concaveBlock:nth-child(1) { flex: 0 1 190px; }
+    .widgetContainer > .concaveBlock:nth-child(2) { flex: 1 1 180px; }
+    .widgetContainer > .concaveBlock:nth-child(3) { flex: 2 1 200px; }
+    .widgetContainer > .concaveBlock:nth-child(4) { flex: 3 1 310px; min-width: 310px; }
   }
   
-  /* СТУПЕНЬ 3: Точка "500" (меньше 600px) — скрываем Блок 2, выстраиваем в колонку */
- /* СТУПЕНЬ 3: Точка "500" (меньше 600px) — скрываем Блок 2, меняем блоки местами и уменьшаем настройки */
- @media (max-width: 600px) {
+  /* СТУПЕНЬ 3: Точка "500" (Включается уже на 540px, чтобы не было излома) */
+  @media (max-width: 540px) {
     /* Скрываем Блок 2 (статистику плана) */
     .widgetContainer > .concaveBlock:nth-child(2) {
       display: none !important;
     }
   
-    /* Превращаем весь контейнер в четкую Grid-сетку из двух основных этажей */
+    /* Строим идеальную двухрядную мобильную сетку */
     .widgetContainer {
       display: grid;
-      grid-template-columns: auto 1fr; /* Колонка 1: Управление, Колонка 2: Настройки */
-      grid-template-rows: auto auto;   /* Строка 1: Верхние блоки, Строка 2: Таймеры (Блок 4) */
-      max-width: 480px; 
+      grid-template-columns: 145px 1fr; 
+      grid-template-rows: auto auto;   
+      max-width: 340px;    
+      width: 340px;
       height: auto;
-      gap: 5px;
-      padding: 5px;
+      gap: 4px;
+      padding: 4px;
       background-color: #f1f5f9; 
       border: 1px solid #cbd5e1;
+      
+      /* ЖЕСТКАЯ ПРИВЯЗКА К ПРАВОМУ НИЖНЕМУ УГЛУ */
+      transform-origin: bottom right; 
+      transform: scale(1);
+      transition: transform 0.1s ease-out;
     }
   
     .concaveBlock {
       box-sizing: border-box;
-      height: 76px; /* Фиксированная высота этажей */
+      height: 76px; 
     }
   
-    /* 1. БЛОК УПРАВЛЕНИЯ (Блок 3): Встает СЛЕВА на всю высоту первого этажа */
+    /* Блок управления (Блок 3) — Слева */
     .blockControls {
       grid-column: 1;
       grid-row: 1;
-      width: 205px !important; /* Четкая ширина под кнопки старта и корректировок */
+      width: 172px !important; 
+      transform: scale(0.84);  
+      transform-origin: left center;
+      margin-right: -27px;     
     }
   
-    /* 2. БЛОК НАСТРОЕК (Блок 1): Встает СПРАВА от управления */
+    /* Блок настроек (Блок 1) — Справа в два ряда */
     .blockConfig {
       grid-column: 2;
       grid-row: 1;
-      width: 100% !important;
-      padding: 5px 8px;
+      width: 122% !important; 
+      transform: scale(0.82);  
+      transform-origin: right center;
+      padding: 4px 6px;
     }
   
-    /* ВНУТРИ БЛОКА 1: Перестраиваем инпуты в два ряда параллельно кнопкам управления */
+    /* Внутренняя сетка Блока 1 */
     .blockConfig .configGrid {
       display: grid;
-      grid-template-columns: 1fr 1fr; /* Две равные колонки для Rate и Shift Time */
-      grid-template-rows: auto auto;   /* Два ряда */
-      row-gap: 4px;
-      column-gap: 8px;
+      grid-template-columns: 1fr 1fr; 
+      grid-template-rows: auto auto;   
+      row-gap: 3px;
+      column-gap: 4px; 
       align-items: center;
       justify-content: center;
       height: 100%;
       width: 100%;
     }
   
-    /* Ряд 1: Поле нормы (Rate) */
-    .cfgRate {
-      grid-column: 1;
-      grid-row: 1;
-    }
-  
-    /* Ряд 1: Рабочее время (Shift Time) */
-    .cfgTime {
-      grid-column: 2;
-      grid-row: 1;
-    }
-  
-    /* Ряд 2: Общее число деталей (Shift Target) — уходит вниз параллельно кнопкам */
+    .cfgRate   { grid-column: 1; grid-row: 1; }
+    .cfgTime   { grid-column: 2; grid-row: 1; }
+    
+    /* Shift Target — параллельно кнопкам на втором ряду */
     .cfgTarget {
-      grid-column: span 2; /* Растягиваем по центру на обе колонки */
+      grid-column: span 2; 
       grid-row: 2;
-      flex-direction: row !important; /* Делаем строчным для идеальной центровки */
-      gap: 8px;
+      flex-direction: row !important; 
+      gap: 4px;
       justify-content: center;
       align-items: center;
       width: 100%;
-      margin-top: 1px;
     }
+    .cfgTarget .fieldLabel { margin-bottom: 0; }
   
-    /* Убираем лишний нижний маргин у лейбла target на втором ряду */
-    .cfgTarget .fieldLabel {
-      margin-bottom: 0;
-    }
-  
-    /* 3. БЛОК ТАЙМЕРОВ И DONE (Блок 4): Занимает весь НИЖНИЙ второй этаж виджета */
+    /* Блок таймеров и DONE (Блок 4) — Нижний длинный этаж */
     .widgetContainer > .concaveBlock:nth-child(4) {
-      grid-column: span 2; /* Растягивается на всю ширину под Блоком 3 и Блоком 1 */
+      grid-column: span 2; 
       grid-row: 2;
       width: 100% !important;
     }
   }
+  
+  /* СТУПЕНЬ 4: ЗАЩИТА ОТ ИЗЛОМА НА 470px (И ниже до самых узких экранов) */
+  @media (max-width: 470px) {
+    .widgetContainer {
+      /* Пропорционально уменьшаем весь готовый двухрядный виджет на 15%, чтобы он гарантированно влез */
+      transform: scale(0.85); 
+    }
+  }
+  
+  @media (max-width: 375px) {
+    .widgetContainer {
+      /* Для ультра-узких или старых телефонов сжимаем на 25% */
+      transform: scale(0.75); 
+    }
+  }
+  
