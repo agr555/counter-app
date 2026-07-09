@@ -403,6 +403,10 @@
   
   /* СТУПЕНЬ 3: НАСТОЯЩИЙ МОБИЛЬНЫЙ ВИД (Меньше 520px, включая 500px и 492px) */
   @media (max-width: 520px) {
+    .layoutWrapper {
+        justify-content: center; 
+        align-items: flex-end; 
+    }
     .widgetContainer > .concaveBlock:nth-child(2) {
       display: none !important;
     }
