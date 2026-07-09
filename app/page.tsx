@@ -44,31 +44,54 @@ export default function PomodoroWidget() {
     coefficient * (currentShiftMinutes / 60)
   );
 
-  // Загрузка данных из памяти браузера при старте страницы
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const savedCoefficient = localStorage.getItem("p_coefficient");
-      const savedShift = localStorage.getItem("p_shift") as ShiftType;
-      const savedProcessedCount = localStorage.getItem("p_processedCount");
-      const savedRealSeconds = localStorage.getItem("p_totalRealSeconds");
-      const savedElapsed = localStorage.getItem("p_shiftElapsedSeconds");
-      const savedSound = localStorage.getItem("p_isSoundEnabled");
-
-      if (savedCoefficient) {
-        setCoefficient(parseInt(savedCoefficient, 10));
-        setLockedCoefficient(parseInt(savedCoefficient, 10));
+    // Загрузка данных из памяти браузера при старте страницы (Защищенная версия)
+    useEffect(() => {
+      if (typeof window !== 'undefined') {
+        const savedCoefficient = localStorage.getItem('p_coefficient');
+        const savedShift = localStorage.getItem('p_shift') as ShiftType;
+        const savedProcessedCount = localStorage.getItem('p_processedCount');
+        const savedRealSeconds = localStorage.getItem('p_totalRealSeconds');
+        const savedElapsed = localStorage.getItem('p_shiftElapsedSeconds');
+        const savedSound = localStorage.getItem('p_isSoundEnabled');
+  
+        // Настройки смены загружаем, если они есть
+        if (savedCoefficient) {
+          setCoefficient(parseInt(savedCoefficient, 10));
+          setLockedCoefficient(parseInt(savedCoefficient, 10));
+        }
+        if (savedShift) {
+          setShift(savedShift);
+          setLockedShift(savedShift);
+        }
+  
+        // СЧЕТЧИКИ: Если данных в браузере нет (новое устройство) — ЖЕСТКО пишем 0
+        if (savedProcessedCount) {
+          setProcessedCount(parseInt(savedProcessedCount, 10));
+        } else {
+          setProcessedCount(0);
+        }
+  
+        if (savedRealSeconds) {
+          setTotalRealSeconds(parseInt(savedRealSeconds, 10));
+        } else {
+          setTotalRealSeconds(0);
+        }
+  
+        if (savedElapsed) {
+          setShiftAdjustmentSeconds(parseInt(savedElapsed, 10));
+        } else {
+          setShiftAdjustmentSeconds(0);
+        }
+  
+        // Звук по умолчанию включаем
+        if (savedSound) {
+          setIsSoundEnabled(savedSound === 'true');
+        } else {
+          setIsSoundEnabled(true);
+        }
       }
-      if (savedShift) {
-        setShift(savedShift);
-        setLockedShift(savedShift);
-      }
-      if (savedProcessedCount)
-        setProcessedCount(parseInt(savedProcessedCount, 10));
-      if (savedRealSeconds) setTotalRealSeconds(parseInt(savedRealSeconds, 10));
-      if (savedElapsed) setShiftAdjustmentSeconds(parseInt(savedElapsed, 10));
-      if (savedSound) setIsSoundEnabled(savedSound === "true");
-    }
-  }, []);
+    }, []);
+  
 
   // Синхронизация замороженных параметров, пока кнопка СТАРТ не нажата
   useEffect(() => {
