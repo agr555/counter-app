@@ -1,3 +1,7 @@
+/* ==========================================================================
+   1. БАЗОВЫЕ СТИЛИ ВИДЖЕТА (ВАШ ОРИГИНАЛЬНЫЙ СТИЛЬ — ИДЕАЛЬНО ДЛЯ БОЛЬШИХ ЭКРАНОВ)
+   ========================================================================== */
+
 /* Внешняя невидимая оболочка: жестко держит компактную строку в правом нижнем углу экрана */
 .layoutWrapper {
     display: flex;
@@ -10,7 +14,7 @@
     padding: 4px; 
   }
   
-  /* Общая высота увеличена до 76px под две нижние полосы */
+  /* Сама горизонтальная строка виджета сжимается строго по контенту */
   .widgetContainer {
     display: flex;
     align-items: center;
@@ -19,13 +23,13 @@
     border-radius: 8px;
     width: max-content; 
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    height: 76px; 
+    height: 76px; /* Зафиксированная высота под две нижние полосы прогресса */
     overflow: hidden;
     gap: 6px;
     padding: 0;
   }
   
-  /* Вогнутые блоки */
+  /* Изящные вогнутые блоки */
   .concaveBlock {
     display: flex;
     align-items: center;
@@ -56,6 +60,7 @@
     text-align: center;
   }
   
+  /* Поля и цифры (размер строго 0.85rem) */
   .inputNumberWide {
     background-color: #ffffff;
     border: 1px solid #cbd5e1;
@@ -72,6 +77,7 @@
   .inputNumberWide:focus { border-color: #0f766e; }
   .inputNumberWide:disabled { opacity: 0.6; cursor: not-allowed; background-color: #f1f5f9; }
   
+  /* Визуально неактивный Target */
   .targetDisplayDisabled {
     background-color: #f1f5f9;
     border: 1px dashed #cbd5e1;
@@ -102,8 +108,6 @@
   }
   
   .radioInput { position: absolute; opacity: 0; width: 0; height: 0; }
-  
-  /* ИСПРАВЛЕНИЕ СЛЕПОГО ТЕКСТА: Неактивный текст серый, с плавным переходом */
   .radioLabel {
     display: flex;
     align-items: center;
@@ -118,7 +122,6 @@
     transition: color 0.12s ease-in-out;
   }
   
-  /* Активный текст под зеленым ползунком теперь четко белый */
   .radioLabelActive {
     color: #ffffff !important;
   }
@@ -147,26 +150,25 @@
     display: flex;
     align-items: center;
     gap: 4px;
-    height: 18px;
+    height: 22px;
   }
   
-  /* Новый контейнер для распределения корректировок на всю ширину */
   .gridRowFullWidth {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 3px;
-    height: 18px;
+    gap: 4px;
     width: 100%;
+    height: 18px;
   }
   
   /* Объемные кнопки с тенью */
   .shadowBtn {
-    height: 18px;
+    height: 22px;
     padding: 0 10px;
     border: none;
     border-radius: 4px;
-    font-size: 0.6rem;
+    font-size: 0.65rem;
     font-weight: 800;
     cursor: pointer;
     color: #ffffff;
@@ -188,7 +190,6 @@
   .btnReset { background-color: #dc2626; }
   .btnReset:hover { background-color: #b91c1c; }
   
-  /* Кастомные стили для кнопок MUTE/BEEP */
   .btnSoundOn {
     background-color: #f0fdf4 !important;
     border: 1px solid #bbf7d0 !important;
@@ -198,7 +199,6 @@
     border: 1px solid #cbd5e1 !important;
   }
   
-  /* Увеличенные кнопки -10 -1 +1 +10 распределяются равномерно */
   .adjBtnWide {
     flex: 1;
     background-color: #ffffff; 
@@ -232,7 +232,7 @@
   
   .stopwatchNumbers { color: #3b82f6; }
   
-  /* Цвета текста PACE */
+  /* Настройка цветов PACE */
   .paceGreen { color: #16a34a; }
   .paceBlack { color: #0f172a; } 
   .paceRed { color: #dc2626; font-weight: 900; } 
@@ -274,106 +274,42 @@
   }
   .unitText { font-size: 0.65rem; color: #94a3b8; font-weight: 500; font-family: sans-serif; }
   
-  /* Объемная кнопка DONE */
-/* Объемная кнопка DONE с мягкой тенью и скруглением правых углов */
-.dDoneBtn {
+  /* Объемная кнопка DONE с мягкой тенью и скруглением правых углов */
+  .dDoneBtn {
     width: 60px;
-    height: calc(100% - 4px); /* Чуть уменьшаем высоту, чтобы кнопка аккуратно сидела внутри рамки блока */
+    height: calc(100% - 4px); 
     background-color: #0f766e;
     border: none;
     color: #ffffff;
     font-size: 0.85rem;
     font-weight: 900;
     cursor: pointer;
-    margin-top: 2px; /* Центрируем кнопку по вертикали внутри вогнутого блока */
-    
-    /* ИСПРАВЛЕНИЕ: Скругление углов с правой стороны под форму вогнутого блока */
+    margin-top: 2px;
     border-top-right-radius: 6px;
     border-bottom-right-radius: 6px;
-    border-top-left-radius: 4px;  /* Небольшое мягкое скругление слева для красоты */
+    border-top-left-radius: 4px; 
     border-bottom-left-radius: 4px;
-    
-    /* ИСПРАВЛЕНИЕ: Стильная, глубокая и мягкая тень, которая выделяет кнопку */
-    box-shadow: 
-      0 4px 6px -1px rgba(15, 118, 110, 0.25), 
-      0 2px 4px -1px rgba(0, 0, 0, 0.12),
-      inset 0 1px 0 rgba(255, 255, 255, 0.2); /* Легкий внутренний блик сверху для объема */
-      
+    box-shadow: 0 4px 6px -1px rgba(15, 118, 110, 0.25), 0 2px 4px -1px rgba(0, 0, 0, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.2); 
     transition: background-color 0.1s ease, transform 0.05s ease, box-shadow 0.1s ease;
   }
-  
-  /* Эффект наведения (Hover) */
-  .dDoneBtn:hover { 
-    background-color: #115e59; 
-    /* При наведении тень становится чуть глубже */
-    box-shadow: 
-      0 6px 8px -1px rgba(15, 118, 110, 0.3), 
-      0 3px 6px -1px rgba(0, 0, 0, 0.15),
-      inset 0 1px 0 rgba(255, 255, 255, 0.2);
-  }
-  
-  /* Эффект нажатия (Active) */
-  .dDoneBtn:active { 
-    background-color: #134e4a; 
-    /* При клике кнопка физически "вдавливается" за счет уменьшения тени */
-    transform: translateY(0.5px);
-    box-shadow: 
-      0 2px 4px -1px rgba(15, 118, 110, 0.2), 
-      0 1px 2px -1px rgba(0, 0, 0, 0.1),
-      inset 0 1px 2px rgba(0, 0, 0, 0.2);
-  }
-  
+  .dDoneBtn:hover { background-color: #115e59; box-shadow: 0 6px 8px -1px rgba(15, 118, 110, 0.3), 0 3px 6px -1px rgba(0, 0, 0, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.2); }
+  .dDoneBtn:active { background-color: #134e4a; transform: translateY(0.5px); box-shadow: 0 2px 4px -1px rgba(15, 118, 110, 0.2), 0 1px 2px -1px rgba(0, 0, 0, 0.1), inset 0 1px 2px rgba(0, 0, 0, 0.2); }
   
   /* --- ДЛИННАЯ ПОЛОСА ТЕМПА (PACE) --- */
-/* --- ДОРАБОТАННАЯ ПОЛОСА ТЕМПА (PACE) --- */
-.extendedPaceTrack {
+  .extendedPaceTrack {
     width: calc(100% - 12px);
     height: 10px;
     background-color: #e2e8f0;
-    
-    /* ИСПРАВЛЕНИЕ: Мягкое скругление краев трека */
     border-radius: 4px;
     position: relative;
     overflow: hidden;
-    /* Мягкая внутренняя тень для эффекта "вдавленности" дорожки */
-    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.08);
   }
-  
   .extendedPaceFill {
     height: 100%;
     transition: width 1s linear, background-color 0.2s ease;
-    /* Скругление краев у самой заполняющей линии */
     border-radius: 4px;
-    /* Легкий объемный блик сверху полосы */
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15);
   }
-  
-  /* --- ДОРАБОТАННАЯ ОБЩАЯ ПОЛОСА СМЕНЫ --- */
-  .bottomProgressBarTrack {
-    width: calc(100% - 12px);
-    height: 10px; 
-    background-color: #e2e8f0;
-    
-    /* ИСПРАВЛЕНИЕ: Мягкое скругление краев трека */
-    border-radius: 4px;
-    position: relative;
-    overflow: hidden;
-    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
-  }
-  
-  .bottomProgressBarFill {
-    height: 100%;
-    background-color: #2563eb; 
-    transition: width 0.3s ease-out;
-    border-radius: 4px;
-    
-    /* ИСПРАВЛЕНИЕ: Синей полосе добавляем неоновую тень-свечение и объем */
-    box-shadow: 
-      0 2px 4px rgba(37, 99, 235, 0.2),
-      inset 0 1px 0 rgba(255, 255, 255, 0.2); 
-  }
-  
-  
   .extendedPaceText {
     position: absolute;
     inset: 0;
@@ -387,29 +323,27 @@
     letter-spacing: 0.02em;
     mix-blend-mode: difference;
   }
-  
-  /* Динамические фоны для заполнения полосы темпа */
   .bgPaceGreen { background-color: #16a34a; }
   .bgPaceBlack { background-color: #0f172a; }
   .bgPaceRed   { background-color: #dc2626; }
   
-  /* ОБЩАЯ СТРОКА ПРОГРЕССА СМЕНЫ (СИНЯЯ) */
+  /* --- ОБЩАЯ СТРОКА ПРОГРЕССА СМЕНЫ --- */
   .bottomProgressBarTrack {
     width: calc(100% - 12px);
     height: 10px; 
     background-color: #e2e8f0;
-    border-radius: 2px;
+    border-radius: 4px; 
     position: relative;
     overflow: hidden;
-    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.08);
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.08); 
   }
-  
   .bottomProgressBarFill {
     height: 100%;
     background-color: #2563eb; 
     transition: width 0.3s ease-out;
+    border-radius: 4px; 
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15); 
   }
-  
   .bottomProgressBarText {
     position: absolute;
     inset: 0;
@@ -424,79 +358,41 @@
     mix-blend-mode: difference; 
   }
   
-/* Базовые стили контейнеров (добавьте перед медиа-запросами) */
-
-  
-
-   .configGrid {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    width: 100%;
-    height: 100%;
-  }
-  
-  .fieldGroupTarget {
-    display: flex;
-    flex-direction: column;
-    align-items: center; 
-    justify-content: center;
-    gap: 2px;
-  }
-  
-  .gridRowFullWidth {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 4px;
-    width: 100%;
-    height: 18px;
-  }
+  /* Элементы разметки для мобильной Grid-структуры (не ломают десктоп) */
+  .configGrid { display: flex; align-items: center; gap: 6px; width: 100%; height: 100%; }
+  .fieldGroupTarget { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; }
   
   
   /* ==========================================================================
-   ИСПРАВЛЕННАЯ СИСТЕМНАЯ АДАПТИВНОСТЬ И ЦЕНТРИРОВАНИЕ БЛОКОВ
-   ========================================================================== */
+     2. СИСТЕМНАЯ АДАПТИВНОСТЬ ДЛЯ СРЕДНИХ И МОБИЛЬНЫХ ЭКРАНОВ
+     ========================================================================== */
 
-/* ИСПРАВЛЕНИЕ: Добавляем отступ справа (margin-right), чтобы виджет отлепился от полосы прокрутки экрана */
-.layoutWrapper {
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end; 
-    align-items: flex-end;     
-    min-height: 100vh;         
-    background-color: transparent; 
-    box-sizing: border-box;
-    padding: 4px; 
-  }
-  
-  /* СТУПЕНЬ 1: Большие экраны ноутбуков (меньше 1250px) — пропорциональное сжатие */
-  @media (max-width: 1250px) {
+
+/* СТУПЕНЬ 1: Ноутбуки (меньше 1250px) — пропорционально уменьшаем без изломов */
+@media (max-width: 1250px) {
     .widgetContainer {
       transform: scale(0.85);
       transform-origin: bottom right;
-      margin-right: 16px; /* ИСПРАВЛЕНИЕ: Отличный безопасный зазор от полосы прокрутки */
+      margin-right: 16px; /* Безопасный зазор от полосы прокрутки Vercel */
       margin-bottom: 8px;
     }
   }
   
-  /* СТУПЕНЬ 2: Точки "840", "720", "590" (работает от 1100px до 501px) — ВСЕ 4 БЛОКА ОДНИМ СБАЛАНСИРОВАННЫМ ЦЕНТРИРОВАННЫМ РЯДОМ */
+  /* СТУПЕНЬ 2: Защита средних экранов (840px, 720px, 590px) от наползания и дыр */
   @media (max-width: 1100px) and (min-width: 501px) {
     .widgetContainer {
       transform: scale(1);
       display: flex;
       flex-direction: row;
-      flex-wrap: nowrap;     /* Строго одна горизонтальная линия */
-      height: 76px;          /* Защита высоты кнопок START/STOP и 9:40 от урезания */
+      flex-wrap: nowrap;     /* Строго одна линия на 810px и 720px */
+      height: 76px;          /* Кнопки START/STOP и 9:40 больше не сплющатся! */
       max-width: max-content; 
       gap: 4px;              
       padding: 0;
       background-color: transparent;
       border: none;
-      
-      /* ИСПРАВЛЕНИЕ ДЛЯ 720px: Автоматически центрирует весь блок-виджет внутри отведенного ему пространства справа */
-      margin-left: auto;
-      margin-right: 16px;    /* Держим отступ от края экрана */
+      margin-left: auto;     /* Идеальное центрирование внутри правой зоны на 720px */
+      margin-right: 16px;    
       align-items: center;
     }
   
@@ -504,45 +400,31 @@
       height: 100%; 
       box-sizing: border-box;
       padding: 0 6px;       
-      flex: 0 1 auto; 
+      flex: 0 1 auto; /* Блоки прижимаются плотно по контенту, закрывая серое поле */
     }
   
-    /* ИСПРАВЛЕНИЕ ДЛЯ 590px: Зажимаем минимальную ширину Блока 1 (без слова Shift он супер-узкий), 
-       теперь поле Rate физически не сможет вылезти влево за рамку */
+    /* Блок 1 (Настройки): зажаты размеры, Rate не вылезет влево на 590px */
     .blockConfig {
       max-width: 215px;
       min-width: 210px;
       gap: 5px;
     }
   
-    /* Поля внутри Блока 1 */
-    .blockConfig .inputNumberWide { width: 54px; height: 24px; font-size: 0.85rem; }
-    .blockConfig .targetDisplayDisabled { width: 50px; height: 24px; font-size: 0.85rem; }
-    .blockConfig .toggleContainer { height: 24px; min-width: 94px; }
-    .blockConfig .radioLabel { font-size: 0.75rem; width: 45px; }
-    .blockConfig .slider { width: 45px; height: calc(100% - 4px); }
-    .blockConfig .radioInput[value="9h40m"]:checked ~ .slider { transform: translateX(45px) !important; }
-  
-    /* Блок 2 (План/Факт/Дифф): Всегда на экране, стоит плотно и компактно */
+    /* Блок 2 (План/Факт/Дифф): всегда виден, стоит плотно и компактно */
     .blockStats {
       min-width: 105px;
       max-width: 115px;
       padding: 0 4px;
     }
   
-    /* Блок 3 (Кнопки START/STOP): Защищен от урезания высоты */
+    /* Блок 3 (Кнопки START/STOP): возвращаем полную высоту, урезание текста ликвидировано */
     .blockControls {
       min-width: 165px;
       max-width: 175px;
       padding: 0 6px;
     }
-    .blockControls .controlAndAdjustColumn { gap: 4px; height: 100%; justify-content: center; }
-    .blockControls .gridRow { height: 22px; }
-    .blockControls .gridRowFullWidth { height: 18px; }
-    .blockControls .shadowBtn { height: 22px; font-size: 0.65rem; padding: 0 8px; }
-    .blockControls .adjBtnWide { height: 18px; font-size: 0.55rem; }
   
-    /* Блок 4 (Таймеры и DONE): Зафиксирован намертво по вашему шаблону */
+    /* ИДЕАЛЬНЫЙ БЛОК 4 (Таймеры и DONE): жестко заблокирован, DONE никогда не уедет вправо */
     .widgetContainer > .concaveBlock:nth-child(4) {
       flex: 0 0 310px !important; 
       min-width: 310px !important;
@@ -550,34 +432,37 @@
     }
   }
   
-  /* СТУПЕНЬ 3: Мобильные телефоны (меньше 500px) — складываем в 2 ряда, Блок 2 убираем только ради ширины экрана телефона */
+  /* СТУПЕНЬ 3: Ультра-мобильный вид (Точка "500" и меньше) — только тут 2 ряда с Grid */
   @media (max-width: 500px) {
+    /* Прячем Блок 2 только на мобилках из-за физических ограничений экрана телефона */
     .widgetContainer > .concaveBlock:nth-child(2) {
       display: none !important;
     }
   
     .widgetContainer {
       display: grid;
-      grid-template-columns: 145px 1fr; 
+      grid-template-columns: 145px 1fr; /* Колонки сужены под дисплей смартфона */
       grid-template-rows: auto auto;   
       max-width: 340px;    
       width: 340px;
-      height: auto;
+      height: auto; /* Защита от обрезания по высоте! Контейнер растет под 2 ряда */
       gap: 4px;
       padding: 4px;
       background-color: #f1f5f9; 
       border: 1px solid #cbd5e1;
-      margin-right: 12px; /* Компактный зазор на мобильном */
+      margin-right: 12px;
       margin-left: auto;
     }
   
     .concaveBlock { box-sizing: border-box; height: 76px; }
   
+    /* Блок управления (Блок 3) — Слева */
     .blockControls {
       grid-column: 1; grid-row: 1;
       width: 172px !important; transform: scale(0.84); transform-origin: left center; margin-right: -27px;     
     }
   
+    /* Блок настроек (Блок 1) — Справа, перестраивается во внутренние 2 ряда */
     .blockConfig {
       grid-column: 2; grid-row: 1;
       width: 122% !important; transform: scale(0.82); transform-origin: right center; padding: 4px 6px;
@@ -589,12 +474,15 @@
   
     .cfgRate { grid-column: 1; grid-row: 1; }
     .cfgTime { grid-column: 2; grid-row: 1; }
+    
+    /* Target уходит на второй внутренний ряд параллельно кнопкам корректировок */
     .cfgTarget { grid-column: span 2; grid-row: 2; flex-direction: row !important; gap: 4px; justify-content: center; align-items: center; width: 100%; }
   
+    /* Блок таймеров и DONE (Блок 4) — Ложится широким нижним этажом */
     .widgetContainer > .concaveBlock:nth-child(4) { grid-column: span 2; grid-row: 2; width: 100% !important; }
   }
   
-  /* СТУПЕНЬ 4: Ультра-маленькие смартфоны (меньше 380px) */
+  /* СТУПЕНЬ 4: Экстремально узкие телефоны (меньше 380px) */
   @media (max-width: 380px) {
     .widgetContainer {
       transform: scale(0.85); 
@@ -603,77 +491,3 @@
     }
   }
   
-  
-  /* ==========================================================================
-     ИСПРАВЛЕНИЕ ВИДА ПОЛОС ПРОГРЕССА (ОДИНАКОВЫЕ СКРУГЛЕНИЯ И ОБЪЕМ)
-     ========================================================================== */
-  
-  /* 1. ПОЛОСА ТЕМПА (PACE) */
-  .extendedPaceTrack {
-    width: calc(100% - 12px);
-    height: 10px;
-    background-color: #e2e8f0;
-    border-radius: 4px; /* Мягкое скругление */
-    position: relative;
-    overflow: hidden;
-    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.08); /* Эффект утопленности */
-  }
-  
-  .extendedPaceFill {
-    height: 100%;
-    transition: width 1s linear, background-color 0.2s ease;
-    border-radius: 4px; /* Одинаковое скругление у заливки */
-  }
-  
-  .extendedPaceText {
-    position: absolute;
-    inset: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.52rem;
-    font-weight: 800;
-    color: #1e293b;
-    text-transform: uppercase;
-    letter-spacing: 0.02em;
-    mix-blend-mode: difference; /* Авто-контраст */
-  }
-  
-  /* Динамические фоны полосы темпа */
-  .bgPaceGreen { background-color: #16a34a; }
-  .bgPaceBlack { background-color: #0f172a; }
-  .bgPaceRed   { background-color: #dc2626; }
-  
-  
-  /* 2. ИСПРАВЛЕННАЯ ОБЩАЯ ПОЛОСА СМЕНЫ (ТЕПЕРЬ ОДИН В ОДИН КАК PACE) */
-  .bottomProgressBarTrack {
-    width: calc(100% - 12px);
-    height: 10px; 
-    background-color: #e2e8f0;
-    border-radius: 4px; /* ИСПРАВЛЕНИЕ: Скругление точно как у Pace (было 2px) */
-    position: relative;
-    overflow: hidden;
-    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.08); /* ИСПРАВЛЕНИЕ: Тот же эффект утопленности */
-  }
-  
-  .bottomProgressBarFill {
-    height: 100%;
-    background-color: #2563eb; 
-    transition: width 0.3s ease-out;
-    border-radius: 4px; /* ИСПРАВЛЕНИЕ: Скругление заливки как у Pace */
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15); /* Объемный блик сверху */
-  }
-  
-  .bottomProgressBarText {
-    position: absolute;
-    inset: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.52rem; /* Одинаковый размер шрифта подписи */
-    font-weight: 800;
-    color: #1e293b;
-    text-transform: uppercase;
-    letter-spacing: 0.02em;
-    mix-blend-mode: difference; /* ИСПРАВЛЕНИЕ: Тот же эффект инверсии текста */
-  }
