@@ -378,116 +378,43 @@
     }
   }
   
-  /* СТУПЕНЬ 2: Защита средних экранов (840px, 720px, 590px) от наползания и дыр */
-  @media (max-width: 1100px) and (min-width: 501px) {
+  /* ==========================================================================
+   2. СИСТЕМНАЯ АДАПТИВНОСТЬ ДЛЯ СРЕДНИХ И МОБИЛЬНЫХ ЭКРАНОВ
+   ========================================================================== */
+
+/* На средних экранах (около 1000px) — виджет стоит в одну линию и уменьшается на 15% */
+@media (max-width: 1100px) {
     .widgetContainer {
-      transform: scale(1);
-      display: flex;
-      flex-direction: row;
-      flex-wrap: nowrap;     /* Строго одна линия на 810px и 720px */
-      height: 76px;          /* Кнопки START/STOP и 9:40 больше не сплющатся! */
-      max-width: max-content; 
-      gap: 4px;              
-      padding: 0;
-      background-color: transparent;
-      border: none;
-      margin-left: auto;     /* Идеальное центрирование внутри правой зоны на 720px */
-      margin-right: 16px;    
-      align-items: center;
-    }
-  
-    .concaveBlock {
-      height: 100%; 
-      box-sizing: border-box;
-      padding: 0 6px;       
-      flex: 0 1 auto; /* Блоки прижимаются плотно по контенту, закрывая серое поле */
-    }
-  
-    /* Блок 1 (Настройки): зажаты размеры, Rate не вылезет влево на 590px */
-    .blockConfig {
-      max-width: 215px;
-      min-width: 210px;
-      gap: 5px;
-    }
-  
-    /* Блок 2 (План/Факт/Дифф): всегда виден, стоит плотно и компактно */
-    .blockStats {
-      min-width: 105px;
-      max-width: 115px;
-      padding: 0 4px;
-    }
-  
-    /* Блок 3 (Кнопки START/STOP): возвращаем полную высоту, урезание текста ликвидировано */
-    .blockControls {
-      min-width: 165px;
-      max-width: 175px;
-      padding: 0 6px;
-    }
-  
-    /* ИДЕАЛЬНЫЙ БЛОК 4 (Таймеры и DONE): жестко заблокирован, DONE никогда не уедет вправо */
-    .widgetContainer > .concaveBlock:nth-child(4) {
-      flex: 0 0 310px !important; 
-      min-width: 310px !important;
-      width: 310px !important;
+      transform: scale(0.85) !important;
+      transform-origin: bottom right !important;
+      margin-right: 16px !important; 
+      margin-bottom: 8px !important;
     }
   }
   
-  /* СТУПЕНЬ 3: Ультра-мобильный вид (Точка "500" и меньше) — только тут 2 ряда с Grid */
-  @media (max-width: 500px) {
-    /* Прячем Блок 2 только на мобилках из-за физических ограничений экрана телефона */
-    .widgetContainer > .concaveBlock:nth-child(2) {
-      display: none !important;
-    }
-  
+  /* На отметке 840px и 720px — виджет плавно уменьшается на 25%, гарантируя, что ни одна кнопка не сплющится */
+  @media (max-width: 860px) {
     .widgetContainer {
-      display: grid;
-      grid-template-columns: 145px 1fr; /* Колонки сужены под дисплей смартфона */
-      grid-template-rows: auto auto;   
-      max-width: 340px;    
-      width: 340px;
-      height: auto; /* Защита от обрезания по высоте! Контейнер растет под 2 ряда */
-      gap: 4px;
-      padding: 4px;
-      background-color: #f1f5f9; 
-      border: 1px solid #cbd5e1;
-      margin-right: 12px;
-      margin-left: auto;
-    }
-  
-    .concaveBlock { box-sizing: border-box; height: 76px; }
-  
-    /* Блок управления (Блок 3) — Слева */
-    .blockControls {
-      grid-column: 1; grid-row: 1;
-      width: 172px !important; transform: scale(0.84); transform-origin: left center; margin-right: -27px;     
-    }
-  
-    /* Блок настроек (Блок 1) — Справа, перестраивается во внутренние 2 ряда */
-    .blockConfig {
-      grid-column: 2; grid-row: 1;
-      width: 122% !important; transform: scale(0.82); transform-origin: right center; padding: 4px 6px;
-    }
-  
-    .blockConfig .configGrid {
-      display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: auto auto; row-gap: 3px; column-gap: 4px; align-items: center; justify-content: center;
-    }
-  
-    .cfgRate { grid-column: 1; grid-row: 1; }
-    .cfgTime { grid-column: 2; grid-row: 1; }
-    
-    /* Target уходит на второй внутренний ряд параллельно кнопкам корректировок */
-    .cfgTarget { grid-column: span 2; grid-row: 2; flex-direction: row !important; gap: 4px; justify-content: center; align-items: center; width: 100%; }
-  
-    /* Блок таймеров и DONE (Блок 4) — Ложится широким нижним этажом */
-    .widgetContainer > .concaveBlock:nth-child(4) { grid-column: span 2; grid-row: 2; width: 100% !important; }
-  }
-  
-  /* СТУПЕНЬ 4: Экстремально узкие телефоны (меньше 380px) */
-  @media (max-width: 380px) {
-    .widgetContainer {
-      transform: scale(0.85); 
-      transform-origin: bottom right;
-      margin-right: 4px;
+      transform: scale(0.75) !important;
+      transform-origin: bottom right !important;
+      margin-right: 16px !important;
     }
   }
   
+  /* На отметке 600px и 500px — виджет становится еще компактнее (на 35%), чтобы идеально встать на экран смартфона */
+  @media (max-width: 620px) {
+    .widgetContainer {
+      transform: scale(0.65) !important;
+      transform-origin: bottom right !important;
+      margin-right: 12px !important;
+    }
+  }
+  
+  /* Для самых маленьких или старых телефонов (меньше 400px) */
+  @media (max-width: 400px) {
+    .widgetContainer {
+      transform: scale(0.55) !important;
+      transform-origin: bottom right !important;
+      margin-right: 8px !important;
+    }
+  }
