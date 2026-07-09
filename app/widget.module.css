@@ -342,31 +342,30 @@
       margin-bottom: 8px;
     }
   }
-
-  /* СТУПЕНЬ 2: Точки "840" и "720" (работает от 1100px до 501px) — ЖЕЛЕЗОБЕТОННЫЕ 2 РЯДА */
-@media (max-width: 1100px) and (min-width: 501px) {
+/* СТУПЕНЬ 2: Точки "840", "720", "500" и мобильные (Меньше 1100px) — ЖЕЛЕЗОБЕТОННЫЕ 2 РЯДА ДЛЯ ВСЕХ ЭКРАНОВ */
+@media (max-width: 1100px) {
     .widgetContainer {
       transform: scale(1) !important;
       display: flex !important;
       flex-direction: row !important;
       flex-wrap: wrap !important;  /* Принудительно включаем перенос блоков на 2 ряда */
       height: auto !important;     /* Разрешаем контейнеру расти вверх, спасая кнопки от урезания */
-      max-width: 500px !important; /* Ограничиваем ширину, заставляя блоки разбиться 2 на 2 */
+      max-width: 510px !important; /* Ограничиваем ширину, заставляя блоки разбиться строго 2 на 2 */
       gap: 6px !important;
       padding: 6px !important;
       background-color: #f1f5f9 !important; 
       border: 1px solid #cbd5e1 !important;
-      margin-left: auto !important; /* Идеально центрируем в правой зоне */
-      margin-right: 16px !important;
+      margin-left: auto !important; /* Идеально центрируем в правой рабочей зоне */
+      margin-right: 16px !important; /* Постоянный отступ от полосы прокрутки экрана */
       align-items: stretch !important;
-      overflow: visible !important; /* Отключаем обрезание букв по краям */
+      overflow: visible !important; /* Полностью отключаем обрезание букв и кнопок по краям */
     }
   
     .concaveBlock {
-      height: 76px !important;      /* НАМЕРТВО ФИКСИРУЕМ ВЫСОТУ КАЖДОГО БЛОКА В 76px */
+      height: 76px !important;      /* ЖЕСТКО ФИКСИРУЕМ ВЫСОТУ КАЖДОГО БЛОКА — ЗАЩИТА ОТ СПЛЮЩИВАНИЯ */
       box-sizing: border-box !important;
       padding: 0 8px !important;       
-      flex: none !important;        /* Запрещаем браузеру произвольно менять ширину */
+      flex: none !important;        /* Запрещаем браузеру произвольно ужимать блоки по ширине */
     }
   
     /* РЯД 1 (ВЕРХНИЙ ЭТАЖ): Кнопки управления и Настройки */
@@ -382,73 +381,44 @@
     /* РЯД 2 (НИЖНИЙ ЭТАЖ): План/Факт и ваш идеальный Блок 4 */
     .widgetContainer > .concaveBlock:nth-child(2) {
       order: 3 !important;
-      width: calc(35% - 3px) !important; /* Блок статистики плана (Блок 2) — опускается вниз слева */
+      width: calc(35% - 3px) !important; /* Блок статистики плана (Блок 2) — всегда на экране слева */
     }
     .widgetContainer > .concaveBlock:nth-child(4) {
       order: 4 !important;
       width: calc(65% - 3px) !important; /* Блок таймеров и DONE (Блок 4) — зафиксирован внизу справа */
     }
   
-    /* Принудительно восстанавливаем оригинальные размеры внутренних элементов для Ступени 2 */
+    /* Жёстко возвращаем оригинальные размеры внутренним элементам (защита от прыгающих отступов) */
     .toggleContainer { height: 24px !important; min-width: 94px !important; }
     .radioLabel { font-size: 0.75rem !important; width: 45px !important; }
     .slider { width: 45px !important; height: calc(100% - 4px) !important; }
     .radioInput[value="9h40m"]:checked ~ .slider { transform: translateX(45px) !important; }
     .gridRow { height: 22px !important; }
     .shadowBtn { height: 22px !important; font-size: 0.65rem !important; }
+    
+    /* Кнопка DONE сохраняет свои идеальные отступы внутри Блока 4 */
+    .dDoneBtn {
+      margin-right: 0 !important; 
+    }
   }
   
-  /* СТУПЕНЬ 3: Мобильные телефоны (меньше 500px) — ультра-компактная сетка */
-  @media (max-width: 500px) {
-    /* Прячем Блок 2 только на mobile из-за физической нехватки ширины экрана смартфона */
-    .widgetContainer > .concaveBlock:nth-child(2) {
-      display: none !important;
-    }
-  
+  /* СТУПЕНЬ 3: Смартфоны (меньше 520px, включая 492px и 488px) — изящно масштабируем готовый двухрядный бокс */
+  @media (max-width: 520px) {
     .widgetContainer {
-      display: grid !important;
-      grid-template-columns: 145px 1fr !important; 
-      grid-template-rows: auto auto !important;   
-      max-width: 340px !important;    
-      width: 340px !important;
-      height: auto !important; 
-      gap: 4px !important;
-      padding: 4px !important;
-      background-color: #f1f5f9 !important; 
-      border: 1px solid #cbd5e1 !important;
-      margin-right: 12px !important;
-      margin-left: auto !important;
-      overflow: visible !important;
-    }
-  
-    .concaveBlock { box-sizing: border-box !important; height: 76px !important; }
-  
-    /* Блок управления (Блок 3) — Слева */
-    .widgetContainer > .concaveBlock:nth-child(3) {
-      grid-column: 1 !important; grid-row: 1 !important;
-      width: 172px !important; transform: scale(0.84) !important; transform-origin: left center !important; margin-right: -27px !important;     
-    }
-  
-    /* Блок настроек (Блок 1) — Справа, перестраивается во внутренние 2 ряда */
-    .widgetContainer > .concaveBlock:nth-child(1) {
-      grid-column: 2 !important; grid-row: 1 !important;
-      width: 122% !important; transform: scale(0.82) !important; transform-origin: right center !important; padding: 4px 6px !important;
-    }
-  
-    .widgetContainer > .concaveBlock:nth-child(1) .configGrid {
-      display: grid !important; grid-template-columns: 1fr 1fr !important; grid-template-rows: auto auto !important; row-gap: 3px !important; column-gap: 4px !important; align-items: center !important; justify-content: center !important;
-    }
-  
-    /* Блок таймеров и DONE (Блок 4) — Нижний длинный этаж */
-    .widgetContainer > .concaveBlock:nth-child(4) { grid-column: span 2 !important; grid-row: 2 !important; width: 100% !important; }
-  }
-  
-  /* СТУПЕНЬ 4: Маленькие смартфоны (меньше 380px) */
-  @media (max-width: 380px) {
-    .widgetContainer {
+      /* Вместо ломающейся сетки мы просто плавно уменьшаем красивый двухрядный виджет на 15% */
       transform: scale(0.85) !important; 
       transform-origin: bottom right !important;
-      margin-right: 4px !important;
+      margin-right: 12px !important;
+    }
+  }
+  
+  /* СТУПЕНЬ 4: Маленькие или старые телефоны (меньше 390px) */
+  @media (max-width: 390px) {
+    .widgetContainer {
+      /* Пропорционально сжимаем на 25%, чтобы гарантированно влезть в любой узкий экран */
+      transform: scale(0.75) !important; 
+      transform-origin: bottom right !important;
+      margin-right: 8px !important;
     }
   }
   
