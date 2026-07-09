@@ -316,7 +316,7 @@
   }
   
 
-  extendedPaceTrack {
+  .extendedPaceTrack {
     width: calc(100% - 12px);
     height: 12px;
     background-color: #e2e8f0;
