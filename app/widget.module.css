@@ -416,7 +416,8 @@
   }
   
   /* СТУПЕНЬ 3: Точка "500" (меньше 600px) — скрываем Блок 2, выстраиваем в колонку */
-  @media (max-width: 600px) {
+ /* СТУПЕНЬ 3: Точка "500" (меньше 600px) — скрываем Блок 2, меняем блоки местами и уменьшаем настройки */
+@media (max-width: 600px) {
     /* Полностью прячем Блок 2 (статистику) */
     .widgetContainer > .concaveBlock:nth-child(2) {
       display: none !important;
@@ -426,7 +427,7 @@
       max-width: 340px; 
       transform: scale(0.9); 
       transform-origin: bottom right;
-      flex-direction: column; /* Выстраиваем оставшиеся блоки строго друг под другом */
+      flex-direction: column; /* Блоки идут вертикальной стопкой */
       align-items: stretch;
       justify-content: flex-start;
     }
@@ -434,17 +435,66 @@
     .concaveBlock {
       height: 76px;
       width: 100% !important;
-      flex: none !important; /* Отменяем флекс-растяжение из предыдущего медиа-запроса */
+      flex: none !important;
     }
   
-    /* ИСПРАВЛЕНИЕ: На этой ширине Блок 1 (настройки) тоже сжимаем до 100% и делаем компактным */
+    /* --- ИЗМЕНЕНИЕ ПОРЯДКА БЛОКОВ (ORDER) --- */
+    
+    /* Блок 3 (Управление: START/PAUSE) делаем ПЕРВЫМ (в самый верх) */
+    .widgetContainer > .concaveBlock:nth-child(3) {
+      order: 1;
+    }
+  
+    /* Блок 1 (Настройки: Rate/Hour, Shift Time) делаем ВТОРЫМ */
     .widgetContainer > .concaveBlock:nth-child(1) {
+      order: 2;
       width: 100% !important;
+      height: 52px; /* Уменьшаем высоту самого блока настроек, чтобы он стал компактнее */
+      gap: 4px;     /* Сжимаем отступы между элементами внутри */
+      padding: 0 6px;
     }
   
-    /* Убираем лишние отступы у DONE, чтобы она идеально встала по краю в колонке */
+    /* Блок 4 (Таймеры и DONE) идет ТРЕТЬИМ (в самый низ) */
     .widgetContainer > .concaveBlock:nth-child(4) {
+      order: 3;
       min-width: 100%;
+    }
+  
+    /* --- ДОПОЛНИТЕЛЬНОЕ УМЕНЬШЕНИЕ ЭЛЕМЕНТОВ ВНУТРИ БЛОКА НАСТРОЕК --- */
+    .widgetContainer > .concaveBlock:nth-child(1) .fieldLabel {
+      font-size: 0.5rem; /* Делаем подписи еще меньше */
+    }
+  
+    .widgetContainer > .concaveBlock:nth-child(1) .inputNumberWide {
+      height: 20px;       /* Делаем поле ввода Rate ниже */
+      font-size: 0.75rem; /* Уменьшаем шрифт цифр */
+      width: 50px;        /* Сужаем поле */
+    }
+  
+    .widgetContainer > .concaveBlock:nth-child(1) .toggleContainer {
+      height: 20px;       /* Делаем переключатель 8h / 9:40 компактнее */
+      min-width: 84px;
+    }
+  
+    .widgetContainer > .concaveBlock:nth-child(1) .radioLabel {
+      font-size: 0.65rem; /* Уменьшаем текст "8h" и "9:40" */
+      width: 40px;
+    }
+  
+    .widgetContainer > .concaveBlock:nth-child(1) .slider {
+      height: calc(100% - 4px);
+      width: 40px;
+    }
+  
+    /* Корректируем сдвиг ползунка под новую уменьшенную ширину */
+    .widgetContainer > .concaveBlock:nth-child(1) .radioInput[value="9h40m"]:checked ~ .slider {
+      transform: translateX(40px) !important;
+    }
+  
+    .widgetContainer > .concaveBlock:nth-child(1) .targetDisplayDisabled {
+      height: 20px;       /* Уменьшаем блок Shift Target */
+      width: 45px;
+      font-size: 0.75rem;
     }
   }
   
