@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import styles from './widget.module.css';
 
 type ShiftType = '8h' | '9h40m';
@@ -22,7 +22,7 @@ export default function PomodoroWidget() {
   const [totalRealSeconds, setTotalRealSeconds] = useState<number>(0);
   const [shiftElapsedSeconds, setShiftAdjustmentSeconds] = useState<number>(0);
   
-  // НОВОЕ: Включение/выключение звукового сигнала (по умолчанию true)
+  // Включение/выключение звукового сигнала (по умолчанию true)
   const [isSoundEnabled, setIsSoundEnabled] = useState<boolean>(true);
 
   // Математическая база на основе замороженных данных
@@ -65,7 +65,6 @@ export default function PomodoroWidget() {
       if (savedSound) setIsSoundEnabled(savedSound === 'true');
     }
   }, []);
-
   // Синхронизация замороженных параметров, пока кнопка СТАРТ не нажата
   useEffect(() => {
     if (!isRunning && timeLeft === totalTimerSeconds) {
@@ -102,7 +101,7 @@ export default function PomodoroWidget() {
 
       setTimeLeft((prev) => {
         if (prev <= 1) {
-          // Воспроизводим пип, только если переключатель звука активен
+          // Воспроизводим звук, только если переключатель звука активен
           if (isSoundEnabled) {
             playQuietPeep();
           }
@@ -130,20 +129,28 @@ export default function PomodoroWidget() {
       
       osc.type = 'sine';
       osc.frequency.setValueAtTime(650, ctx.currentTime); 
-      gain.gain.setValueAtTime(0.06, ctx.currentTime); // Сверх-тихий пик (6% громкости)
+      gain.gain.setValueAtTime(0.06, ctx.currentTime); 
       
       osc.start();
-      osc.stop(ctx.currentTime + 0.10); // Очень короткий (100мс)
+      osc.stop(ctx.currentTime + 0.10); 
     } catch (e) {
       console.warn('Audio contextual block:', e);
     }
   };
 
-  // Слушатель глобальной горячей клавиши Shift + A для DONE (Защищен от нажатия до старта)
+  // По нажатию кнопки DONE или Shift+A оба секундомера сбрасываются в 0 без сигнала
+  const handleRealItemDone = useCallback(() => {
+    setProcessedCount((prev) => prev + 1);
+    setTotalRealSeconds((prev) => prev + stopwatchSeconds);
+    
+    setStopwatchSeconds(0);
+    setTimeLeft(totalTimerSeconds); 
+  }, [stopwatchSeconds, totalTimerSeconds]);
+
+  // Слушатель глобальной горячей клавиши Shift + A для DONE
   useEffect(() => {
     const handleGlobalKey = (e: KeyboardEvent) => {
       if (e.shiftKey && (e.key === 'A' || e.key === 'a' || e.key === 'ф' || e.key === 'Ф')) {
-        // Кнопка работает ТОЛЬКО если таймер запущен
         if (document.activeElement?.tagName !== 'INPUT' && isRunning) {
           e.preventDefault();
           handleRealItemDone();
@@ -152,8 +159,7 @@ export default function PomodoroWidget() {
     };
     window.addEventListener('keydown', handleGlobalKey);
     return () => window.removeEventListener('keydown', handleGlobalKey);
-  }, [stopwatchSeconds, isRunning, totalTimerSeconds]);
-
+  }, [isRunning, handleRealItemDone]);
   const formatTime = (seconds: number) => {
     const minutes = Math.floor(seconds / 60);
     const secs = seconds % 60;
@@ -185,15 +191,6 @@ export default function PomodoroWidget() {
       localStorage.removeItem('p_shiftElapsedSeconds');
     } else {
       setIsRunning(wasActive);
-    }
-  };
-  const handleRealItemDone = () => {
-    setProcessedCount((prev) => prev + 1);
-    setTotalRealSeconds((prev) => prev + stopwatchSeconds);
-    setStopwatchSeconds(0);
-    
-    if (timeLeft === 0 && isRunning) {
-      setTimeLeft(totalTimerSeconds);
     }
   };
 
@@ -239,8 +236,6 @@ export default function PomodoroWidget() {
 
   const paceBarWidth = Math.round(paceRatio * 100);
   const isSettingsDisabled = timeLeft !== totalTimerSeconds || isRunning;
-  
-  // DONE je zablokované, kým sa zmena nespustí (odpracovaný čas je 0)
   const isDoneDisabled = shiftElapsedSeconds === 0;
 
   const handleStartToggle = () => {
@@ -251,6 +246,7 @@ export default function PomodoroWidget() {
     }
     setIsRunning(!isRunning);
   };
+
   return (
     <div className={styles.layoutWrapper}>
       <div className={styles.widgetContainer}>
@@ -342,7 +338,6 @@ export default function PomodoroWidget() {
             </div>
           </div>
         </div>
-
         {/* BLOCK 3: CONTROLS & MANUAL ADJUSTMENTS (Concave Border) */}
         <div className={styles.concaveBlock}>
           <div className={styles.controlAndAdjustColumn}>
@@ -355,7 +350,7 @@ export default function PomodoroWidget() {
                 {isRunning ? '|| PAUSE' : '▶ START'}
               </button>
 
-              {/* КНОПКА ЗВУКА МЕЖДУ СТАРТ И СТОП */}
+              {/* КНОПКА ЗВУКА ДЛЯ ВКЛЮЧЕНИЯ/ОТКЛЮЧЕНИЯ СИГНАЛА КОНЦА PACE */}
               <button 
                 type="button" 
                 onClick={() => setIsSoundEnabled(!isSoundEnabled)} 
@@ -382,12 +377,12 @@ export default function PomodoroWidget() {
           </div>
         </div>
 
- {/* BLOCK 4: STATS, TIMERS & ACTION DONE BUTTON (Оригинальные стили + прогресс смены внизу) */}
- <div 
+        {/* BLOCK 4: STATS, TIMERS & ACTION DONE BUTTON (С флекс-структурой для строки прогресса внизу) */}
+        <div 
           className={styles.concaveBlock} 
           style={{ paddingRight: '0', gap: '6px', flexDirection: 'column', alignItems: 'stretch' }}
         >
-          {/* Контейнер-обертка для сохранения оригинального горизонтального расположения элементов */}
+          {/* Верхняя строка элементов внутри Блока 4 (сохраняет оригинальную структуру) */}
           <div style={{ display: 'flex', width: '100%', alignItems: 'center', gap: '6px', justifyContent: 'space-between' }}>
             
             <div className={styles.compactStatsBox} style={{ minWidth: '78px' }}>
@@ -415,7 +410,7 @@ export default function PomodoroWidget() {
               <span className={styles.stopwatchNumbers}>{formatTime(stopwatchSeconds)}</span>
             </div>
 
-            {/* Оригинальный блок PACE с вашим прогресс-баром темпа */}
+            {/* Оригинальный блок PACE с прогресс-баром темпа */}
             <div className={styles.timeDisplay}>
               <span className={styles.timeLabel}>PACE</span>
               <span className={`${styles.timeNumbers} ${paceColorClass}`}>{formatTime(timeLeft)}</span>
@@ -439,14 +434,14 @@ export default function PomodoroWidget() {
             </button>
           </div>
 
-          {/* НОВАЯ ОБЩАЯ СТРОКА ПРОГРЕССА СМЕНЫ — Идет под всем блоком на всю длину */}
+          {/* Строка прогресса смены — теперь идет на всю длину под контентом Блока 4 */}
           <div className={styles.bottomProgressBarTrack} style={{ marginRight: '12px', marginTop: '6px' }}>
             <div 
               className={styles.bottomProgressBarFill} 
               style={{ width: `${Math.min(100, Math.max(0, factPercent))}%` }}
             />
             <span className={styles.bottomProgressBarText}>
-              Shift Progress: {factPercent}%
+              Progress: {factPercent}%
             </span>
           </div>
 

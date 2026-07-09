@@ -10,27 +10,27 @@
     padding: 4px; 
   }
   
-  /* Сама горизонтальная строка виджета сжимается строго по контенту и больше не растягивается! */
+  /* ИЗМЕНЕНИЕ: Высота увеличена до 62px, чтобы поместилась нижняя полоса прогресса */
   .widgetContainer {
     display: flex;
     align-items: center;
     justify-content: flex-start;
     background-color: #ffffff;
     border-radius: 8px;
-    width: max-content; /* Сжимается ровно под длину кнопок */
+    width: max-content; 
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    height: 48px; /* Жестко фиксированная низкая высота */
+    height: 62px; 
     overflow: hidden;
     gap: 6px;
     padding: 0;
   }
   
-  /* Изящные вогнутые блоки */
+  /* ИЗМЕНЕНИЕ: height теперь 100%, чтобы блоки тянулись по новой высоте контейнера */
   .concaveBlock {
     display: flex;
     align-items: center;
     gap: 8px;
-    height: calc(100% - 4px);
+    height: 100%;
     padding: 0 8px;
     background: #f8fafc;
     border: 1px solid #e2e8f0;
@@ -56,7 +56,6 @@
     text-align: center;
   }
   
-  /* Поля и цифры (размер строго 0.85rem) */
   .inputNumberWide {
     background-color: #ffffff;
     border: 1px solid #cbd5e1;
@@ -73,7 +72,6 @@
   .inputNumberWide:focus { border-color: #0f766e; }
   .inputNumberWide:disabled { opacity: 0.6; cursor: not-allowed; background-color: #f1f5f9; }
   
-  /* Визуально неактивный Target */
   .targetDisplayDisabled {
     background-color: #f1f5f9;
     border: 1px dashed #cbd5e1;
@@ -127,9 +125,8 @@
     transition: transform 0.15s ease-in-out;
     z-index: 1;
   }
-  
   /* Колонки управления */
-  .controlAndAdjustColumn {
+.controlAndAdjustColumn {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -172,6 +169,18 @@
   .btnReset { background-color: #dc2626; }
   .btnReset:hover { background-color: #b91c1c; }
   
+  /* Кастомные стили для кнопок управления звуком */
+  .btnSoundOn {
+    background-color: #f0fdf4 !important;
+    color: #166534 !important;
+    border: 1px solid #cbd5e1 !important;
+  }
+  .btnSoundOff {
+    background-color: #f1f5f9 !important;
+    color: #64748b !important;
+    border: 1px solid #cbd5e1 !important;
+  }
+  
   .adjBtn {
     background-color: #ffffff; 
     border: 1px solid #cbd5e1; 
@@ -203,8 +212,8 @@
   
   /* --- НАСТРОЙКА ЦВЕТОВ PACE ALARM --- */
   .paceGreen { color: #16a34a; }
-  .paceBlack { color: #0f172a; } /* Текст становится черным перед опасной зоной */
-  .paceRed { color: #dc2626; font-weight: 900; } /* Последние 20% времени — тревожный красный! */
+  .paceBlack { color: #0f172a; } 
+  .paceRed { color: #dc2626; font-weight: 900; } 
   
   .paceBarTrack {
     width: 100%;
@@ -273,44 +282,35 @@
   }
   .dDoneBtn:hover { background-color: #115e59; }
   .dDoneBtn:active { background-color: #134e4a; }
-  /* Трек общей полосы прогресса */
-/* Новые стили для кнопок управления звуком */
-.btnSoundOn {
-    background-color: #f0fdf4 !important;
-    color: #166534 !important;
-  }
-  .btnSoundOff {
-    background-color: #f1f5f9 !important;
-    color: #64748b !important;
-  }
   
-  /* Общий трек для нижней полосы прогресса */
+  /* --- НОВАЯ НИЖНЯЯ СТРОКА ПРОГРЕССА СМЕНЫ --- */
   .bottomProgressBarTrack {
     width: calc(100% - 12px);
-    height: 14px;
+    height: 10px; /* Идеально вписывается в измененную высоту 62px */
     background-color: #e2e8f0;
-    border-radius: 4px;
+    border-radius: 2px;
     position: relative;
     overflow: hidden;
-    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.08);
   }
   
-  /* Наполняющая линия прогресса смены */
   .bottomProgressBarFill {
     height: 100%;
-    background-color: #2563eb; /* Фирменный синий цвет прогресса */
+    background-color: #2563eb; 
     transition: width 0.3s ease-out;
   }
   
-  /* Текст процентов поверх линии прогресса */
   .bottomProgressBarText {
     position: absolute;
     inset: 0;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 10px;
-    font-weight: 700;
+    font-size: 0.52rem; /* Ультра-компактный шрифт под стать остальному виджету */
+    font-weight: 800;
     color: #1e293b;
-    mix-blend-mode: difference; /* Делает текст автоматически контрастным на любом фоне */
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    mix-blend-mode: difference; /* Автоматический контраст на стыке синего и серого */
   }
+  
