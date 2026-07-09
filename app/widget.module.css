@@ -343,7 +343,146 @@
     }
   }
 /* СТУПЕНЬ 2: Точки "840", "720", "500" и мобильные (Меньше 1100px) — ЖЕЛЕЗОБЕТОННЫЕ 2 РЯДА ДЛЯ ВСЕХ ЭКРАНОВ */
-@media (max-width: 1100px) {
+@m/* СТУПЕНЬ 2: Точки "840" и "720" (от 1100px до 521px) — ПРОСТОРНЫЕ 2 РЯДА */
+@media (max-width: 1100px) and (min-width: 521px) {
+  .widgetContainer {
+    transform: scale(1) !important;
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: wrap !important;  /* Включаем перенос блоков на 2 ряда */
+    height: auto !important;     /* Контейнер растет вверх, спасая кнопки от урезания */
+    max-width: 510px !important; /* Ограничиваем ширину под бокс 2х2 */
+    gap: 6px !important;
+    padding: 6px !important;
+    background-color: #f1f5f9 !important; 
+    border: 1px solid #cbd5e1 !important;
+    margin-left: auto !important; /* Центрируем в правой рабочей зоне */
+    margin-right: 16px !important; /* Отступ от полосы прокрутки экрана */
+    align-items: stretch !important;
+    overflow: visible !important; 
+  }
+
+  .concaveBlock {
+    height: 76px !important;      /* НАМЕРТВО ФИКСИРУЕМ ВЫСОТУ КАЖДОГО БЛОКА В 76px */
+    box-sizing: border-box !important;
+    padding: 0 8px !important;       
+    flex: none !important;        
+  }
+
+  /* РЯД 1 (ВЕРХНИЙ ЭТАЖ): Кнопки управления и Настройки */
+  .widgetContainer > .concaveBlock:nth-child(3) {
+    order: 1 !important;
+    width: calc(45% - 3px) !important; /* Кнопки START/STOP слева */
+  }
+  .widgetContainer > .concaveBlock:nth-child(1) {
+    order: 2 !important;
+    width: calc(55% - 3px) !important; /* Настройки справа */
+  }
+
+  /* РЯД 2 (НИЖНИЙ ЭТАЖ): План/Факт и ваш идеальный Блок 4 */
+  .widgetContainer > .concaveBlock:nth-child(2) {
+    order: 3 !important;
+    width: calc(35% - 3px) !important; /* План/Факт/Diff встает вниз слева */
+  }
+  .widgetContainer > .concaveBlock:nth-child(4) {
+    order: 4 !important;
+    width: calc(65% - 3px) !important; /* Блок таймеров и DONE — зафиксирован внизу справа */
+  }
+
+  /* Восстанавливаем оригинальные размеры внутренних элементов */
+  .toggleContainer { height: 24px !important; min-width: 94px !important; }
+  .radioLabel { font-size: 0.75rem !important; width: 45px !important; }
+  .slider { width: 45px !important; height: calc(100% - 4px) !important; }
+  .radioInput[value="9h40m"]:checked ~ .slider { transform: translateX(45px) !important; }
+  .gridRow { height: 22px !important; }
+  .shadowBtn { height: 22px !important; font-size: 0.65rem !important; }
+  .dDoneBtn { margin-right: 0 !important; }
+}
+
+/* СТУПЕНЬ 3: НАСТОЯЩИЙ МОБИЛЬНЫЙ ВИД (Меньше 520px) — ВЕРТИКАЛЬНАЯ СТОПКА БЕЗ СЖАТИЯ */
+@media (max-width: 520px) {
+  .widgetContainer {
+    transform: scale(1) !important; /* ПОЛНОСТЬЮ ОТМЕНЯЕМ МЕЛКИЙ SCALE */
+    display: flex !important;
+    flex-direction: column !important; /* Перестраиваем все блоки строго друг под другом */
+    height: auto !important; /* Контейнер плавно растет вниз под все этажи */
+    max-width: 330px !important; /* Идеальная компактная ширина под любой телефон */
+    width: 330px !important;
+    gap: 5px !important;
+    padding: 5px !important;
+    background-color: #f1f5f9 !important; 
+    border: 1px solid #cbd5e1 !important;
+    margin-right: 12px !important; /* Аккуратный отступ от края экрана телефона */
+    margin-left: auto !important;
+    overflow: visible !important;
+  }
+
+  .concaveBlock {
+    display: flex !important;
+    width: 100% !important; /* Каждый блок честно занимает 100% ширины мобильного контейнера */
+    height: 72px !important; /* Жесткая высота 72px защищает кнопки от любого урезания! */
+    box-sizing: border-box !important;
+    padding: 0 10px !important;
+    flex: none !important;
+    justify-content: space-between !important; /* Красиво распределяем элементы внутри */
+    align-items: center !important;
+  }
+
+  /* --- ИДЕАЛЬНЫЙ ПОРЯДОК ЭТАЖЕЙ ДЛЯ СМАРТФОНА --- */
+  
+  /* ЭТАЖ 1 (Самый верх): Кнопки управления START/STOP (бывший 3-й блок) */
+  .widgetContainer > .concaveBlock:nth-child(3) {
+    order: 1 !important;
+  }
+
+  /* ЭТАЖ 2: Блок Настроек (бывший 1-й блок) */
+  .widgetContainer > .concaveBlock:nth-child(1) {
+    order: 2 !important;
+  }
+
+  /* ЭТАЖ 3: Блок статистики План/Факт/Дифф (бывший 2-й блок) — ТЕПЕРЬ ОН ТУТ И НЕ ИСЧЕЗАЕТ! */
+  .widgetContainer > .concaveBlock:nth-child(2) {
+    order: 3 !important;
+    padding: 0 12px !important;
+  }
+  .compactStatsBox {
+    width: 100% !important; /* Растягиваем статистику во всю ширину мобильного этажа */
+  }
+
+  /* ЭТАЖ 4 (Самый низ): Ваш идеальный Блок 4 (Таймеры, прогресс-бары и DONE) */
+  .widgetContainer > .concaveBlock:nth-child(4) {
+    order: 4 !important;
+    width: 100% !important;
+    padding-right: 0 !important; /* Чтобы кнопка DONE идеально прижалась к правому краю скругления */
+  }
+
+  /* Принудительно держим крупные, удобные для пальцев размеры элементов на телефоне */
+  .toggleContainer { height: 24px !important; min-width: 94px !important; }
+  .radioLabel { font-size: 0.75rem !important; width: 45px !important; }
+  .slider { width: 45px !important; height: calc(100% - 4px) !important; }
+  .radioInput[value="9h40m"]:checked ~ .slider { transform: translateX(45px) !important; }
+  
+  .gridRow { height: 22px !important; width: 100% !important; }
+  .gridRowFullWidth { height: 18px !important; width: 100% !important; }
+  .shadowBtn { height: 22px !important; font-size: 0.65rem !important; flex: 1 !important; }
+  .adjBtnWide { height: 18px !important; font-size: 0.58rem !important; }
+  
+  .dDoneBtn {
+    margin-right: 0 !important;
+    height: 100% !important;
+    border-top-right-radius: 6px !important;
+    border-bottom-right-radius: 6px !important;
+  }
+}
+
+/* СТУПЕНЬ 4: Экстремально узкие старые телефоны (меньше 340px) — легкий спасительный scale */
+@media (max-width: 340px) {
+  .widgetContainer {
+    transform: scale(0.9) !important; 
+    transform-origin: bottom right !important;
+    margin-right: 4px !important;
+  }
+}edia (max-width: 1100px) {
     .widgetContainer {
       transform: scale(1) !important;
       display: flex !important;
