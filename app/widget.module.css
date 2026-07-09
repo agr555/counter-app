@@ -356,7 +356,21 @@
     mix-blend-mode: difference; 
   }
   
-
+/* Базовые стили контейнеров (добавьте перед медиа-запросами) */
+.configGrid {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    height: 100%;
+  }
+  .fieldGroupTarget {
+    display: flex;
+    flex-direction: column;
+    align-items: center; 
+    justify-content: center;
+    gap: 2px;
+  }
   /* ==========================================================================
    АДАПТИВНОСТЬ И ОТКЛИК ПО ШИРИНЕ ЭКРАНА
    ========================================================================== */
@@ -417,84 +431,91 @@
   
   /* СТУПЕНЬ 3: Точка "500" (меньше 600px) — скрываем Блок 2, выстраиваем в колонку */
  /* СТУПЕНЬ 3: Точка "500" (меньше 600px) — скрываем Блок 2, меняем блоки местами и уменьшаем настройки */
-@media (max-width: 600px) {
-    /* Полностью прячем Блок 2 (статистику) */
+ @media (max-width: 600px) {
+    /* Скрываем Блок 2 (статистику плана) */
     .widgetContainer > .concaveBlock:nth-child(2) {
       display: none !important;
     }
   
+    /* Превращаем весь контейнер в четкую Grid-сетку из двух основных этажей */
     .widgetContainer {
-      max-width: 340px; 
-      transform: scale(0.9); 
-      transform-origin: bottom right;
-      flex-direction: column; /* Блоки идут вертикальной стопкой */
-      align-items: stretch;
-      justify-content: flex-start;
+      display: grid;
+      grid-template-columns: auto 1fr; /* Колонка 1: Управление, Колонка 2: Настройки */
+      grid-template-rows: auto auto;   /* Строка 1: Верхние блоки, Строка 2: Таймеры (Блок 4) */
+      max-width: 480px; 
+      height: auto;
+      gap: 5px;
+      padding: 5px;
+      background-color: #f1f5f9; 
+      border: 1px solid #cbd5e1;
     }
   
     .concaveBlock {
-      height: 76px;
+      box-sizing: border-box;
+      height: 76px; /* Фиксированная высота этажей */
+    }
+  
+    /* 1. БЛОК УПРАВЛЕНИЯ (Блок 3): Встает СЛЕВА на всю высоту первого этажа */
+    .blockControls {
+      grid-column: 1;
+      grid-row: 1;
+      width: 205px !important; /* Четкая ширина под кнопки старта и корректировок */
+    }
+  
+    /* 2. БЛОК НАСТРОЕК (Блок 1): Встает СПРАВА от управления */
+    .blockConfig {
+      grid-column: 2;
+      grid-row: 1;
       width: 100% !important;
-      flex: none !important;
+      padding: 5px 8px;
     }
   
-    /* --- ИЗМЕНЕНИЕ ПОРЯДКА БЛОКОВ (ORDER) --- */
-    
-    /* Блок 3 (Управление: START/PAUSE) делаем ПЕРВЫМ (в самый верх) */
-    .widgetContainer > .concaveBlock:nth-child(3) {
-      order: 1;
+    /* ВНУТРИ БЛОКА 1: Перестраиваем инпуты в два ряда параллельно кнопкам управления */
+    .blockConfig .configGrid {
+      display: grid;
+      grid-template-columns: 1fr 1fr; /* Две равные колонки для Rate и Shift Time */
+      grid-template-rows: auto auto;   /* Два ряда */
+      row-gap: 4px;
+      column-gap: 8px;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      width: 100%;
     }
   
-    /* Блок 1 (Настройки: Rate/Hour, Shift Time) делаем ВТОРЫМ */
-    .widgetContainer > .concaveBlock:nth-child(1) {
-      order: 2;
-      width: 100% !important;
-      height: 52px; /* Уменьшаем высоту самого блока настроек, чтобы он стал компактнее */
-      gap: 4px;     /* Сжимаем отступы между элементами внутри */
-      padding: 0 6px;
+    /* Ряд 1: Поле нормы (Rate) */
+    .cfgRate {
+      grid-column: 1;
+      grid-row: 1;
     }
   
-    /* Блок 4 (Таймеры и DONE) идет ТРЕТЬИМ (в самый низ) */
+    /* Ряд 1: Рабочее время (Shift Time) */
+    .cfgTime {
+      grid-column: 2;
+      grid-row: 1;
+    }
+  
+    /* Ряд 2: Общее число деталей (Shift Target) — уходит вниз параллельно кнопкам */
+    .cfgTarget {
+      grid-column: span 2; /* Растягиваем по центру на обе колонки */
+      grid-row: 2;
+      flex-direction: row !important; /* Делаем строчным для идеальной центровки */
+      gap: 8px;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      margin-top: 1px;
+    }
+  
+    /* Убираем лишний нижний маргин у лейбла target на втором ряду */
+    .cfgTarget .fieldLabel {
+      margin-bottom: 0;
+    }
+  
+    /* 3. БЛОК ТАЙМЕРОВ И DONE (Блок 4): Занимает весь НИЖНИЙ второй этаж виджета */
     .widgetContainer > .concaveBlock:nth-child(4) {
-      order: 3;
-      min-width: 100%;
-    }
-  
-    /* --- ДОПОЛНИТЕЛЬНОЕ УМЕНЬШЕНИЕ ЭЛЕМЕНТОВ ВНУТРИ БЛОКА НАСТРОЕК --- */
-    .widgetContainer > .concaveBlock:nth-child(1) .fieldLabel {
-      font-size: 0.5rem; /* Делаем подписи еще меньше */
-    }
-  
-    .widgetContainer > .concaveBlock:nth-child(1) .inputNumberWide {
-      height: 20px;       /* Делаем поле ввода Rate ниже */
-      font-size: 0.75rem; /* Уменьшаем шрифт цифр */
-      width: 50px;        /* Сужаем поле */
-    }
-  
-    .widgetContainer > .concaveBlock:nth-child(1) .toggleContainer {
-      height: 20px;       /* Делаем переключатель 8h / 9:40 компактнее */
-      min-width: 84px;
-    }
-  
-    .widgetContainer > .concaveBlock:nth-child(1) .radioLabel {
-      font-size: 0.65rem; /* Уменьшаем текст "8h" и "9:40" */
-      width: 40px;
-    }
-  
-    .widgetContainer > .concaveBlock:nth-child(1) .slider {
-      height: calc(100% - 4px);
-      width: 40px;
-    }
-  
-    /* Корректируем сдвиг ползунка под новую уменьшенную ширину */
-    .widgetContainer > .concaveBlock:nth-child(1) .radioInput[value="9h40m"]:checked ~ .slider {
-      transform: translateX(40px) !important;
-    }
-  
-    .widgetContainer > .concaveBlock:nth-child(1) .targetDisplayDisabled {
-      height: 20px;       /* Уменьшаем блок Shift Target */
-      width: 45px;
-      font-size: 0.75rem;
+      grid-column: span 2; /* Растягивается на всю ширину под Блоком 3 и Блоком 1 */
+      grid-row: 2;
+      width: 100% !important;
     }
   }
-  

@@ -246,76 +246,81 @@ export default function PomodoroWidget() {
     <div className={styles.layoutWrapper}>
       <div className={styles.widgetContainer}>
         
-        {/* BLOCK 1: CONFIGURATION (Concave Border) */}
-        <div className={styles.concaveBlock}>
-          <div className={styles.fieldGroup}>
-            <label htmlFor="coefficient" className={styles.fieldLabel}>Rate / Hour</label>
-            <input
-              id="coefficient"
-              type="number"
-              step="1"
-              min="1"
-              max="999999"
-              value={isSettingsDisabled ? lockedCoefficient : coefficient}
-              onChange={(e) => setCoefficient(parseInt(e.target.value) || 0)}
-              disabled={isSettingsDisabled}
-              className={styles.inputNumberWide}
-            />
-          </div>
-
-          <div className={styles.fieldGroup}>
-            <span className={styles.fieldLabel}>Shift Time</span>
-            <div className={styles.toggleContainer} style={{ opacity: isSettingsDisabled ? 0.7 : 1 }}>
+        {/* BLOCK 1: CONFIGURATION */}
+        <div className={`${styles.concaveBlock} ${styles.blockConfig}`}>
+          <div className={styles.configGrid}>
+            
+            <div className={`${styles.fieldGroup} ${styles.cfgRate}`}>
+              <label htmlFor="coefficient" className={styles.fieldLabel}>Rate / Hour</label>
               <input
-                type="radio"
-                id="shift-8"
-                name="shiftValue"
-                value="8h"
-                checked={(isSettingsDisabled ? lockedShift : shift) === '8h'}
-                onChange={() => setShift('8h')}
+                id="coefficient"
+                type="number"
+                step="1"
+                min="1"
+                max="999999"
+                value={isSettingsDisabled ? lockedCoefficient : coefficient}
+                onChange={(e) => setCoefficient(parseInt(e.target.value) || 0)}
                 disabled={isSettingsDisabled}
-                className={styles.radioInput}
+                className={styles.inputNumberWide}
               />
-              <label 
-                htmlFor="shift-8" 
-                className={`${styles.radioLabel} ${(isSettingsDisabled ? lockedShift : shift) === '8h' ? styles.radioLabelActive : ''}`}
-              >
-                8h
-              </label>
-
-              <input
-                type="radio"
-                id="shift-9"
-                name="shiftValue"
-                value="9h40m"
-                checked={(isSettingsDisabled ? lockedShift : shift) === '9h40m'}
-                onChange={() => setShift('9h40m')}
-                disabled={isSettingsDisabled}
-                className={styles.radioInput}
-              />
-              <label 
-                htmlFor="shift-9" 
-                className={`${styles.radioLabel} ${(isSettingsDisabled ? lockedShift : shift) === '9h40m' ? styles.radioLabelActive : ''}`}
-                style={{ width: '56px' }}
-              >
-                9:40
-              </label>
-              
-              <div 
-                className={styles.slider} 
-                style={{ 
-                  transform: (isSettingsDisabled ? lockedShift : shift) === '9h40m' ? 'translateX(45px)' : 'translateX(0px)'
-                }}
-              ></div>
             </div>
-          </div>
 
-          <div className={styles.fieldGroup}>
-            <span className={styles.fieldLabel}>Shift Target</span>
-            <div className={styles.targetDisplayDisabled}>
-              {isSettingsDisabled ? lockedTarget : currentTargetPositions}
-              <span className={styles.unitText}>pcs</span>
+            <div className={`${styles.fieldGroup} ${styles.cfgTime}`}>
+              <span className={styles.fieldLabel}>Shift Time</span>
+              <div className={styles.toggleContainer} style={{ opacity: isSettingsDisabled ? 0.7 : 1 }}>
+                <input
+                  type="radio"
+                  id="shift-8"
+                  name="shiftValue"
+                  value="8h"
+                  checked={(isSettingsDisabled ? lockedShift : shift) === '8h'}
+                  onChange={() => setShift('8h')}
+                  disabled={isSettingsDisabled}
+                  className={styles.radioInput}
+                />
+                <label 
+                  htmlFor="shift-8" 
+                  className={`${styles.radioLabel} ${(isSettingsDisabled ? lockedShift : shift) === '8h' ? styles.radioLabelActive : ''}`}
+                >
+                  8h
+                </label>
+
+                <input
+                  type="radio"
+                  id="shift-9"
+                  name="shiftValue"
+                  value="9h40m"
+                  checked={(isSettingsDisabled ? lockedShift : shift) === '9h40m'}
+                  onChange={() => setShift('9h40m')}
+                  disabled={isSettingsDisabled}
+                  className={styles.radioInput}
+                />
+                <label 
+                  htmlFor="shift-9" 
+                  className={`${styles.radioLabel} ${(isSettingsDisabled ? lockedShift : shift) === '9h40m' ? styles.radioLabelActive : ''}`}
+                  style={{ width: '56px' }}
+                >
+                  9:40
+                </label>
+                
+                <div 
+                  className={styles.slider} 
+                  style={{ 
+                    transform: (isSettingsDisabled ? lockedShift : shift) === '9h40m' ? 'translateX(45px)' : 'translateX(0px)'
+                  }}
+                ></div>
+              </div>
             </div>
+
+            {/* Элемент Shift Target, который уйдет на второй ряд */}
+            <div className={`${styles.fieldGroupTarget} ${styles.cfgTarget}`}>
+              <span className={styles.fieldLabel}>Shift Target</span>
+              <div className={styles.targetDisplayDisabled}>
+                {isSettingsDisabled ? lockedTarget : currentTargetPositions}
+                <span className={styles.unitText}>pcs</span>
+              </div>
+            </div>
+
           </div>
         </div>
 
@@ -345,8 +350,8 @@ export default function PomodoroWidget() {
           </div>
         </div>
 
-        {/* BLOCK 3: CONTROLS & MANUAL ADJUSTMENTS (Concave Border) */}
-        <div className={styles.concaveBlock} style={{ padding: '0 6px' }}>
+         {/* BLOCK 3: CONTROLS & MANUAL ADJUSTMENTS */}
+         <div className={`${styles.concaveBlock} ${styles.blockControls}`} style={{ padding: '0 6px' }}>
           <div className={styles.controlAndAdjustColumn}>
             <div className={styles.gridRow}>
               <button 
@@ -357,7 +362,6 @@ export default function PomodoroWidget() {
                 {isRunning ? '|| PAUSE' : '▶ START'}
               </button>
 
-              {/* УБРАЛИ ТЕКСТ: Кнопка стала уже, а иконки крупнее и ярче */}
               <button 
                 type="button" 
                 onClick={() => setIsSoundEnabled(!isSoundEnabled)} 
@@ -376,7 +380,6 @@ export default function PomodoroWidget() {
               </button>
             </div>
 
-            {/* РАВНОМЕРНОЕ РАСПРЕДЕЛЕНИЕ: Кнопки увеличили и выровняли по ширине */}
             <div className={styles.gridRowFullWidth}>
               <button type="button" onClick={() => adjustCount(-10)} className={styles.adjBtnWide}>-10</button>
               <button type="button" onClick={() => adjustCount(-1)} className={styles.adjBtnWide}>-1</button>
