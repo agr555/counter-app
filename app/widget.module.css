@@ -330,23 +330,8 @@
   /* Элементы разметки для мобильной структуры */
   .configGrid { display: flex; align-items: center; gap: 6px; width: 100%; height: 100%; }
   
-
-/* ==========================================================================
-   2. СИСТЕМНАЯ АДАПТИВНОСТЬ ДЛЯ СРЕДНИХ И МОБИЛЬНЫХ ЭКРАНОВ
-   ========================================================================== */
-
-/* СТУПЕНЬ 1: Ноутбуки (меньше 1250px) — пропорционально уменьшаем без изломов */
-@media (max-width: 1250px) {
-    .widgetContainer {
-      transform: scale(0.85);
-      transform-origin: bottom right;
-      margin-right: 0 !important;
-      margin-bottom: 0 !important;
-    }
-  } 
-  
-  /* СТУПЕНЬ 2: Точки "840" и "720" (от 1100px до 521px) — ПРОСТОРНЫЕ 2 РЯДА */
-  @media (max-width: 1100px) and (min-width: 521px) {
+/* СТУПЕНЬ 2: Точки "840" и "720" (от 1100px до 521px) — ПРОСТОРНЫЕ 2 РЯДА */
+@media (max-width: 1100px) and (min-width: 521px) {
     .widgetContainer {
       transform: scale(1) !important;
       display: flex !important;
@@ -501,20 +486,28 @@
     .slider { width: 41px !important; height: calc(100% - 4px) !important; }
     .radioInput[value="9h40m"]:checked ~ .slider { transform: translateX(41px) !important; }
   
-    /* ИСПРАВЛЕНИЕ ДЛЯ ТАРГЕТА: Текст и цифры встают строго в один горизонтальный ряд (row),
-       никаких наездов на STOPWATCH больше не будет */
+    /* ЖЕЛЕЗОБЕТОННОЕ ИСПРАВЛЕНИЕ ДЛЯ СТРОКИ TARGET: 
+       Принудительно выстраиваем подпись и цифры строго в один горизонтальный ряд (row).
+       Свойство display: flex заставляет их встать плечом к плечу на мобильном */
     .cfgTarget {
       grid-column: span 2 !important; 
       grid-row: 2 !important;
-      flex-direction: row !important; /* Выравниваем в одну линию */
-      gap: 6px !important;            /* Увеличили зазор между словом Target и pcs */
+      display: flex !important;       /* Включаем флекс */
+      flex-direction: row !important; /* Намертво фиксируем выравнивание в одну линию */
+      gap: 6px !important;            /* Красивый отступ между словом Target и цифрой */
       justify-content: center !important;
       align-items: center !important;
       width: 100% !important;
-      height: 24px !important;       /* Четко ограничиваем высоту */
+      height: 24px !important;       
     }
   
-    /* РЯД 2 (НИЖНИЙ ЭТАЖ) — Полностью отделен и защищен от наслоения */
+    /* Исправление внутренней подписи: отменяем блочное поведение */
+    .cfgTarget .fieldLabel {
+      margin: 0 !important;
+      display: inline-block !important;
+    }
+  
+    /* РЯД 2 (НИЖНИЙ ЭТАЖ) */
     .widgetContainer > .concaveBlock:nth-child(4) {
       grid-column: span 2 !important; 
       grid-row: 2 !important;
