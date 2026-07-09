@@ -1,9 +1,8 @@
 /* ==========================================================================
-   1. БАЗОВЫЕ СТИЛИ ВИДЖЕТА (ВАШ ОРИГИНАЛЬНЫЙ СТИЛЬ — ИДЕАЛЬНО ДЛЯ БОЛЬШИХ ЭКРАНОВ)
+   1. БАЗОВЫЕ СТИЛИ ДЛЯ БОЛЬШИХ ЭКРАНОВ (ОРИГИНАЛЬНАЯ ГЕОМЕТРИЯ)
    ========================================================================== */
 
-/* Внешняя невидимая оболочка: жестко держит компактную строку в правом нижнем углу экрана */
-.layoutWrapper {
+   .layoutWrapper {
     display: flex;
     flex-direction: column;
     justify-content: flex-end; 
@@ -14,7 +13,6 @@
     padding: 4px; 
   }
   
-  /* Сама горизонтальная строка виджета сжимается строго по контенту */
   .widgetContainer {
     display: flex;
     align-items: center;
@@ -23,13 +21,12 @@
     border-radius: 8px;
     width: max-content; 
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    height: 76px; /* Зафиксированная высота под две нижние полосы прогресса */
+    height: 76px; /* Фиксированная высота под две нижние полосы прогресса */
     overflow: hidden;
     gap: 6px;
     padding: 0;
   }
   
-  /* Изящные вогнутые блоки */
   .concaveBlock {
     display: flex;
     align-items: center;
@@ -60,7 +57,6 @@
     text-align: center;
   }
   
-  /* Поля и цифры (размер строго 0.85rem) */
   .inputNumberWide {
     background-color: #ffffff;
     border: 1px solid #cbd5e1;
@@ -77,7 +73,6 @@
   .inputNumberWide:focus { border-color: #0f766e; }
   .inputNumberWide:disabled { opacity: 0.6; cursor: not-allowed; background-color: #f1f5f9; }
   
-  /* Визуально неактивный Target */
   .targetDisplayDisabled {
     background-color: #f1f5f9;
     border: 1px dashed #cbd5e1;
@@ -137,7 +132,6 @@
     z-index: 1;
   }
   
-  /* Колонки управления */
   .controlAndAdjustColumn {
     display: flex;
     flex-direction: column;
@@ -162,7 +156,6 @@
     height: 18px;
   }
   
-  /* Объемные кнопки с тенью */
   .shadowBtn {
     height: 22px;
     padding: 0 10px;
@@ -178,10 +171,7 @@
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1), inset 0 -1px 0 rgba(0, 0, 0, 0.12);
     transition: transform 0.1s, box-shadow 0.1s;
   }
-  .shadowBtn:active {
-    transform: translateY(1px);
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
-  }
+  .shadowBtn:active { transform: translateY(1px); box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08); }
   
   .btnStart { background-color: #16a34a; }
   .btnStart:hover { background-color: #15803d; }
@@ -190,14 +180,8 @@
   .btnReset { background-color: #dc2626; }
   .btnReset:hover { background-color: #b91c1c; }
   
-  .btnSoundOn {
-    background-color: #f0fdf4 !important;
-    border: 1px solid #bbf7d0 !important;
-  }
-  .btnSoundOff {
-    background-color: #f1f5f9 !important;
-    border: 1px solid #cbd5e1 !important;
-  }
+  .btnSoundOn { background-color: #f0fdf4 !important; border: 1px solid #bbf7d0 !important; }
+  .btnSoundOff { background-color: #f1f5f9 !important; border: 1px solid #cbd5e1 !important; }
   
   .adjBtnWide {
     flex: 1;
@@ -217,7 +201,6 @@
   }
   .adjBtnWide:hover { background-color: #f1f5f9; }
   
-  /* Дисплеи времени */
   .timeDisplay, .stopwatchDisplay {
     display: flex;
     flex-direction: column;
@@ -232,12 +215,10 @@
   
   .stopwatchNumbers { color: #3b82f6; }
   
-  /* Настройка цветов PACE */
   .paceGreen { color: #16a34a; }
   .paceBlack { color: #0f172a; } 
   .paceRed { color: #dc2626; font-weight: 900; } 
   
-  /* Блоки прогресса и статистики */
   .compactStatsBox {
     display: flex;
     flex-direction: column;
@@ -274,7 +255,6 @@
   }
   .unitText { font-size: 0.65rem; color: #94a3b8; font-weight: 500; font-family: sans-serif; }
   
-  /* Объемная кнопка DONE с мягкой тенью и скруглением правых углов */
   .dDoneBtn {
     width: 60px;
     height: calc(100% - 4px); 
@@ -295,7 +275,6 @@
   .dDoneBtn:hover { background-color: #115e59; box-shadow: 0 6px 8px -1px rgba(15, 118, 110, 0.3), 0 3px 6px -1px rgba(0, 0, 0, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.2); }
   .dDoneBtn:active { background-color: #134e4a; transform: translateY(0.5px); box-shadow: 0 2px 4px -1px rgba(15, 118, 110, 0.2), 0 1px 2px -1px rgba(0, 0, 0, 0.1), inset 0 1px 2px rgba(0, 0, 0, 0.2); }
   
-  /* --- ДЛИННАЯ ПОЛОСА ТЕМПА (PACE) --- */
   .extendedPaceTrack {
     width: calc(100% - 12px);
     height: 10px;
@@ -305,11 +284,7 @@
     overflow: hidden;
     box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.08);
   }
-  .extendedPaceFill {
-    height: 100%;
-    transition: width 1s linear, background-color 0.2s ease;
-    border-radius: 4px;
-  }
+  .extendedPaceFill { height: 100%; transition: width 1s linear, background-color 0.2s ease; border-radius: 4px; }
   .extendedPaceText {
     position: absolute;
     inset: 0;
@@ -327,7 +302,6 @@
   .bgPaceBlack { background-color: #0f172a; }
   .bgPaceRed   { background-color: #dc2626; }
   
-  /* --- ОБЩАЯ СТРОКА ПРОГРЕССА СМЕНЫ --- */
   .bottomProgressBarTrack {
     width: calc(100% - 12px);
     height: 10px; 
@@ -337,13 +311,7 @@
     overflow: hidden;
     box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.08); 
   }
-  .bottomProgressBarFill {
-    height: 100%;
-    background-color: #2563eb; 
-    transition: width 0.3s ease-out;
-    border-radius: 4px; 
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15); 
-  }
+  .bottomProgressBarFill { height: 100%; background-color: #2563eb; transition: width 0.3s ease-out; border-radius: 4px; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15); }
   .bottomProgressBarText {
     position: absolute;
     inset: 0;
@@ -358,63 +326,129 @@
     mix-blend-mode: difference; 
   }
   
-  /* Элементы разметки для мобильной Grid-структуры (не ломают десктоп) */
+  /* Элементы разметки для мобильной структуры */
   .configGrid { display: flex; align-items: center; gap: 6px; width: 100%; height: 100%; }
-  .fieldGroupTarget { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; }
-  
   
   /* ==========================================================================
-     2. СИСТЕМНАЯ АДАПТИВНОСТЬ ДЛЯ СРЕДНИХ И МОБИЛЬНЫХ ЭКРАНОВ
+     2. СИСТЕМНАЯ АДАПТИВНОСТЬ (СТРОГИЙ ДВУХРЯДНЫЙ РЕЖИМ БЕЗ СЖАТИЯ ПО ВЫСОТЕ)
      ========================================================================== */
-
-
-/* СТУПЕНЬ 1: Ноутбуки (меньше 1250px) — пропорционально уменьшаем без изломов */
-@media (max-width: 1250px) {
+  
+  /* СТУПЕНЬ 1: Ноутбуки (меньше 1250px) — пропорционально уменьшаем без изломов */
+  @media (max-width: 1250px) {
     .widgetContainer {
       transform: scale(0.85);
       transform-origin: bottom right;
-      margin-right: 16px; /* Безопасный зазор от полосы прокрутки Vercel */
+      margin-right: 16px;
       margin-bottom: 8px;
     }
   }
-  
-  /* ==========================================================================
-   2. СИСТЕМНАЯ АДАПТИВНОСТЬ ДЛЯ СРЕДНИХ И МОБИЛЬНЫХ ЭКРАНОВ
-   ========================================================================== */
 
-/* На средних экранах (около 1000px) — виджет стоит в одну линию и уменьшается на 15% */
-@media (max-width: 1100px) {
+  /* СТУПЕНЬ 2: Точки "840" и "720" (работает от 1100px до 501px) — ЖЕЛЕЗОБЕТОННЫЕ 2 РЯДА */
+@media (max-width: 1100px) and (min-width: 501px) {
     .widgetContainer {
-      transform: scale(0.85) !important;
-      transform-origin: bottom right !important;
-      margin-right: 16px !important; 
-      margin-bottom: 8px !important;
-    }
-  }
-  
-  /* На отметке 840px и 720px — виджет плавно уменьшается на 25%, гарантируя, что ни одна кнопка не сплющится */
-  @media (max-width: 860px) {
-    .widgetContainer {
-      transform: scale(0.75) !important;
-      transform-origin: bottom right !important;
+      transform: scale(1) !important;
+      display: flex !important;
+      flex-direction: row !important;
+      flex-wrap: wrap !important;  /* Принудительно включаем перенос блоков на 2 ряда */
+      height: auto !important;     /* Разрешаем контейнеру расти вверх, спасая кнопки от урезания */
+      max-width: 500px !important; /* Ограничиваем ширину, заставляя блоки разбиться 2 на 2 */
+      gap: 6px !important;
+      padding: 6px !important;
+      background-color: #f1f5f9 !important; 
+      border: 1px solid #cbd5e1 !important;
+      margin-left: auto !important; /* Идеально центрируем в правой зоне */
       margin-right: 16px !important;
+      align-items: stretch !important;
+      overflow: visible !important; /* Отключаем обрезание букв по краям */
     }
+  
+    .concaveBlock {
+      height: 76px !important;      /* НАМЕРТВО ФИКСИРУЕМ ВЫСОТУ КАЖДОГО БЛОКА В 76px */
+      box-sizing: border-box !important;
+      padding: 0 8px !important;       
+      flex: none !important;        /* Запрещаем браузеру произвольно менять ширину */
+    }
+  
+    /* РЯД 1 (ВЕРХНИЙ ЭТАЖ): Кнопки управления и Настройки */
+    .widgetContainer > .concaveBlock:nth-child(3) {
+      order: 1 !important;
+      width: calc(45% - 3px) !important; /* Блок кнопок START/STOP (Блок 3) — встает слева */
+    }
+    .widgetContainer > .concaveBlock:nth-child(1) {
+      order: 2 !important;
+      width: calc(55% - 3px) !important; /* Блок Настроек (Блок 1) — встает справа. Места полно, 9:40 не жмет! */
+    }
+  
+    /* РЯД 2 (НИЖНИЙ ЭТАЖ): План/Факт и ваш идеальный Блок 4 */
+    .widgetContainer > .concaveBlock:nth-child(2) {
+      order: 3 !important;
+      width: calc(35% - 3px) !important; /* Блок статистики плана (Блок 2) — опускается вниз слева */
+    }
+    .widgetContainer > .concaveBlock:nth-child(4) {
+      order: 4 !important;
+      width: calc(65% - 3px) !important; /* Блок таймеров и DONE (Блок 4) — зафиксирован внизу справа */
+    }
+  
+    /* Принудительно восстанавливаем оригинальные размеры внутренних элементов для Ступени 2 */
+    .toggleContainer { height: 24px !important; min-width: 94px !important; }
+    .radioLabel { font-size: 0.75rem !important; width: 45px !important; }
+    .slider { width: 45px !important; height: calc(100% - 4px) !important; }
+    .radioInput[value="9h40m"]:checked ~ .slider { transform: translateX(45px) !important; }
+    .gridRow { height: 22px !important; }
+    .shadowBtn { height: 22px !important; font-size: 0.65rem !important; }
   }
   
-  /* На отметке 600px и 500px — виджет становится еще компактнее (на 35%), чтобы идеально встать на экран смартфона */
-  @media (max-width: 620px) {
+  /* СТУПЕНЬ 3: Мобильные телефоны (меньше 500px) — ультра-компактная сетка */
+  @media (max-width: 500px) {
+    /* Прячем Блок 2 только на mobile из-за физической нехватки ширины экрана смартфона */
+    .widgetContainer > .concaveBlock:nth-child(2) {
+      display: none !important;
+    }
+  
     .widgetContainer {
-      transform: scale(0.65) !important;
-      transform-origin: bottom right !important;
+      display: grid !important;
+      grid-template-columns: 145px 1fr !important; 
+      grid-template-rows: auto auto !important;   
+      max-width: 340px !important;    
+      width: 340px !important;
+      height: auto !important; 
+      gap: 4px !important;
+      padding: 4px !important;
+      background-color: #f1f5f9 !important; 
+      border: 1px solid #cbd5e1 !important;
       margin-right: 12px !important;
+      margin-left: auto !important;
+      overflow: visible !important;
+    }
+  
+    .concaveBlock { box-sizing: border-box !important; height: 76px !important; }
+  
+    /* Блок управления (Блок 3) — Слева */
+    .widgetContainer > .concaveBlock:nth-child(3) {
+      grid-column: 1 !important; grid-row: 1 !important;
+      width: 172px !important; transform: scale(0.84) !important; transform-origin: left center !important; margin-right: -27px !important;     
+    }
+  
+    /* Блок настроек (Блок 1) — Справа, перестраивается во внутренние 2 ряда */
+    .widgetContainer > .concaveBlock:nth-child(1) {
+      grid-column: 2 !important; grid-row: 1 !important;
+      width: 122% !important; transform: scale(0.82) !important; transform-origin: right center !important; padding: 4px 6px !important;
+    }
+  
+    .widgetContainer > .concaveBlock:nth-child(1) .configGrid {
+      display: grid !important; grid-template-columns: 1fr 1fr !important; grid-template-rows: auto auto !important; row-gap: 3px !important; column-gap: 4px !important; align-items: center !important; justify-content: center !important;
+    }
+  
+    /* Блок таймеров и DONE (Блок 4) — Нижний длинный этаж */
+    .widgetContainer > .concaveBlock:nth-child(4) { grid-column: span 2 !important; grid-row: 2 !important; width: 100% !important; }
+  }
+  
+  /* СТУПЕНЬ 4: Маленькие смартфоны (меньше 380px) */
+  @media (max-width: 380px) {
+    .widgetContainer {
+      transform: scale(0.85) !important; 
+      transform-origin: bottom right !important;
+      margin-right: 4px !important;
     }
   }
   
-  /* Для самых маленьких или старых телефонов (меньше 400px) */
-  @media (max-width: 400px) {
-    .widgetContainer {
-      transform: scale(0.55) !important;
-      transform-origin: bottom right !important;
-      margin-right: 8px !important;
-    }
-  }
