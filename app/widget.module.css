@@ -448,6 +448,10 @@
    ПОЛНАЯ ИСПРАВЛЕННАЯ АДАПТИВНОСТЬ (СТРОГО ОДИН РЯД НА 600px БЕЗ ДЫР И СЖАТИЯ)
    ========================================================================== */
 
+/* ==========================================================================
+   ПОЛНАЯ ИСПРАВЛЕННАЯ АДАПТИВНОСТЬ (ЗАЩИТА ОТ УРЕЗАНИЯ НА 840px)
+   ========================================================================== */
+
    .configGrid {
     display: flex;
     align-items: center;
@@ -483,153 +487,94 @@
     }
   }
   
-  /* СТУПЕНЬ 2: Точка "600" (работает от 980px до 541px) — ИДЕАЛЬНЫЙ БЛОК 4 + ИСПРАВЛЕНИЕ ЛЕВОЙ ЧАСТИ */
-  @media (max-width: 980px) and (min-width: 541px) {
+  /* СТУПЕНЬ 2: Точка "840" (работает от 1100px до 621px) — ДВА РЯДА БЕЗ УРЕЗАНИЯ КОНТЕНТА */
+  @media (max-width: 1100px) and (min-width: 621px) {
     .widgetContainer {
       transform: scale(1);
       display: flex;
       flex-direction: row;
-      flex-wrap: nowrap;    /* КАТЕГОРИЧЕСКИ ЗАПРЕЩАЕМ ПЕРЕНОС: все 4 блока стоят в одну линию */
-      height: 76px;         /* Фиксированная высота всего виджета — защита от урезания */
-      max-width: max-content; 
-      gap: 4px;             /* Минимальный зазор, полностью убирает дыру */
-      padding: 0;
-      background-color: transparent;
-      border: none;
-      align-items: center;
+      flex-wrap: wrap;       /* ИСПРАВЛЕНИЕ: Разрешаем перенос на 2 ряда, чтобы на 840px ничего не резалось! */
+      height: auto;          /* Высота подстраивается автоматически под два ряда */
+      max-width: 540px;      /* Жестко зажимаем ширину, чтобы блоки разбились ровно 2 на 2 */
+      gap: 5px;
+      padding: 5px;
+      background-color: #f1f5f9; 
+      border: 1px solid #cbd5e1;
+      justify-content: flex-start;
     }
   
     .concaveBlock {
-      height: 100%; 
+      height: 76px;          /* Фиксируем высоту каждого ряда, защищая кнопки от урезания */
       box-sizing: border-box;
-      padding: 0 6px;       
-      flex: 0 1 auto; 
+      padding: 0 8px;       
+      flex: none !important;
     }
   
-    /* --- ИДЕАЛЬНЫЙ БЛОК 4 (ЖЕСТКО ФИКСИРОВАН, НЕ ТРОГАЕМ ЕГО) --- */
-    .widgetContainer > .concaveBlock:nth-child(4) {
-      flex: 0 0 310px !important; 
-      min-width: 310px !important;
-      width: 310px !important;
-    }
-  
-    /* --- ИСПРАВЛЕНИЕ ЛЕВОЙ ЧАСТИ (КНОПКИ И НАСТРОЙКИ) --- */
-  
-    /* Блок 1 (Настройки): делаем компактнее по ширине за счет убранного слова Shift */
+    /* РЯД 1: Настройки и План-Факт */
     .blockConfig {
-      max-width: 215px;
-      min-width: 205px;
-      gap: 5px;
+      width: calc(58% - 3px) !important; /* Отдаем настройкам больше места, чтобы влезло "9:40" */
     }
-  
-    /* Поля ввода и Target внутри Блока 1 */
-    .blockConfig .inputNumberWide { width: 54px; height: 24px; font-size: 0.85rem; }
-    .blockConfig .targetDisplayDisabled { width: 50px; height: 24px; font-size: 0.85rem; }
-    
-    /* ИСПРАВЛЕНИЕ РАДИОКНОПОК 9:40: возвращаем оригинальный размер, чтобы текст не резался */
-    .blockConfig .toggleContainer {
-      height: 24px;
-      min-width: 94px;
-    }
-    .blockConfig .radioLabel {
-      font-size: 0.75rem;
-      width: 45px;
-    }
-    .blockConfig .slider {
-      width: 45px;
-      height: calc(100% - 4px);
-    }
-    .blockConfig .radioInput[value="9h40m"]:checked ~ .slider {
-      transform: translateX(45px) !important;
-    }
-  
-    /* Блок 2 (План/Факт/Дифф): ужимаем, чтобы освободить место кнопкам */
     .widgetContainer > .concaveBlock:nth-child(2) {
-      min-width: 105px;
-      max-width: 115px;
-      padding: 0 4px;
+      width: calc(42% - 3px) !important;
     }
   
-    /* ИСПРАВЛЕНИЕ КНОПОК START/STOP (Блок 3): возвращаем высоту, убираем урезание текста */
+    /* РЯД 2: Кнопки START/STOP и Идеальный Блок 4 (Таймеры) */
     .blockControls {
-      min-width: 165px;
-      max-width: 175px;
-      padding: 0 6px;
+      width: calc(40% - 3px) !important; /* Управлению возвращаем полную ширину и высоту */
+      order: 3;
     }
-    
-    .blockControls .controlAndAdjustColumn {
-      gap: 4px; /* Даем вертикальный отступ между рядами кнопок */
-      height: 100%;
-      justify-content: center;
+    .widgetContainer > .concaveBlock:nth-child(4) {
+      width: calc(60% - 3px) !important; /* Блок 4 зафиксирован и встает ровно справа внизу */
+      order: 4;
     }
   
-    .blockControls .gridRow {
-      height: 22px; /* Увеличили высоту ряда для кнопок START/STOP */
-    }
-    
-    .blockControls .gridRowFullWidth {
-      height: 18px; /* Высота ряда для мелких корректировок */
-    }
-  
-    .blockControls .shadowBtn {
-      height: 22px; /* Кнопки START, BEEP, STOP теперь высокие, текст влезает полностью */
-      font-size: 0.65rem; /* Четкий читаемый шрифт */
-      padding: 0 8px;
-    }
-  
-    .blockControls .adjBtnWide {
-      height: 18px; /* Корректировки -10... остаются компактными снизу */
-      font-size: 0.55rem;
-    }
+    /* Восстанавливаем оригинальные размеры инпутов и ползунков для Ряда 1 */
+    .blockConfig .toggleContainer { height: 24px; min-width: 94px; }
+    .blockConfig .radioLabel { font-size: 0.75rem; width: 45px; }
+    .blockConfig .slider { width: 45px; height: calc(100% - 4px); }
+    .blockConfig .radioInput[value="9h40m"]:checked ~ .slider { transform: translateX(45px) !important; }
   }
   
-  /* СТУПЕНЬ 3: Мобильные телефоны (меньше 540px) — складываем в 2 компактных ряда, скрывая Блок 2 */
-  @media (max-width: 540px) {
+  /* СТУПЕНЬ 3: Мобильные телефоны (меньше 620px) — скрываем Блок 2, уходим в чистый резиновый Flex */
+  @media (max-width: 620px) {
     .widgetContainer > .concaveBlock:nth-child(2) {
       display: none !important;
     }
   
     .widgetContainer {
-      display: grid;
-      grid-template-columns: 145px 1fr; /* Левая колонка: Управление, Правая: Настройки */
-      grid-template-rows: auto auto;   
-      max-width: 340px;    
-      width: 340px;
-      height: auto;
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;     
+      max-width: 350px;    
+      width: 350px;
+      height: auto;        
       gap: 4px;
       padding: 4px;
       background-color: #f1f5f9; 
       border: 1px solid #cbd5e1;
-      transform: scale(1);
-      transform-origin: bottom right;
+      justify-content: space-between;
     }
   
     .concaveBlock {
       box-sizing: border-box;
       height: 76px; 
+      flex: none !important;
     }
   
-    /* Блок управления (START) — Слева */
+    /* РЯД 1, СЛЕВА: Блок управления (START/STOP) — чистый резиновый процент */
     .blockControls {
-      grid-column: 1;
-      grid-row: 1;
-      width: 172px !important; 
-      transform: scale(0.84);  
-      transform-origin: left center;
-      margin-right: -27px;     
+      order: 1;
+      width: calc(52% - 2px) !important; 
     }
   
-    /* Блок настроек — Справа в два ряда */
+    /* РЯД 1, СПРАВА: Блок настроек в два ряда — чистый резиновый процент */
     .blockConfig {
-      grid-column: 2;
-      grid-row: 1;
-      width: 122% !important; 
-      transform: scale(0.82);  
-      transform-origin: right center;
+      order: 2;
+      width: calc(48% - 2px) !important;
       padding: 4px 6px;
     }
   
-    /* Внутренняя сетка Блока 1 на мобильном */
+    /* Внутренняя сетка инпутов */
     .blockConfig .configGrid {
       display: grid;
       grid-template-columns: 1fr 1fr; 
@@ -638,6 +583,8 @@
       column-gap: 4px; 
       align-items: center;
       justify-content: center;
+      width: 100%;
+      height: 100%;
     }
   
     .cfgRate   { grid-column: 1; grid-row: 1; }
@@ -654,10 +601,9 @@
       width: 100%;
     }
   
-    /* Блок таймеров и DONE — Нижний длинный этаж */
+    /* РЯД 2: Блок таймеров и DONE — на всю ширину нижнего этажа */
     .widgetContainer > .concaveBlock:nth-child(4) {
-      grid-column: span 2; 
-      grid-row: 2;
+      order: 3;
       width: 100% !important;
     }
   }
@@ -669,4 +615,5 @@
       transform-origin: bottom right;
     }
   }
+  
   
