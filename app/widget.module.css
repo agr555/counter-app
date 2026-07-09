@@ -441,12 +441,14 @@
   }
   /* ==========================================================================
    АДАПТИВНОСТЬ И ОТКЛИК ПО ШИРИНЕ ЭКРАНА
+  /* ==========================================================================
+   ФИНАЛЬНАЯ РЕЗИНОВАЯ АДАПТИВНОСТЬ (ВСЕ 4 БЛОКА В ОДИН РЯД НА 600px)
    ========================================================================== */
-/* БАЗОВЫЕ КОНТЕЙНЕРЫ ДЛЯ ЭЛЕМЕНТОВ (Обязательно добавьте эти три класса) */
+
 .configGrid {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
     width: 100%;
     height: 100%;
   }
@@ -468,7 +470,7 @@
     height: 18px;
   }
   
-  /* СТУПЕНЬ 1: Ноутбуки (меньше 1250px) — аккуратное общее уменьшение без деформации */
+  /* СТУПЕНЬ 1: Большие экраны ноутбуков — легкое пропорциональное сжатие */
   @media (max-width: 1250px) {
     .widgetContainer {
       transform: scale(0.85);
@@ -478,112 +480,115 @@
     }
   }
   
-  /* СТУПЕНЬ 2: Точка "976" (меньше 980px) — перестраиваем в 2 ровных ряда БЕЗ ПУСТЫХ ДЫР */
+  /* СТУПЕНЬ 2: Точка "600" (работает от 980px до 541px) — ВСЕ 4 БЛОКА СТРОГО В ОДИН РЯД */
   @media (max-width: 980px) and (min-width: 541px) {
     .widgetContainer {
-      transform: scale(1); /* Возвращаем 100% размер для четкости */
-      flex-wrap: wrap;     /* Разрешаем перенос на 2 ряда */
-      height: auto;        /* Высота подстраивается под контент */
-      max-width: 580px;    /* Комфортный бокс для двух рядов */
-      gap: 6px;
-      padding: 6px;
-      background-color: #f1f5f9; 
-      border: 1px solid #cbd5e1;
+      transform: scale(1);
+      display: flex;
+      flex-direction: row;
+      flex-wrap: nowrap;    /* КАТЕГОРИЧЕСКИ ЗАПРЕЩАЕМ ПЕРЕНОС: все 4 блока стоят в одну линию */
+      height: 76px;         /* Высота под две нижние полосы */
+      max-width: max-content; 
+      gap: 5px;
+      padding: 0;
+      background-color: transparent;
+      border: none;
       justify-content: flex-start;
     }
   
     .concaveBlock {
-      height: 76px; 
+      height: 100%; 
       box-sizing: border-box;
-      padding: 0 10px;
-      flex: 1 1 auto; /* ИСПРАВЛЕНИЕ: блоки сами берут нужную ширину по контенту */
+      padding: 0 6px;
+      flex: 0 1 auto; /* Блоки сжимаются строго по ширине своего контента, убирая дыры */
     }
   
-    /* РЯД 1: Корректируем ширину верхних блоков, чтобы не было гигантских пустых полей */
-    .widgetContainer > .concaveBlock:nth-child(1) {
-      flex: 1 1 200px; /* Блок настроек */
+    /* ИСПРАВЛЕНИЕ: Блок 1 (Настройки) теперь очень узкий, без лишних полей */
+    .blockConfig {
+      max-width: 235px;
+      min-width: 220px;
     }
+  
+    /* ИСПРАВЛЕНИЕ: Блок 2 (План/Факт) делает контент компактным и не раздувается */
     .widgetContainer > .concaveBlock:nth-child(2) {
-      flex: 1 1 160px; /* План-факт-дифф (теперь занимает ровную пропорциональную часть) */
-      min-width: 150px;
+      min-width: 110px;
+      max-width: 125px;
     }
   
-    /* РЯД 2: Кнопки и таймеры уходят вниз и занимают всю доступную ширину ряда без дыр */
-    .widgetContainer > .concaveBlock:nth-child(3) {
-      flex: 1 1 180px; /* Блок управления (START/STOP) автоматически растягивается на свою долю */
-      order: 3;
+    /* Блок 3 (Кнопки) прижимается вплотную без пустого поля справа */
+    .blockControls {
+      min-width: 165px;
+      max-width: 180px;
     }
+  
+    /* Блок 4 (Таймеры и DONE) занимает законное оставшееся место */
     .widgetContainer > .concaveBlock:nth-child(4) {
-      flex: 2 1 260px; /* Блок таймеров и DONE забирает всё оставшееся место справа */
-      order: 4;
+      min-width: 310px;
     }
   }
   
-  /* СТУПЕНЬ 3: Точки "562", "500" и мобильные (меньше 540px) — Складываем в 2 компактных ряда, отсекаем лишнее */
+  /* СТУПЕНЬ 3: Мобильные телефоны (меньше 540px) — только тут скрываем Блок 2 и делим на 2 ряда */
   @media (max-width: 540px) {
-    /* Полностью скрываем Блок 2 (статистику плана) */
+    /* На телефонах скрываем Блок 2, так как 4 блока физически не влезут в экран мобильного */
     .widgetContainer > .concaveBlock:nth-child(2) {
       display: none !important;
     }
   
-    /* Переключаем контейнер на чистый, резиновый Flexbox */
     .widgetContainer {
-      display: flex;
-      flex-direction: row;
-      flex-wrap: wrap;     /* 2 ряда */
-      max-width: 350px;    /* Идеальная ширина, чтобы влезть в любой телефон от 360px */
-      width: 350px;
-      height: auto;        /* Защита от обрезания по высоте! Контейнер растет сам */
-      gap: 5px;
-      padding: 5px;
+      display: grid;
+      grid-template-columns: 145px 1fr; /* Левая колонка: Управление, Правая: Настройки */
+      grid-template-rows: auto auto;   
+      max-width: 340px;    
+      width: 340px;
+      height: auto;
+      gap: 4px;
+      padding: 4px;
       background-color: #f1f5f9; 
       border: 1px solid #cbd5e1;
-      justify-content: space-between;
-      overflow: visible;   /* Защита от обрезания контента по краям! */
       transform: scale(1);
+      transform-origin: bottom right;
     }
   
     .concaveBlock {
-      height: 76px; /* Фиксированная высота для сохранения геометрии */
       box-sizing: border-box;
-      padding: 0 8px;
+      height: 76px; 
     }
   
-    /* РЯД 1, СЛЕВА: Блок 3 (START/STOP) — встает назад влево, занимает ровно половину ряда */
+    /* Блок управления (START) — Слева */
     .blockControls {
-      order: 1;
-      flex: 1 1 calc(52% - 3px);
-      width: auto !important; /* Убираем жесткие пиксели */
-      transform: none !important; /* Убираем ломающие scale */
-      margin: 0 !important;
+      grid-column: 1;
+      grid-row: 1;
+      width: 172px !important; 
+      transform: scale(0.84);  
+      transform-origin: left center;
+      margin-right: -27px;     
     }
   
-    /* РЯД 1, СПРАВА: Блок 1 (Настройки) — встает справа от кнопок, занимает вторую половину */
+    /* Блок настроек — Справа в два ряда */
     .blockConfig {
-      order: 2;
-      flex: 1 1 calc(48% - 3px);
-      width: auto !important;
-      transform: none !important; /* Больше никакой деформации инпутов */
+      grid-column: 2;
+      grid-row: 1;
+      width: 122% !important; 
+      transform: scale(0.82);  
+      transform-origin: right center;
       padding: 4px 6px;
     }
   
-    /* ВНУТРИ БЛОКА 1: Перестраиваем инпуты в красивую 2-рядную мини-сетку */
+    /* Внутренняя сетка Блока 1 на мобильном */
     .blockConfig .configGrid {
       display: grid;
       grid-template-columns: 1fr 1fr; 
       grid-template-rows: auto auto;   
       row-gap: 3px;
-      column-gap: 4px;
+      column-gap: 4px; 
       align-items: center;
       justify-content: center;
-      width: 100%;
-      height: 100%;
     }
   
     .cfgRate   { grid-column: 1; grid-row: 1; }
     .cfgTime   { grid-column: 2; grid-row: 1; }
     
-    /* Shift Target — идет вторым рядом внутри Блока 1, параллельно кнопкам корректировок */
+    /* Target — параллельно кнопкам на втором ряду */
     .cfgTarget {
       grid-column: span 2; 
       grid-row: 2;
@@ -592,29 +597,21 @@
       justify-content: center;
       align-items: center;
       width: 100%;
-      margin-top: 1px;
     }
-    .cfgTarget .fieldLabel { margin-bottom: 0; }
   
-    /* РЯД 2: Блок 4 (Таймеры, прогресс-бары и DONE) ложится широким нижним этажом на 100% ширины */
+    /* Блок таймеров и DONE — Нижний длинный этаж */
     .widgetContainer > .concaveBlock:nth-child(4) {
-      order: 3;
-      flex: 1 1 100%;
+      grid-column: span 2; 
+      grid-row: 2;
       width: 100% !important;
-      min-width: 100%;
     }
   }
   
-  /* СТУПЕНЬ 4: Экстремально узкие телефоны (меньше 400px) — пропорционально сжимаем весь готовый резиновый блок */
+  /* СТУПЕНЬ 4: Маленькие смартфоны (меньше 400px) — аккуратное пропорциональное сжатие */
   @media (max-width: 400px) {
     .widgetContainer {
-      transform: scale(0.88);
+      transform: scale(0.85); 
       transform-origin: bottom right;
     }
   }
   
-  @media (max-width: 340px) {
-    .widgetContainer {
-      transform: scale(0.78);
-    }
-  }
