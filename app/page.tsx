@@ -191,6 +191,7 @@ export default function PomodoroWidget() {
     setProcessedCount((prev) => prev + 1);
     setTotalRealSeconds((prev) => prev + stopwatchSeconds);
     setStopwatchSeconds(0);
+    setShiftAdjustmentSeconds(0);///
     
     if (timeLeft === 0 && isRunning) {
       setTimeLeft(totalTimerSeconds);
