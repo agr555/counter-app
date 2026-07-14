@@ -251,7 +251,10 @@ export default function PomodoroWidget() {
   };
 
   const adjustShiftTime = (minutesAmount: number) => {
-    setShiftAdjustmentSeconds((prev) => Math.max(0, prev + minutesAmount * 60));
+    setShiftAdjustmentSeconds((prev) => {
+      const newValue = prev + minutesAmount * 60;
+      return newValue < 0 ? 0 : newValue; // Не дает упасть ниже абсолютного нуля секунд
+    });
   };
 
   const exactCurrentPlanPcs =
@@ -292,7 +295,9 @@ export default function PomodoroWidget() {
   const paceBarWidth = Math.round((1 - paceRatio) * 100);
 
   const isSettingsDisabled = timeLeft !== totalTimerSeconds || isRunning;
-  const isDoneDisabled = shiftElapsedSeconds === 0;
+
+  const isDoneDisabled = !isRunning && processedCount === 0;
+
 
  const handleStartToggle = () => {
     if (!isRunning && timeLeft === totalTimerSeconds) {
