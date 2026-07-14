@@ -37,7 +37,7 @@ export default function PomodoroWidget() {
       : 25 * 60;
 
   const [timeLeft, setTimeLeft] = useState<number>(totalTimerSeconds);
-
+  const [currentTime, setCurrentTime] = useState<string>("00:00");
   // Визуальный текущий план для полей ввода до нажатия СТАРТ
   const currentShiftMinutes = shift === "9h40m" ? 9 * 60 + 40 : 8 * 60;
   const currentTargetPositions = Math.round(
@@ -158,6 +158,18 @@ export default function PomodoroWidget() {
     return () => clearInterval(interval);
   }, [isRunning, totalTimerSeconds, isSoundEnabled]);
 
+  useEffect(() => {
+    const updateTime = () => {
+      const now = new Date();
+      const hrs = now.getHours().toString().padStart(2, "0");
+      const mins = now.getMinutes().toString().padStart(2, "0");
+      setCurrentTime(`${hrs}:${mins}`);
+    };
+    updateTime();
+    const clockInterval = setInterval(updateTime, 60000);
+    return () => clearInterval(clockInterval);
+  }, []);
+
   const playQuietPeep = () => {
     if (typeof window === "undefined") return;
     try {
@@ -243,6 +255,10 @@ export default function PomodoroWidget() {
 
   const adjustCount = (amount: number) => {
     setProcessedCount((prev) => Math.max(0, prev + amount));
+  };
+
+  const adjustShiftTime = (minutesAmount: number) => {
+    setShiftAdjustmentSeconds((prev) => Math.max(0, prev + minutesAmount * 60));
   };
 
   const exactCurrentPlanPcs =
@@ -465,40 +481,32 @@ export default function PomodoroWidget() {
                 ✖ STOP
               </button>
             </div>
+            
+            {/* ИСПРАВЛЕНИЕ: Новый двухрядный блок корректировок деталей и времени */}
+            <div className={styles.gridRowFullWidth} style={{ flexDirection: "column", height: "auto", gap: "6px" }}>
+              
+              {/* Ряд 1: Корректировка деталей (-1, -10, +10, +1) */}
+              <div style={{ display: "flex", width: "100%", gap: "4px" }}>
+                <button type="button" onClick={() => adjustCount(-1)} className={styles.adjBtnWide}>-1</button>
+                <button type="button" onClick={() => adjustCount(-10)} className={styles.adjBtnWide}>-10</button>
+                <button type="button" onClick={() => adjustCount(10)} className={styles.adjBtnWide}>+10</button>
+                <button type="button" onClick={() => adjustCount(1)} className={styles.adjBtnWide}>+1</button>
+              </div>
 
-            {/* ИСПРАВЛЕНИЕ: Новый порядок кнопок корректировок */}
-            <div className={styles.gridRowFullWidth}>
-              <button
-                type="button"
-                onClick={() => adjustCount(1)}
-                className={styles.adjBtnWide}
-              >
-                +1
-              </button>
-              <button
-                type="button"
-                onClick={() => adjustCount(-1)}
-                className={styles.adjBtnWide}
-              >
-                -1
-              </button>
-              <button
-                type="button"
-                onClick={() => adjustCount(10)}
-                className={styles.adjBtnWide}
-              >
-                +10
-              </button>
-              <button
-                type="button"
-                onClick={() => adjustCount(-10)}
-                className={styles.adjBtnWide}
-              >
-                -10
-              </button>
+              {/* Ряд 2: Текущее время и корректировка времени (-1m, -10m, +10m, +1m) */}
+              <div style={{ display: "flex", width: "100%", gap: "4px", alignItems: "center" }}>
+                <div className={styles.currentTimeBadge}>
+                  {currentTime}
+                </div>
+                <button type="button" onClick={() => adjustShiftTime(-1)} className={styles.adjBtnWide}>-1m</button>
+                <button type="button" onClick={() => adjustShiftTime(-10)} className={styles.adjBtnWide}>-10m</button>
+                <button type="button" onClick={() => adjustShiftTime(10)} className={styles.adjBtnWide}>+10m</button>
+                <button type="button" onClick={() => adjustShiftTime(1)} className={styles.adjBtnWide}>+1m</button>
+              </div>
+
             </div>
-          </div>
-        </div>
+
+
 
         {/* BLOCK 4: STATS, TIMERS & ACTION DONE BUTTON */}
         <div
