@@ -247,39 +247,48 @@ export default function PomodoroWidget() {
     setProcessedCount((prev) => Math.max(0, prev + amount));
   };
   const adjustShiftTime = (minutesAmount: number) => {
-    // minutesAmount приходит как -1, -10 (для минуса) или 10, 1 (для плюса)
+    // minutesAmount: -1, -10 (для кнопок минус) или 10, 1 (для кнопок плюс)
 
-    // 1. ЧАСЫ СТАРТА: Корректируем строго в нужную сторону
+    // 1. ОТОБРАЖЕНИЕ НАЧАЛА РАБОТЫ: Сдвигаем строго в прошлое при минусе и в будущее при плюсе
     if (actualStartObject) {
-      // ИСПРАВЛЕНО: Теперь знак МИНУС гарантирует, что при нажатии -10 время старта уйдет назад в прошлое (с 21:46 на 21:36)
       const timeShiftMs = minutesAmount * 60 * 1000; 
-      const updatedDate = new Date(actualStartObject.getTime() - timeShiftMs);
+      // Прямое сложение: 09:46 + (-10 минут) = 09:36. Время старта гарантированно уходит назад!
+      const updatedDate = new Date(actualStartObject.getTime() + timeShiftMs);
       
       setActualStartObject(updatedDate);
       
       const hrs = updatedDate.getHours().toString().padStart(2, "0");
       const mins = updatedDate.getMinutes().toString().padStart(2, "0");
-      setStartTimeText(`${hrs}:${mins}`);
+      setStartTimeText(`${hrs}:${mins}`); // Мгновенно перерисовываем Start на экране
     }
 
-    // 2. СЧЕТЧИК РАБОТЫ: Увеличиваем время на экране при отмотке назад
+    // 2. СЧЕТЧИК РАБОТЫ НА ЭКРАНЕ: При отмотке назад время работы должно увеличиться!
+    // Если нажали -10m, то 0 - (-600 секунд) = +600 секунд (на экране станет 10m 0s)
     setShiftAdjustmentSeconds((prev) => {
       const newValue = prev - (minutesAmount * 60);
       return newValue < 0 ? 0 : newValue;
     });
 
-    // 3. РАЗМОРОЗКА ПЛАНА: Намертво обновляем базовые целевые параметры смены,
-    // чтобы План (шт) и Дифф сразу начали рассчитываться от правильной нормы времени!
+    // 3. ЖЕЛЕЗОБЕТОННЫЙ ПЕРЕСЧЕТ ДЕТАЛЕЙ (ПЛАНА):
+    // Принудительно рассчитываем норму времени на одну деталь прямо сейчас,
+    // не дожидаясь автоматических хуков React, чтобы План в штуках обновился мгновенно!
+    const currentShiftMins = shift === "9h40m" ? 9 * 60 + 40 : 8 * 60;
+    const currentTargetPcs = Math.round(coefficient * (currentShiftMins / 60));
+    
     setLockedCoefficient(coefficient);
     setLockedShift(shift);
-    setLockedTarget(currentTargetPositions);
+    setLockedTarget(currentTargetPcs);
 
-    // Синхронизируем остаток времени таймера детали
-    setTimeLeft(totalTimerSeconds);
+    // Пересчитываем секунды на деталь для таймера темпа (PACE)
+    const netMinutes = currentShiftMins - 45;
+    const computedTimerSeconds = currentTargetPcs > 0 ? Math.round((netMinutes * 60) / currentTargetPcs) : 25 * 60;
     
-    // Принудительно запускаем ход времени
+    setTimeLeft(computedTimerSeconds);
+    
+    // Включаем ход времени
     setIsRunning(true);
   };
+
 
 
 
