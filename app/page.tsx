@@ -247,26 +247,36 @@ export default function PomodoroWidget() {
     setProcessedCount((prev) => Math.max(0, prev + amount));
   };
   const adjustShiftTime = (minutesAmount: number) => {
-    // Если нажимаем МИНУС, а время работы ЕЩЕ НЕ НАМОТАНО (отматываем старт в прошлое)
-    if (minutesAmount < 0 && shiftElapsedSeconds <= 0 && actualStartObject) {
-      const updatedDate = new Date(actualStartObject.getTime() + minutesAmount * 60 * 1000);
-      setActualStartObject(updatedDate);
-      
-      const hrs = updatedDate.getHours().toString().padStart(2, "0");
-      const mins = updatedDate.getMinutes().toString().padStart(2, "0");
-      setStartTimeText(`${hrs}:${mins}`);
-      
-      // Начисляем упущенное рабочее время
-      setShiftAdjustmentSeconds((prev) => prev + Math.abs(minutesAmount) * 60);
-      
-      // АВТОМАТИЧЕСКИЙ СТАРТ: Включаем трекер, чтобы план сразу начал считаться правильно
-      setIsRunning(true);
-    } else {
-      // Обычный режим (вычитание лишнего времени обеда или добавление времени вперед)
-      setShiftAdjustmentSeconds((prev) => {
-        const newValue = prev + minutesAmount * 60;
-        return newValue < 0 ? 0 : newValue;
-      });
+    // 1. ЕСЛИ НАЖАЛИ ПЛЮС (+1m или +10m)
+    if (minutesAmount > 0) {
+      setShiftAdjustmentSeconds((prev) => prev + minutesAmount * 60);
+      return;
+    }
+
+    // 2. ЕСЛИ НАЖАЛИ МИНУС (-1m или -10m)
+    if (minutesAmount < 0) {
+      const absSeconds = Math.abs(minutesAmount) * 60;
+
+      // Если на счетчике уже есть намотанное время, которого хватает для вычитания (например, обед)
+      if (shiftElapsedSeconds >= absSeconds) {
+        setShiftAdjustmentSeconds((prev) => prev - absSeconds);
+      } 
+      // Если счетчик на нуле или его не хватает (отматываем время старта НАЗАД в прошлое)
+      else if (actualStartObject) {
+        // На сколько минут мы физически двигаем время старта назад
+        const minutesToShift = Math.abs(minutesAmount);
+        
+        const updatedDate = new Date(actualStartObject.getTime() - minutesToShift * 60 * 1000);
+        setActualStartObject(updatedDate);
+        
+        const hrs = updatedDate.getHours().toString().padStart(2, "0");
+        const mins = updatedDate.getMinutes().toString().padStart(2, "0");
+        setStartTimeText(`${hrs}:${mins}`);
+        
+        // Добавляем эти минуты к общему рабочему времени
+        setShiftAdjustmentSeconds((prev) => prev + minutesToShift * 60);
+        setIsRunning(true);
+      }
     }
   };
 
