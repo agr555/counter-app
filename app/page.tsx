@@ -223,6 +223,15 @@ export default function PomodoroWidget() {
     return `${mins}m ${secs}s`;
   };
 
+  const formatTimeNoSeconds = (totalSecs: number) => {
+    const absoluteSecs = Math.abs(totalSecs);
+    const hrs = Math.floor(absoluteSecs / 3600);
+    const mins = Math.floor((absoluteSecs % 3600) / 60);
+    if (hrs > 0) return `${hrs}h ${mins}m`;
+    return `${mins}m`;
+  };
+
+
   const handleGlobalReset = () => {
     const wasActive = isRunning;
     setIsRunning(false);
@@ -376,74 +385,21 @@ export default function PomodoroWidget() {
                 className={styles.toggleContainer}
                 style={{ opacity: isSettingsDisabled ? 0.7 : 1 }}
               >
-                <input
-                  type="radio"
-                  id="shift-8"
-                  name="shiftValue"
-                  value="8h"
-                  checked={(isSettingsDisabled ? lockedShift : shift) === "8h"}
-                  onChange={() => setShift("8h")}
-                  disabled={isSettingsDisabled}
-                  className={styles.radioInput}
-                />
-                <label
-                  htmlFor="shift-8"
-                  className={`${styles.radioLabel} ${
-                    (isSettingsDisabled ? lockedShift : shift) === "8h"
-                      ? styles.radioLabelActive
-                      : ""
-                  }`}
-                >
-                  8h
-                </label>
-
-                <input
-                  type="radio"
-                  id="shift-9"
-                  name="shiftValue"
-                  value="9h40m"
-                  checked={
-                    (isSettingsDisabled ? lockedShift : shift) === "9h40m"
-                  }
-                  onChange={() => setShift("9h40m")}
-                  disabled={isSettingsDisabled}
-                  className={styles.radioInput}
-                />
-                <label
-                  htmlFor="shift-9"
-                  className={`${styles.radioLabel} ${
-                    (isSettingsDisabled ? lockedShift : shift) === "9h40m"
-                      ? styles.radioLabelActive
-                      : ""
-                  }`}
-                  style={{ width: "56px" }}
-                >
-                  9:40
-                </label>
-
-                <div
-                  className={styles.slider}
-                  style={{
-                    transform:
-                      (isSettingsDisabled ? lockedShift : shift) === "9h40m"
-                        ? "translateX(45px)"
-                        : "translateX(0px)",
-                  }}
-                ></div>
+                <input type="radio" id="shift-8" name="shiftValue" value="8h" checked={(isSettingsDisabled ? lockedShift : shift) === "8h"} onChange={() => setShift("8h")} disabled={isSettingsDisabled} className={styles.radioInput} />
+                <label htmlFor="shift-8" className={`${styles.radioLabel} ${(isSettingsDisabled ? lockedShift : shift) === "8h" ? styles.radioLabelActive : ""}`}>8h</label>
+                <input type="radio" id="shift-9" name="shiftValue" value="9h40m" checked={(isSettingsDisabled ? lockedShift : shift) === "9h40m"} onChange={() => setShift("9h40m")} disabled={isSettingsDisabled} className={styles.radioInput} />
+                <label htmlFor="shift-9" className={`${styles.radioLabel} ${(isSettingsDisabled ? lockedShift : shift) === "9h40m" ? styles.radioLabelActive : ""}`} style={{ width: "56px" }}>9:40</label>
+                <div className={styles.slider} style={{ transform: (isSettingsDisabled ? lockedShift : shift) === "9h40m" ? "translateX(45px)" : "translateX(0px)" }}></div>
               </div>
-
-              <span
-                style={{
-                  fontSize: "0.52rem",
-                  color: "#94a3b8",
-                  fontWeight: 700,
-                  marginTop: "2px",
-                  textTransform: "uppercase",
-                }}
-              >
-                Start: {startTimeText}
-              </span>
+              
+              {/* Строка с выровненным временем старта и текущим временем работы без секунд */}
+              <div className={styles.timeInfoLine}>
+                <span>START: {startTimeText}</span>
+                <span className={styles.dividerDot}>•</span>
+                <span>WORKED: {formatTimeNoSeconds(shiftElapsedSeconds)}</span>
+              </div>
             </div>
+
 
             <div className={`${styles.fieldGroupTarget} ${styles.cfgTarget}`}>
               <span className={styles.fieldLabel}>Target</span>
@@ -566,48 +522,17 @@ export default function PomodoroWidget() {
                 </button>
               </div>
 
-              {/* Ряд 2: Время работы и кнопочки для его корректировки (-1m, -10m, +10m, +1m) */}
-              <div
-                style={{
-                  display: "flex",
-                  width: "100%",
-                  gap: "4px",
-                  alignItems: "center",
-                }}
-              >
+                           {/* Ряд 2: Корректировка времени (в кнопках выводим только минуты) */}
+                           <div style={{ display: "flex", width: "100%", gap: "4px", alignItems: "center" }}>
                 <div className={styles.currentTimeBadge}>
-                  {formatAccumulatedTime(shiftElapsedSeconds)}
+                  {formatTimeNoSeconds(shiftElapsedSeconds)}
                 </div>
-                {/* ИСПРАВЛЕНО: Теперь передаются строго правильные математические знаки для вашей последовательности */}
-                <button
-                  type="button"
-                  onClick={() => adjustShiftTime(-1)}
-                  className={styles.adjBtnWide}
-                >
-                  -1m
-                </button>
-                <button
-                  type="button"
-                  onClick={() => adjustShiftTime(-10)}
-                  className={styles.adjBtnWide}
-                >
-                  -10m
-                </button>
-                <button
-                  type="button"
-                  onClick={() => adjustShiftTime(10)}
-                  className={styles.adjBtnWide}
-                >
-                  +10m
-                </button>
-                <button
-                  type="button"
-                  onClick={() => adjustShiftTime(1)}
-                  className={styles.adjBtnWide}
-                >
-                  +1m
-                </button>
+                <button type="button" onClick={() => adjustShiftTime(-1)} className={styles.adjBtnWide}>-1m</button>
+                <button type="button" onClick={() => adjustShiftTime(-10)} className={styles.adjBtnWide}>-10m</button>
+                <button type="button" onClick={() => adjustShiftTime(10)} className={styles.adjBtnWide}>+10m</button>
+                <button type="button" onClick={() => adjustShiftTime(1)} className={styles.adjBtnWide}>+1m</button>
               </div>
+
             </div>
           </div>
         </div>
