@@ -45,7 +45,7 @@
     display: flex;
     flex-direction: column;
     align-items: center; 
-    justify-content: center;
+    justify-content: flex-start !important; /* Выравнивание контента внутри группы от верхнего края */
     gap: 2px;
   }
   
@@ -328,8 +328,15 @@
   }
   
   /* Элементы разметки для мобильной структуры */
-  .configGrid { display: flex; align-items: center; gap: 6px; width: 100%; height: 100%; }
-  
+  .configGrid { 
+    display: flex; 
+    align-items: flex-start !important; /* Намертво прижимает Rate, Time, Target к верхнему краю */
+    gap: 6px; 
+    width: 100%; 
+    height: 100%; 
+    padding-top: 4px; /* Небольшой аккуратный отступ сверху внутри блока */
+    box-sizing: border-box;
+  }
 /* СТУПЕНЬ 2: Точки "840" и "720" (от 1100px до 521px) — ПРОСТОРНЫЕ 2 РЯДА */
 @media (max-width: 1100px) and (min-width: 521px) {
     .widgetContainer {
@@ -565,24 +572,30 @@
   }
 
   /* Новая линия информации под кнопками выбора времени смены */
-.timeInfoLine {
+  .timeInfoLine {
     display: flex;
-    align-items: center;
+    align-items: center !important; /* Центрирует буквы строго по одной горизонтальной оси */
     justify-content: center;
-    gap: 5px;
+    gap: 6px;
     font-size: 0.52rem;
     color: #64748b;
     font-weight: 800;
-    margin-top: 4px;
+    margin-top: 5px; /* Отодвигаем строку чуть ниже от радио-кнопок, чтобы было свободно */
     text-transform: uppercase;
     letter-spacing: 0.02em;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    line-height: 1 !important; /* Убирает скрытые отступы шрифта по высоте */
+    height: 10px; /* Фиксированная базовая высота строки */
   }
   
   .dividerDot {
     color: #cbd5e1;
     font-size: 0.6rem;
+    line-height: 1 !important;
+    display: flex;
+    align-items: center;
   }
+  
   
   /* Принудительное выравнивание шрифтов и размеров для всех кнопок корректировок */
   .adjBtnWide, .currentTimeBadge {
