@@ -247,28 +247,40 @@ export default function PomodoroWidget() {
     setProcessedCount((prev) => Math.max(0, prev + amount));
   };
   const adjustShiftTime = (minutesAmount: number) => {
-    // 1. Меняем счетчик рабочего времени на экране
-    setShiftAdjustmentSeconds((prev) => {
-      const newValue = prev + minutesAmount * 60;
-      return newValue < 0 ? 0 : newValue; // Защита от отрицательного времени
-    });
+    // minutesAmount приходит как -1, -10 (для минуса) или 10, 1 (для плюса)
 
-    // 2. Зеркально меняем направление движения стрелок времени старта
+    // 1. ЧАСЫ СТАРТА: Корректируем строго в нужную сторону
     if (actualStartObject) {
-      // ИСПРАВЛЕНО: знак изменен на противоположный (+ вместо -), чтобы исправить перепутанные направления
+      // ИСПРАВЛЕНО: Теперь знак МИНУС гарантирует, что при нажатии -10 время старта уйдет назад в прошлое (с 21:46 на 21:36)
       const timeShiftMs = minutesAmount * 60 * 1000; 
-      const updatedDate = new Date(actualStartObject.getTime() + timeShiftMs);
+      const updatedDate = new Date(actualStartObject.getTime() - timeShiftMs);
       
       setActualStartObject(updatedDate);
       
       const hrs = updatedDate.getHours().toString().padStart(2, "0");
       const mins = updatedDate.getMinutes().toString().padStart(2, "0");
-      setStartTimeText(`${hrs}:${mins}`); // Мгновенное обновление на экране
+      setStartTimeText(`${hrs}:${mins}`);
     }
+
+    // 2. СЧЕТЧИК РАБОТЫ: Увеличиваем время на экране при отмотке назад
+    setShiftAdjustmentSeconds((prev) => {
+      const newValue = prev - (minutesAmount * 60);
+      return newValue < 0 ? 0 : newValue;
+    });
+
+    // 3. РАЗМОРОЗКА ПЛАНА: Намертво обновляем базовые целевые параметры смены,
+    // чтобы План (шт) и Дифф сразу начали рассчитываться от правильной нормы времени!
+    setLockedCoefficient(coefficient);
+    setLockedShift(shift);
+    setLockedTarget(currentTargetPositions);
+
+    // Синхронизируем остаток времени таймера детали
+    setTimeLeft(totalTimerSeconds);
     
-    // Автоматически запускаем трекер, если он стоял на паузе
+    // Принудительно запускаем ход времени
     setIsRunning(true);
   };
+
 
 
   const exactCurrentPlanPcs =
