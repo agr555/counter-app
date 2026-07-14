@@ -37,7 +37,9 @@ export default function PomodoroWidget() {
       : 25 * 60;
 
   const [timeLeft, setTimeLeft] = useState<number>(totalTimerSeconds);
+
   const [currentTime, setCurrentTime] = useState<string>("00:00");
+
   // Визуальный текущий план для полей ввода до нажатия СТАРТ
   const currentShiftMinutes = shift === "9h40m" ? 9 * 60 + 40 : 8 * 60;
   const currentTargetPositions = Math.round(
@@ -170,6 +172,7 @@ export default function PomodoroWidget() {
     return () => clearInterval(clockInterval);
   }, []);
 
+
   const playQuietPeep = () => {
     if (typeof window === "undefined") return;
     try {
@@ -260,7 +263,7 @@ export default function PomodoroWidget() {
   const adjustShiftTime = (minutesAmount: number) => {
     setShiftAdjustmentSeconds((prev) => Math.max(0, prev + minutesAmount * 60));
   };
-
+  
   const exactCurrentPlanPcs =
     totalTimerSeconds > 0 ? shiftElapsedSeconds / totalTimerSeconds : 0;
 
@@ -481,9 +484,10 @@ export default function PomodoroWidget() {
                 ✖ STOP
               </button>
             </div>
-            
-            {/* ИСПРАВЛЕНИЕ: Новый двухрядный блок корректировок деталей и времени */}
-            <div className={styles.gridRowFullWidth} style={{ flexDirection: "column", height: "auto", gap: "6px" }}>
+
+            {/* ИСПРАВЛЕНИЕ: Новый порядок кнопок корректировок */}
+                       {/* ИСПРАВЛЕНИЕ: Новый двухрядный блок корректировок деталей и времени */}
+                       <div className={styles.gridRowFullWidth} style={{ flexDirection: "column", height: "auto", gap: "6px" }}>
               
               {/* Ряд 1: Корректировка деталей (-1, -10, +10, +1) */}
               <div style={{ display: "flex", width: "100%", gap: "4px" }}>
@@ -506,7 +510,8 @@ export default function PomodoroWidget() {
 
             </div>
 
-
+          </div>
+        </div>
 
         {/* BLOCK 4: STATS, TIMERS & ACTION DONE BUTTON */}
         <div
