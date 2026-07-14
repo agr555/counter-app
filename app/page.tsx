@@ -246,8 +246,8 @@ export default function PomodoroWidget() {
   const adjustCount = (amount: number) => {
     setProcessedCount((prev) => Math.max(0, prev + amount));
   };
-
   const adjustShiftTime = (minutesAmount: number) => {
+    // Если нажимаем МИНУС, а время работы ЕЩЕ НЕ НАМОТАНО (отматываем старт в прошлое)
     if (minutesAmount < 0 && shiftElapsedSeconds <= 0 && actualStartObject) {
       const updatedDate = new Date(actualStartObject.getTime() + minutesAmount * 60 * 1000);
       setActualStartObject(updatedDate);
@@ -256,14 +256,20 @@ export default function PomodoroWidget() {
       const mins = updatedDate.getMinutes().toString().padStart(2, "0");
       setStartTimeText(`${hrs}:${mins}`);
       
+      // Начисляем упущенное рабочее время
       setShiftAdjustmentSeconds((prev) => prev + Math.abs(minutesAmount) * 60);
+      
+      // АВТОМАТИЧЕСКИЙ СТАРТ: Включаем трекер, чтобы план сразу начал считаться правильно
+      setIsRunning(true);
     } else {
+      // Обычный режим (вычитание лишнего времени обеда или добавление времени вперед)
       setShiftAdjustmentSeconds((prev) => {
         const newValue = prev + minutesAmount * 60;
         return newValue < 0 ? 0 : newValue;
       });
     }
   };
+
 
   const exactCurrentPlanPcs =
     totalTimerSeconds > 0 ? shiftElapsedSeconds / totalTimerSeconds : 0;
