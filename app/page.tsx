@@ -50,13 +50,13 @@ export default function PomodoroWidget() {
 
   // Загрузка данных из памяти браузера при старте страницы (Защищенная версия)
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const savedCoefficient = localStorage.getItem('p_coefficient');
-      const savedShift = localStorage.getItem('p_shift') as ShiftType;
-      const savedProcessedCount = localStorage.getItem('p_processedCount');
-      const savedRealSeconds = localStorage.getItem('p_totalRealSeconds');
-      const savedElapsed = localStorage.getItem('p_shiftElapsedSeconds');
-      const savedSound = localStorage.getItem('p_isSoundEnabled');
+    if (typeof window !== "undefined") {
+      const savedCoefficient = localStorage.getItem("p_coefficient");
+      const savedShift = localStorage.getItem("p_shift") as ShiftType;
+      const savedProcessedCount = localStorage.getItem("p_processedCount");
+      const savedRealSeconds = localStorage.getItem("p_totalRealSeconds");
+      const savedElapsed = localStorage.getItem("p_shiftElapsedSeconds");
+      const savedSound = localStorage.getItem("p_isSoundEnabled");
 
       if (savedCoefficient) {
         setCoefficient(parseInt(savedCoefficient, 10));
@@ -86,7 +86,7 @@ export default function PomodoroWidget() {
       }
 
       if (savedSound) {
-        setIsSoundEnabled(savedSound === 'true');
+        setIsSoundEnabled(savedSound === "true");
       } else {
         setIsSoundEnabled(true);
       }
@@ -255,27 +255,26 @@ export default function PomodoroWidget() {
 
     // 2. Если трекер запущен и есть объект времени старта
     if (actualStartObject) {
-      // Двигаем время старта на часах прямо за кнопками! 
+      // Двигаем время старта на часах прямо за кнопками!
       // Если отнимаем время работы (минус) — время старта двигается вперед в будущее (например, на обед)
       // Если добавляем время работы (плюс) — время старта сдвигается назад в прошлое
-      const timeShiftMs = -minutesAmount * 60 * 1000; 
+      const timeShiftMs = -minutesAmount * 60 * 1000;
       const updatedDate = new Date(actualStartObject.getTime() + timeShiftMs);
-      
+
       setActualStartObject(updatedDate);
-      
+
       const hrs = updatedDate.getHours().toString().padStart(2, "0");
       const mins = updatedDate.getMinutes().toString().padStart(2, "0");
       setStartTimeText(`${hrs}:${mins}`); // Мгновенно обновляем часы на экране
     }
-    
+
     // Принудительно включаем ход, если до этого была пауза
     setIsRunning(true);
   };
 
-
   const exactCurrentPlanPcs =
     totalTimerSeconds > 0 ? shiftElapsedSeconds / totalTimerSeconds : 0;
-    const planPercent =
+  const planPercent =
     lockedTarget > 0
       ? Math.round((exactCurrentPlanPcs / lockedTarget) * 100)
       : 0;
@@ -316,7 +315,7 @@ export default function PomodoroWidget() {
       setLockedCoefficient(coefficient);
       setLockedShift(shift);
       setLockedTarget(currentTargetPositions);
-      
+
       if (!actualStartObject) {
         const now = new Date();
         setActualStartObject(now);
@@ -412,8 +411,16 @@ export default function PomodoroWidget() {
                   }}
                 ></div>
               </div>
-              
-              <span style={{ fontSize: "0.52rem", color: "#94a3b8", fontWeight: 700, marginTop: "2px", textTransform: "uppercase" }}>
+
+              <span
+                style={{
+                  fontSize: "0.52rem",
+                  color: "#94a3b8",
+                  fontWeight: 700,
+                  marginTop: "2px",
+                  textTransform: "uppercase",
+                }}
+              >
                 Start: {startTimeText}
               </span>
             </div>
@@ -503,27 +510,84 @@ export default function PomodoroWidget() {
             </div>
 
             {/* ИСПРАВЛЕНИЕ: Новый двухрядный блок корректировок деталей и времени */}
-            <div className={styles.gridRowFullWidth} style={{ flexDirection: "column", height: "auto", gap: "6px" }}>
-              
+            <div
+              className={styles.gridRowFullWidth}
+              style={{ flexDirection: "column", height: "auto", gap: "6px" }}
+            >
               {/* Ряд 1: Корректировка деталей (-1, -10, +10, +1) */}
               <div style={{ display: "flex", width: "100%", gap: "4px" }}>
-                <button type="button" onClick={() => adjustCount(-1)} className={styles.adjBtnWide}>-1</button>
-                <button type="button" onClick={() => adjustCount(-10)} className={styles.adjBtnWide}>-10</button>
-                <button type="button" onClick={() => adjustCount(10)} className={styles.adjBtnWide}>+10</button>
-                <button type="button" onClick={() => adjustCount(1)} className={styles.adjBtnWide}>+1</button>
+                <button
+                  type="button"
+                  onClick={() => adjustCount(-1)}
+                  className={styles.adjBtnWide}
+                >
+                  -1
+                </button>
+                <button
+                  type="button"
+                  onClick={() => adjustCount(-10)}
+                  className={styles.adjBtnWide}
+                >
+                  -10
+                </button>
+                <button
+                  type="button"
+                  onClick={() => adjustCount(10)}
+                  className={styles.adjBtnWide}
+                >
+                  +10
+                </button>
+                <button
+                  type="button"
+                  onClick={() => adjustCount(1)}
+                  className={styles.adjBtnWide}
+                >
+                  +1
+                </button>
               </div>
 
               {/* Ряд 2: Время работы и кнопочки для его корректировки (-1m, -10m, +10m, +1m) */}
-              <div style={{ display: "flex", width: "100%", gap: "4px", alignItems: "center" }}>
+              <div
+                style={{
+                  display: "flex",
+                  width: "100%",
+                  gap: "4px",
+                  alignItems: "center",
+                }}
+              >
                 <div className={styles.currentTimeBadge}>
                   {formatAccumulatedTime(shiftElapsedSeconds)}
                 </div>
-                <button type="button" onClick={() => adjustShiftTime(-1)} className={styles.adjBtnWide}>-1m</button>
-                <button type="button" onClick={() => adjustShiftTime(-10)} className={styles.adjBtnWide}>-10m</button>
-                <button type="button" onClick={() => adjustShiftTime(10)} className={styles.adjBtnWide}>+10m</button>
-                <button type="button" onClick={() => adjustShiftTime(1)} className={styles.adjBtnWide}>+1m</button>
+                {/* ИСПРАВЛЕНО: Теперь передаются строго правильные математические знаки для вашей последовательности */}
+                <button
+                  type="button"
+                  onClick={() => adjustShiftTime(-1)}
+                  className={styles.adjBtnWide}
+                >
+                  -1m
+                </button>
+                <button
+                  type="button"
+                  onClick={() => adjustShiftTime(-10)}
+                  className={styles.adjBtnWide}
+                >
+                  -10m
+                </button>
+                <button
+                  type="button"
+                  onClick={() => adjustShiftTime(10)}
+                  className={styles.adjBtnWide}
+                >
+                  +10m
+                </button>
+                <button
+                  type="button"
+                  onClick={() => adjustShiftTime(1)}
+                  className={styles.adjBtnWide}
+                >
+                  +1m
+                </button>
               </div>
-
             </div>
           </div>
         </div>
