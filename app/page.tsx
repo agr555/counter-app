@@ -25,6 +25,10 @@ export default function PomodoroWidget() {
   // Включение/выключение звукового сигнала (по умолчанию true)
   const [isSoundEnabled, setIsSoundEnabled] = useState<boolean>(true);
 
+  // НОВЫЕ СТЕЙТЫ: Время старта и объект даты
+  const [startTimeText, setStartTimeText] = useState<string>("--:--");
+  const [actualStartObject, setActualStartObject] = useState<Date | null>(null);
+
   // Математическая база на основе замороженных данных
   const totalShiftMinutes = lockedShift === "9h40m" ? 9 * 60 + 40 : 8 * 60;
   const netWorkingMinutes = totalShiftMinutes - 45;
@@ -38,35 +42,22 @@ export default function PomodoroWidget() {
 
   const [timeLeft, setTimeLeft] = useState<number>(totalTimerSeconds);
 
- 
   // Визуальный текущий план для полей ввода до нажатия СТАРТ
   const currentShiftMinutes = shift === "9h40m" ? 9 * 60 + 40 : 8 * 60;
   const currentTargetPositions = Math.round(
     coefficient * (currentShiftMinutes / 60)
   );
 
-  const [baseStartTime, setBaseStartTime] = useState<Date | null>(null);
-  const [timeOffsetMinutes, setTimeOffsetMinutes] = useState<number>(0);
-
-  let startTimeText = "--:--";
-  if (baseStartTime) {
-    const adjustedStart = new Date(baseStartTime.getTime() + timeOffsetMinutes * 60 * 1000);
-    const hrs = adjustedStart.getHours().toString().padStart(2, "0");
-    const mins = adjustedStart.getMinutes().toString().padStart(2, "0");
-    startTimeText = `${hrs}:${mins}`;
-  }
-
   // Загрузка данных из памяти браузера при старте страницы (Защищенная версия)
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      const savedCoefficient = localStorage.getItem("p_coefficient");
-      const savedShift = localStorage.getItem("p_shift") as ShiftType;
-      const savedProcessedCount = localStorage.getItem("p_processedCount");
-      const savedRealSeconds = localStorage.getItem("p_totalRealSeconds");
-      const savedElapsed = localStorage.getItem("p_shiftElapsedSeconds");
-      const savedSound = localStorage.getItem("p_isSoundEnabled");
+    if (typeof window !== 'undefined') {
+      const savedCoefficient = localStorage.getItem('p_coefficient');
+      const savedShift = localStorage.getItem('p_shift') as ShiftType;
+      const savedProcessedCount = localStorage.getItem('p_processedCount');
+      const savedRealSeconds = localStorage.getItem('p_totalRealSeconds');
+      const savedElapsed = localStorage.getItem('p_shiftElapsedSeconds');
+      const savedSound = localStorage.getItem('p_isSoundEnabled');
 
-      // Настройки смены загружаем, если они есть
       if (savedCoefficient) {
         setCoefficient(parseInt(savedCoefficient, 10));
         setLockedCoefficient(parseInt(savedCoefficient, 10));
@@ -76,7 +67,6 @@ export default function PomodoroWidget() {
         setLockedShift(savedShift);
       }
 
-      // СЧЕТЧИКИ: Если данных в браузере нет (новое устройство) — ЖЕСТКО пишем 0
       if (savedProcessedCount) {
         setProcessedCount(parseInt(savedProcessedCount, 10));
       } else {
@@ -95,9 +85,8 @@ export default function PomodoroWidget() {
         setShiftAdjustmentSeconds(0);
       }
 
-      // Звук по умолчанию включаем
       if (savedSound) {
-        setIsSoundEnabled(savedSound === "true");
+        setIsSoundEnabled(savedSound === 'true');
       } else {
         setIsSoundEnabled(true);
       }
@@ -168,8 +157,6 @@ export default function PomodoroWidget() {
 
     return () => clearInterval(interval);
   }, [isRunning, totalTimerSeconds, isSoundEnabled]);
-
-
 
   const playQuietPeep = () => {
     if (typeof window === "undefined") return;
@@ -246,8 +233,8 @@ export default function PomodoroWidget() {
       setTotalRealSeconds(0);
       setShiftAdjustmentSeconds(0);
       setTimeLeft(totalTimerSeconds);
-      setBaseStartTime(null);        // Сброс базового времени
-      setTimeOffsetMinutes(0);       // Сброс смещения
+      setStartTimeText("--:--");
+      setActualStartObject(null);
       localStorage.removeItem("p_processedCount");
       localStorage.removeItem("p_totalRealSeconds");
       localStorage.removeItem("p_shiftElapsedSeconds");
@@ -260,15 +247,17 @@ export default function PomodoroWidget() {
     setProcessedCount((prev) => Math.max(0, prev + amount));
   };
 
-
   const adjustShiftTime = (minutesAmount: number) => {
-    // Если мы пытаемся убавить время (нажать -1m или -10m), когда счетчик работы на нуле:
-    if (minutesAmount < 0 && shiftElapsedSeconds === 0) {
-      // Сдвигаем время старта НАЗАД (в прошлое), а время работы увеличиваем
-      setTimeOffsetMinutes((prev) => prev + minutesAmount); 
+    if (minutesAmount < 0 && shiftElapsedSeconds <= 0 && actualStartObject) {
+      const updatedDate = new Date(actualStartObject.getTime() + minutesAmount * 60 * 1000);
+      setActualStartObject(updatedDate);
+      
+      const hrs = updatedDate.getHours().toString().padStart(2, "0");
+      const mins = updatedDate.getMinutes().toString().padStart(2, "0");
+      setStartTimeText(`${hrs}:${mins}`);
+      
       setShiftAdjustmentSeconds((prev) => prev + Math.abs(minutesAmount) * 60);
     } else {
-      // Обычная корректировка намотанного времени (для обедов и простоев)
       setShiftAdjustmentSeconds((prev) => {
         const newValue = prev + minutesAmount * 60;
         return newValue < 0 ? 0 : newValue;
@@ -278,8 +267,7 @@ export default function PomodoroWidget() {
 
   const exactCurrentPlanPcs =
     totalTimerSeconds > 0 ? shiftElapsedSeconds / totalTimerSeconds : 0;
-
-  const planPercent =
+    const planPercent =
     lockedTarget > 0
       ? Math.round((exactCurrentPlanPcs / lockedTarget) * 100)
       : 0;
@@ -310,11 +298,9 @@ export default function PomodoroWidget() {
     paceColorClass = styles.paceRed;
   }
 
-  // НОВОЕ: Инвертируем проценты, чтобы полоса заполнялась ВПРАВО (от 0% до 100%) по мере истечения времени
   const paceBarWidth = Math.round((1 - paceRatio) * 100);
 
   const isSettingsDisabled = timeLeft !== totalTimerSeconds || isRunning;
-
   const isDoneDisabled = !isRunning && processedCount === 0;
 
   const handleStartToggle = () => {
@@ -323,8 +309,12 @@ export default function PomodoroWidget() {
       setLockedShift(shift);
       setLockedTarget(currentTargetPositions);
       
-      if (!baseStartTime) {
-        setBaseStartTime(new Date());
+      if (!actualStartObject) {
+        const now = new Date();
+        setActualStartObject(now);
+        const hrs = now.getHours().toString().padStart(2, "0");
+        const mins = now.getMinutes().toString().padStart(2, "0");
+        setStartTimeText(`${hrs}:${mins}`);
       }
     }
     setIsRunning(!isRunning);
@@ -333,7 +323,7 @@ export default function PomodoroWidget() {
   return (
     <div className={styles.layoutWrapper}>
       <div className={styles.widgetContainer}>
-        {/* BLOCK 1: CONFIGURATION (Слово Shift полностью убрано из подписей) */}
+        {/* BLOCK 1: CONFIGURATION */}
         <div className={`${styles.concaveBlock} ${styles.blockConfig}`}>
           <div className={styles.configGrid}>
             <div className={`${styles.fieldGroup} ${styles.cfgRate}`}>
@@ -415,14 +405,11 @@ export default function PomodoroWidget() {
                 ></div>
               </div>
               
-              {/* Метка времени старта смены */}
               <span style={{ fontSize: "0.52rem", color: "#94a3b8", fontWeight: 700, marginTop: "2px", textTransform: "uppercase" }}>
                 Start: {startTimeText}
               </span>
             </div>
-       
 
-            {/* ИСПРАВЛЕНИЕ: Просто "Target" */}
             <div className={`${styles.fieldGroupTarget} ${styles.cfgTarget}`}>
               <span className={styles.fieldLabel}>Target</span>
               <div className={styles.targetDisplayDisabled}>
@@ -433,7 +420,7 @@ export default function PomodoroWidget() {
           </div>
         </div>
 
-        {/* BLOCK 2: CURRENT PROGRESS & TIME VARIANCE (Всегда на экране!) */}
+        {/* BLOCK 2: CURRENT PROGRESS & TIME VARIANCE */}
         <div className={`${styles.concaveBlock} ${styles.blockStats}`}>
           <div className={styles.compactStatsBox}>
             <div className={styles.progressRow}>
@@ -470,7 +457,6 @@ export default function PomodoroWidget() {
             </div>
           </div>
         </div>
-
         {/* BLOCK 3: CONTROLS & MANUAL ADJUSTMENTS */}
         <div
           className={`${styles.concaveBlock} ${styles.blockControls}`}
@@ -508,85 +494,28 @@ export default function PomodoroWidget() {
               </button>
             </div>
 
-            {/* ИСПРАВЛЕНИЕ: Новый порядок кнопок корректировок */}
             {/* ИСПРАВЛЕНИЕ: Новый двухрядный блок корректировок деталей и времени */}
-            <div
-              className={styles.gridRowFullWidth}
-              style={{ flexDirection: "column", height: "auto", gap: "6px" }}
-            >
+            <div className={styles.gridRowFullWidth} style={{ flexDirection: "column", height: "auto", gap: "6px" }}>
+              
               {/* Ряд 1: Корректировка деталей (-1, -10, +10, +1) */}
               <div style={{ display: "flex", width: "100%", gap: "4px" }}>
-                <button
-                  type="button"
-                  onClick={() => adjustCount(-1)}
-                  className={styles.adjBtnWide}
-                >
-                  -1
-                </button>
-                <button
-                  type="button"
-                  onClick={() => adjustCount(-10)}
-                  className={styles.adjBtnWide}
-                >
-                  -10
-                </button>
-                <button
-                  type="button"
-                  onClick={() => adjustCount(10)}
-                  className={styles.adjBtnWide}
-                >
-                  +10
-                </button>
-                <button
-                  type="button"
-                  onClick={() => adjustCount(1)}
-                  className={styles.adjBtnWide}
-                >
-                  +1
-                </button>
+                <button type="button" onClick={() => adjustCount(-1)} className={styles.adjBtnWide}>-1</button>
+                <button type="button" onClick={() => adjustCount(-10)} className={styles.adjBtnWide}>-10</button>
+                <button type="button" onClick={() => adjustCount(10)} className={styles.adjBtnWide}>+10</button>
+                <button type="button" onClick={() => adjustCount(1)} className={styles.adjBtnWide}>+1</button>
               </div>
 
               {/* Ряд 2: Время работы и кнопочки для его корректировки (-1m, -10m, +10m, +1m) */}
-              <div
-                style={{
-                  display: "flex",
-                  width: "100%",
-                  gap: "4px",
-                  alignItems: "center",
-                }}
-              >
+              <div style={{ display: "flex", width: "100%", gap: "4px", alignItems: "center" }}>
                 <div className={styles.currentTimeBadge}>
                   {formatAccumulatedTime(shiftElapsedSeconds)}
                 </div>
-                <button
-                  type="button"
-                  onClick={() => adjustShiftTime(-1)}
-                  className={styles.adjBtnWide}
-                >
-                  -1m
-                </button>
-                <button
-                  type="button"
-                  onClick={() => adjustShiftTime(-10)}
-                  className={styles.adjBtnWide}
-                >
-                  -10m
-                </button>
-                <button
-                  type="button"
-                  onClick={() => adjustShiftTime(10)}
-                  className={styles.adjBtnWide}
-                >
-                  +10m
-                </button>
-                <button
-                  type="button"
-                  onClick={() => adjustShiftTime(1)}
-                  className={styles.adjBtnWide}
-                >
-                  +1m
-                </button>
+                <button type="button" onClick={() => adjustShiftTime(-1)} className={styles.adjBtnWide}>-1m</button>
+                <button type="button" onClick={() => adjustShiftTime(-10)} className={styles.adjBtnWide}>-10m</button>
+                <button type="button" onClick={() => adjustShiftTime(10)} className={styles.adjBtnWide}>+10m</button>
+                <button type="button" onClick={() => adjustShiftTime(1)} className={styles.adjBtnWide}>+1m</button>
               </div>
+
             </div>
           </div>
         </div>
@@ -662,7 +591,7 @@ export default function PomodoroWidget() {
             </button>
           </div>
 
-          {/* ПОЛОСА ТЕМПА (PACE): Теперь растет вправо, дедлайн оказывается рядом с DONE */}
+          {/* ПОЛОСА ТЕМПА (PACE) */}
           <div
             className={styles.extendedPaceTrack}
             style={{ marginRight: "12px", marginTop: "6px" }}
