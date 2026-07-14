@@ -45,7 +45,16 @@ export default function PomodoroWidget() {
     coefficient * (currentShiftMinutes / 60)
   );
 
-  const [startTimeText, setStartTimeText] = useState<string>("--:--");
+  const [baseStartTime, setBaseStartTime] = useState<Date | null>(null);
+  const [timeOffsetMinutes, setTimeOffsetMinutes] = useState<number>(0);
+
+  let startTimeText = "--:--";
+  if (baseStartTime) {
+    const adjustedStart = new Date(baseStartTime.getTime() + timeOffsetMinutes * 60 * 1000);
+    const hrs = adjustedStart.getHours().toString().padStart(2, "0");
+    const mins = adjustedStart.getMinutes().toString().padStart(2, "0");
+    startTimeText = `${hrs}:${mins}`;
+  }
 
   // Загрузка данных из памяти браузера при старте страницы (Защищенная версия)
   useEffect(() => {
@@ -236,8 +245,9 @@ export default function PomodoroWidget() {
       setStopwatchSeconds(0);
       setTotalRealSeconds(0);
       setShiftAdjustmentSeconds(0);
-      setStartTimeText("--:--"); // <-- ДОБАВИТЬ ЭТУ СТРОКУ
       setTimeLeft(totalTimerSeconds);
+      setBaseStartTime(null);        // Сброс базового времени
+      setTimeOffsetMinutes(0);       // Сброс смещения
       localStorage.removeItem("p_processedCount");
       localStorage.removeItem("p_totalRealSeconds");
       localStorage.removeItem("p_shiftElapsedSeconds");
@@ -250,11 +260,20 @@ export default function PomodoroWidget() {
     setProcessedCount((prev) => Math.max(0, prev + amount));
   };
 
+
   const adjustShiftTime = (minutesAmount: number) => {
-    setShiftAdjustmentSeconds((prev) => {
-      const newValue = prev + minutesAmount * 60;
-      return newValue < 0 ? 0 : newValue; // Не дает упасть ниже абсолютного нуля секунд
-    });
+    // Если мы пытаемся убавить время (нажать -1m или -10m), когда счетчик работы на нуле:
+    if (minutesAmount < 0 && shiftElapsedSeconds === 0) {
+      // Сдвигаем время старта НАЗАД (в прошлое), а время работы увеличиваем
+      setTimeOffsetMinutes((prev) => prev + minutesAmount); 
+      setShiftAdjustmentSeconds((prev) => prev + Math.abs(minutesAmount) * 60);
+    } else {
+      // Обычная корректировка намотанного времени (для обедов и простоев)
+      setShiftAdjustmentSeconds((prev) => {
+        const newValue = prev + minutesAmount * 60;
+        return newValue < 0 ? 0 : newValue;
+      });
+    }
   };
 
   const exactCurrentPlanPcs =
@@ -298,23 +317,19 @@ export default function PomodoroWidget() {
 
   const isDoneDisabled = !isRunning && processedCount === 0;
 
-
- const handleStartToggle = () => {
+  const handleStartToggle = () => {
     if (!isRunning && timeLeft === totalTimerSeconds) {
       setLockedCoefficient(coefficient);
       setLockedShift(shift);
       setLockedTarget(currentTargetPositions);
       
-      // Фиксируем реальное время на часах, если это самый первый запуск смены
-      if (shiftElapsedSeconds === 0) {
-        const now = new Date();
-        const hrs = now.getHours().toString().padStart(2, "0");
-        const mins = now.getMinutes().toString().padStart(2, "0");
-        setStartTimeText(`${hrs}:${mins}`);
+      if (!baseStartTime) {
+        setBaseStartTime(new Date());
       }
     }
     setIsRunning(!isRunning);
   };
+
   return (
     <div className={styles.layoutWrapper}>
       <div className={styles.widgetContainer}>
