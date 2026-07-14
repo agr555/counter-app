@@ -247,37 +247,29 @@ export default function PomodoroWidget() {
     setProcessedCount((prev) => Math.max(0, prev + amount));
   };
   const adjustShiftTime = (minutesAmount: number) => {
-    // 1. ЕСЛИ НАЖАЛИ ПЛЮС (+1m или +10m)
-    if (minutesAmount > 0) {
-      setShiftAdjustmentSeconds((prev) => prev + minutesAmount * 60);
-      return;
-    }
+    // 1. Прямо и честно меняем счетчик рабочего времени на экране (в плюс или в минус)
+    setShiftAdjustmentSeconds((prev) => {
+      const newValue = prev + minutesAmount * 60;
+      return newValue < 0 ? 0 : newValue; // Не пускаем общее время в минус
+    });
 
-    // 2. ЕСЛИ НАЖАЛИ МИНУС (-1m или -10m)
-    if (minutesAmount < 0) {
-      const absSeconds = Math.abs(minutesAmount) * 60;
-
-      // Если на счетчике уже есть намотанное время, которого хватает для вычитания (например, обед)
-      if (shiftElapsedSeconds >= absSeconds) {
-        setShiftAdjustmentSeconds((prev) => prev - absSeconds);
-      } 
-      // Если счетчик на нуле или его не хватает (отматываем время старта НАЗАД в прошлое)
-      else if (actualStartObject) {
-        // На сколько минут мы физически двигаем время старта назад
-        const minutesToShift = Math.abs(minutesAmount);
-        
-        const updatedDate = new Date(actualStartObject.getTime() - minutesToShift * 60 * 1000);
-        setActualStartObject(updatedDate);
-        
-        const hrs = updatedDate.getHours().toString().padStart(2, "0");
-        const mins = updatedDate.getMinutes().toString().padStart(2, "0");
-        setStartTimeText(`${hrs}:${mins}`);
-        
-        // Добавляем эти минуты к общему рабочему времени
-        setShiftAdjustmentSeconds((prev) => prev + minutesToShift * 60);
-        setIsRunning(true);
-      }
+    // 2. Если трекер запущен и есть объект времени старта
+    if (actualStartObject) {
+      // Двигаем время старта на часах прямо за кнопками! 
+      // Если отнимаем время работы (минус) — время старта двигается вперед в будущее (например, на обед)
+      // Если добавляем время работы (плюс) — время старта сдвигается назад в прошлое
+      const timeShiftMs = -minutesAmount * 60 * 1000; 
+      const updatedDate = new Date(actualStartObject.getTime() + timeShiftMs);
+      
+      setActualStartObject(updatedDate);
+      
+      const hrs = updatedDate.getHours().toString().padStart(2, "0");
+      const mins = updatedDate.getMinutes().toString().padStart(2, "0");
+      setStartTimeText(`${hrs}:${mins}`); // Мгновенно обновляем часы на экране
     }
+    
+    // Принудительно включаем ход, если до этого была пауза
+    setIsRunning(true);
   };
 
 
