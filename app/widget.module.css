@@ -563,3 +563,47 @@
     padding-top: 4px !important;
     padding-bottom: 4px !important;
   }
+
+  /* Новая линия информации под кнопками выбора времени смены */
+.timeInfoLine {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    font-size: 0.52rem;
+    color: #64748b;
+    font-weight: 800;
+    margin-top: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  }
+  
+  .dividerDot {
+    color: #cbd5e1;
+    font-size: 0.6rem;
+  }
+  
+  /* Принудительное выравнивание шрифтов и размеров для всех кнопок корректировок */
+  .adjBtnWide, .currentTimeBadge {
+    font-family: monospace !important;
+    font-size: 0.62rem !important;
+    font-weight: 700 !important;
+    height: 20px !important; /* Фиксированная высота для идеальной сетки */
+    box-sizing: border-box !important;
+  }
+  
+  .currentTimeBadge {
+    background-color: #f8fafc;
+    border: 1px solid #cbd5e1;
+    color: #0f766e; /* Выделяем цвет времени работы красивым бирюзовым */
+    min-width: 45px;
+    padding: 0 3px;
+  }
+  
+  /* Корректировка высоты контейнера управления под новые двухрядные кнопки */
+  .controlAndAdjustColumn {
+    gap: 4px !important;
+    justify-content: center !important;
+  }
+  
