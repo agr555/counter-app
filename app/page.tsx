@@ -247,30 +247,29 @@ export default function PomodoroWidget() {
     setProcessedCount((prev) => Math.max(0, prev + amount));
   };
   const adjustShiftTime = (minutesAmount: number) => {
-    // 1. Прямо и честно меняем счетчик рабочего времени на экране (в плюс или в минус)
+    // 1. Меняем счетчик рабочего времени на экране
     setShiftAdjustmentSeconds((prev) => {
       const newValue = prev + minutesAmount * 60;
-      return newValue < 0 ? 0 : newValue; // Не пускаем общее время в минус
+      return newValue < 0 ? 0 : newValue; // Защита от отрицательного времени
     });
 
-    // 2. Если трекер запущен и есть объект времени старта
+    // 2. Зеркально меняем направление движения стрелок времени старта
     if (actualStartObject) {
-      // Двигаем время старта на часах прямо за кнопками!
-      // Если отнимаем время работы (минус) — время старта двигается вперед в будущее (например, на обед)
-      // Если добавляем время работы (плюс) — время старта сдвигается назад в прошлое
-      const timeShiftMs = -minutesAmount * 60 * 1000;
+      // ИСПРАВЛЕНО: знак изменен на противоположный (+ вместо -), чтобы исправить перепутанные направления
+      const timeShiftMs = minutesAmount * 60 * 1000; 
       const updatedDate = new Date(actualStartObject.getTime() + timeShiftMs);
-
+      
       setActualStartObject(updatedDate);
-
+      
       const hrs = updatedDate.getHours().toString().padStart(2, "0");
       const mins = updatedDate.getMinutes().toString().padStart(2, "0");
-      setStartTimeText(`${hrs}:${mins}`); // Мгновенно обновляем часы на экране
+      setStartTimeText(`${hrs}:${mins}`); // Мгновенное обновление на экране
     }
-
-    // Принудительно включаем ход, если до этого была пауза
+    
+    // Автоматически запускаем трекер, если он стоял на паузе
     setIsRunning(true);
   };
+
 
   const exactCurrentPlanPcs =
     totalTimerSeconds > 0 ? shiftElapsedSeconds / totalTimerSeconds : 0;
