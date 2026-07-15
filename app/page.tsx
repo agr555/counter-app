@@ -805,30 +805,23 @@ export default function PomodoroWidget() {
                 </tr>
               </thead>
               <tbody>
-              {doneLogs.length === 0 ? (
+                {doneLogs.length === 0 ? (
                   <tr>
                     <td colSpan={4} style={{ textAlign: "center", color: "#94a3b8", padding: "16px", fontStyle: "italic" }}>
                       No items processed yet.
                     </td>
                   </tr>
                 ) : (
-                  doneLogs.map((item, index) => (
+                  // ИСПРАВЛЕНО: .toReversed() выводит последние добавленные детали на самый верх таблицы (Z-A)
+                  doneLogs.toReversed().map((item, index) => (
                     <tr key={index}>
-                      {/* 1. Время, когда был нажат DONE для этой строки */}
                       <td>{item.timestamp}</td>
-                      
-                      {/* 2. Сколько секунд/минут выполнялась ПОСЛЕДНЯЯ деталь */}
                       <td>{item.duration}</td>
-                      
-                      {/* 3. Текущий план на момент клика */}
                       <td>{item.planPcs} pcs</td>
-                      
-                      {/* 4. Номер выполненной детали (Факт) */}
                       <td className={styles.factCell}><strong>{item.factCount} pcs</strong></td>
                     </tr>
                   ))
                 )}
-
               </tbody>
             </table>
           </div>

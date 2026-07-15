@@ -426,24 +426,30 @@
     text-align: left;
   }
   
-  .reportTable th {
-    background-color: #f8fafc;
-    color: #64748b;
-    font-weight: 700;
-    padding: 6px 8px;
-    text-transform: uppercase;
-    font-size: 0.58rem;
-    letter-spacing: 0.02em;
-    position: sticky;
-    top: 0; /* Шапка таблицы не уезжает при скролле */
-    z-index: 1;
+  /* Модные плоские строки — СДЕЛАНЫ В 2 РАЗА УЖЕ */
+.reportTable th {
+    padding: 6px 12px; /* Компактные отступы для шапки */
+    font-size: 0.52rem;
   }
   
   .reportTable td {
-    padding: 6px 8px;
-    border-bottom: 1px solid #f1f5f9;
+    padding: 3px 12px !important; /* Минимальные отступы сверху и снизу */
+    border-bottom: 1px solid #f1f5f9 !important; 
     color: #334155;
-    font-family: monospace; /* Чтобы цифры и время стояли ровно друг под другом */
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace !important;
+    font-weight: 500;
+    height: 22px !important; /* Уменьшили высоту строки почти в два раза! */
+    font-size: 0.68rem !important; /* Немного уменьшили шрифт для баланса */
+    box-sizing: border-box;
+  }
+  
+  /* Уменьшаем размер зеленого бэйджа ФАКТА под новую узкую строку */
+  .factCell strong {
+    padding: 0px 6px !important; /* Тонкий бэйдж */
+    border-radius: 4px;
+    font-size: 0.62rem;
+    font-weight: 700;
+    line-height: 1.4;
   }
   
   .reportTable tbody tr:hover {
