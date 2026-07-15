@@ -6,12 +6,13 @@ import styles from "./widget.module.css";
 type ShiftType = "8h" | "9h40m";
 
 type DoneLogItem = {
-  timestamp: string;      // Время нажатия (например, 14:23:05)
-  duration: string;       // Длительность изготовления (значение секундомера)
-  factCount: number;      // Номер детали (Факт)
-  planPcs: number;        // План на момент нажатия
+  timestamp: string; // Время нажатия (например, 14:23:05)
+  duration: string; // Длительность изготовления (значение секундомера)
+  factCount: number; // Номер детали (Факт)
+  planPcs: number; // План на момент нажатия
 };
 
+const [showReport, setShowReport] = useState<boolean>(false);
 
 const formatTime = (seconds: number) => {
   const minutes = Math.floor(seconds / 60);
@@ -84,62 +85,62 @@ export default function PomodoroWidget() {
 
   const [doneLogs, setDoneLogs] = useState<DoneLogItem[]>([]);
 
-    // Загрузка данных из памяти браузера при старте страницы (Защищенная версия)
-    useEffect(() => {
-      if (typeof window !== "undefined") {
-        const savedCoefficient = localStorage.getItem("p_coefficient");
-        const savedShift = localStorage.getItem("p_shift") as ShiftType;
-        const savedProcessedCount = localStorage.getItem("p_processedCount");
-        const savedRealSeconds = localStorage.getItem("p_totalRealSeconds");
-        const savedElapsed = localStorage.getItem("p_shiftElapsedSeconds");
-        const savedSound = localStorage.getItem("p_isSoundEnabled");
-  
-        if (savedCoefficient) {
-          setCoefficient(parseInt(savedCoefficient, 10));
-          setLockedCoefficient(parseInt(savedCoefficient, 10));
-        }
-        if (savedShift) {
-          setShift(savedShift);
-          setLockedShift(savedShift);
-        }
-  
-        if (savedProcessedCount) {
-          setProcessedCount(parseInt(savedProcessedCount, 10));
-        } else {
-          setProcessedCount(0);
-        }
-  
-        if (savedRealSeconds) {
-          setTotalRealSeconds(parseInt(savedRealSeconds, 10));
-        } else {
-          setTotalRealSeconds(0);
-        }
-  
-        if (savedElapsed) {
-          setShiftAdjustmentSeconds(parseInt(savedElapsed, 10));
-        } else {
-          setShiftAdjustmentSeconds(0);
-        }
-  
-        if (savedSound) {
-          setIsSoundEnabled(savedSound === "true");
-        } else {
-          setIsSoundEnabled(true);
-        }
-  
-        // НАЧАЛО ВСТАВКИ: Загрузка логов истории DONE
-        const savedLogs = localStorage.getItem('p_doneLogs');
-        if (savedLogs) {
-          try {
-            setDoneLogs(JSON.parse(savedLogs));
-          } catch (e) {
-            console.error("Error parsing logs:", e);
-          }
-        }
-        // КОНЕЦ ВСТАВКИ
+  // Загрузка данных из памяти браузера при старте страницы (Защищенная версия)
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const savedCoefficient = localStorage.getItem("p_coefficient");
+      const savedShift = localStorage.getItem("p_shift") as ShiftType;
+      const savedProcessedCount = localStorage.getItem("p_processedCount");
+      const savedRealSeconds = localStorage.getItem("p_totalRealSeconds");
+      const savedElapsed = localStorage.getItem("p_shiftElapsedSeconds");
+      const savedSound = localStorage.getItem("p_isSoundEnabled");
+
+      if (savedCoefficient) {
+        setCoefficient(parseInt(savedCoefficient, 10));
+        setLockedCoefficient(parseInt(savedCoefficient, 10));
       }
-    }, []);
-  
+      if (savedShift) {
+        setShift(savedShift);
+        setLockedShift(savedShift);
+      }
+
+      if (savedProcessedCount) {
+        setProcessedCount(parseInt(savedProcessedCount, 10));
+      } else {
+        setProcessedCount(0);
+      }
+
+      if (savedRealSeconds) {
+        setTotalRealSeconds(parseInt(savedRealSeconds, 10));
+      } else {
+        setTotalRealSeconds(0);
+      }
+
+      if (savedElapsed) {
+        setShiftAdjustmentSeconds(parseInt(savedElapsed, 10));
+      } else {
+        setShiftAdjustmentSeconds(0);
+      }
+
+      if (savedSound) {
+        setIsSoundEnabled(savedSound === "true");
+      } else {
+        setIsSoundEnabled(true);
+      }
+
+      // НАЧАЛО ВСТАВКИ: Загрузка логов истории DONE
+      const savedLogs = localStorage.getItem("p_doneLogs");
+      if (savedLogs) {
+        try {
+          setDoneLogs(JSON.parse(savedLogs));
+        } catch (e) {
+          console.error("Error parsing logs:", e);
+        }
+      }
+      // КОНЕЦ ВСТАВКИ
+    }
+  }, []);
+
   // Синхронизация замороженных параметров, пока кнопка СТАРТ не нажата
   useEffect(() => {
     if (!isRunning && timeLeft === totalTimerSeconds) {
@@ -205,8 +206,6 @@ export default function PomodoroWidget() {
     return () => clearInterval(interval);
   }, [isRunning, totalTimerSeconds, isSoundEnabled]);
 
-
-  
   const playQuietPeep = () => {
     if (typeof window === "undefined") return;
     try {
@@ -230,7 +229,6 @@ export default function PomodoroWidget() {
       console.warn("Audio contextual block:", e);
     }
   };
-
 
   const exactCurrentPlanPcs =
     totalTimerSeconds > 0 ? shiftElapsedSeconds / totalTimerSeconds : 0;
@@ -269,11 +267,11 @@ export default function PomodoroWidget() {
 
   const isSettingsDisabled = timeLeft !== totalTimerSeconds || isRunning;
   const isDoneDisabled = !isRunning && processedCount === 0;
-/////////////////////
+  /////////////////////
 
   const handleRealItemDone = useCallback(() => {
     const nextProcessedCount = processedCount + 1;
-    
+
     // 1. Прибавляем значения к основным счетчикам
     setProcessedCount(nextProcessedCount);
     setTotalRealSeconds((prev) => prev + stopwatchSeconds);
@@ -288,8 +286,8 @@ export default function PomodoroWidget() {
     const newLogItem: DoneLogItem = {
       timestamp: timestampStr,
       duration: formatTime(stopwatchSeconds), // Длительность изготовления по секундомеру
-      factCount: nextProcessedCount,          // Номер выполненной детали (Факт)
-      planPcs: planPcsRounded,                // Текущий округленный план в штуках
+      factCount: nextProcessedCount, // Номер выполненной детали (Факт)
+      planPcs: planPcsRounded, // Текущий округленный план в штуках
     };
 
     // 3. Сохраняем в стейт и пушим массив в localStorage
@@ -302,8 +300,13 @@ export default function PomodoroWidget() {
     // 4. Сбрасываем секундомер и таймер темпа детали на исходную позицию
     setStopwatchSeconds(0);
     setTimeLeft(totalTimerSeconds);
-  }, [stopwatchSeconds, totalTimerSeconds, processedCount, planPcsRounded, formatTime]);
-
+  }, [
+    stopwatchSeconds,
+    totalTimerSeconds,
+    processedCount,
+    planPcsRounded,
+    formatTime,
+  ]);
 
   useEffect(() => {
     const handleGlobalKey = (e: KeyboardEvent) => {
@@ -320,8 +323,6 @@ export default function PomodoroWidget() {
     window.addEventListener("keydown", handleGlobalKey);
     return () => window.removeEventListener("keydown", handleGlobalKey);
   }, [isRunning, handleRealItemDone]);
-
-
 
   const handleGlobalReset = () => {
     const wasActive = isRunning;
@@ -340,7 +341,6 @@ export default function PomodoroWidget() {
       localStorage.removeItem("p_shiftElapsedSeconds");
       setDoneLogs([]); // <-- ДОБАВИТЬ СЮДА ДЛЯ ОЧИСТКИ СТЕЙТА СТРОК
       localStorage.removeItem("p_doneLogs"); // <-- ДОБАВИТЬ ДЛЯ ОЧИСТКИ ИЗ ПАМЯТИ БРАУЗЕРА
-
     } else {
       setIsRunning(wasActive);
     }
@@ -354,12 +354,12 @@ export default function PomodoroWidget() {
 
     // 1. ОТОБРАЖЕНИЕ НАЧАЛА РАБОТЫ: Сдвигаем строго в прошлое при минусе и в будущее при плюсе
     if (actualStartObject) {
-      const timeShiftMs = minutesAmount * 60 * 1000; 
+      const timeShiftMs = minutesAmount * 60 * 1000;
       // Прямое сложение: 09:46 + (-10 минут) = 09:36. Время старта гарантированно уходит назад!
       const updatedDate = new Date(actualStartObject.getTime() + timeShiftMs);
-      
+
       setActualStartObject(updatedDate);
-      
+
       const hrs = updatedDate.getHours().toString().padStart(2, "0");
       const mins = updatedDate.getMinutes().toString().padStart(2, "0");
       setStartTimeText(`${hrs}:${mins}`); // Мгновенно перерисовываем Start на экране
@@ -368,7 +368,7 @@ export default function PomodoroWidget() {
     // 2. СЧЕТЧИК РАБОТЫ НА ЭКРАНЕ: При отмотке назад время работы должно увеличиться!
     // Если нажали -10m, то 0 - (-600 секунд) = +600 секунд (на экране станет 10m 0s)
     setShiftAdjustmentSeconds((prev) => {
-      const newValue = prev - (minutesAmount * 60);
+      const newValue = prev - minutesAmount * 60;
       return newValue < 0 ? 0 : newValue;
     });
 
@@ -377,23 +377,23 @@ export default function PomodoroWidget() {
     // не дожидаясь автоматических хуков React, чтобы План в штуках обновился мгновенно!
     const currentShiftMins = shift === "9h40m" ? 9 * 60 + 40 : 8 * 60;
     const currentTargetPcs = Math.round(coefficient * (currentShiftMins / 60));
-    
+
     setLockedCoefficient(coefficient);
     setLockedShift(shift);
     setLockedTarget(currentTargetPcs);
 
     // Пересчитываем секунды на деталь для таймера темпа (PACE)
     const netMinutes = currentShiftMins - 45;
-    const computedTimerSeconds = currentTargetPcs > 0 ? Math.round((netMinutes * 60) / currentTargetPcs) : 25 * 60;
-    
+    const computedTimerSeconds =
+      currentTargetPcs > 0
+        ? Math.round((netMinutes * 60) / currentTargetPcs)
+        : 25 * 60;
+
     setTimeLeft(computedTimerSeconds);
-    
+
     // Включаем ход времени
     setIsRunning(true);
   };
-
-
-
 
   const handleStartToggle = () => {
     if (!isRunning && timeLeft === totalTimerSeconds) {
@@ -441,13 +441,60 @@ export default function PomodoroWidget() {
                 className={styles.toggleContainer}
                 style={{ opacity: isSettingsDisabled ? 0.7 : 1 }}
               >
-                <input type="radio" id="shift-8" name="shiftValue" value="8h" checked={(isSettingsDisabled ? lockedShift : shift) === "8h"} onChange={() => setShift("8h")} disabled={isSettingsDisabled} className={styles.radioInput} />
-                <label htmlFor="shift-8" className={`${styles.radioLabel} ${(isSettingsDisabled ? lockedShift : shift) === "8h" ? styles.radioLabelActive : ""}`}>8h</label>
-                <input type="radio" id="shift-9" name="shiftValue" value="9h40m" checked={(isSettingsDisabled ? lockedShift : shift) === "9h40m"} onChange={() => setShift("9h40m")} disabled={isSettingsDisabled} className={styles.radioInput} />
-                <label htmlFor="shift-9" className={`${styles.radioLabel} ${(isSettingsDisabled ? lockedShift : shift) === "9h40m" ? styles.radioLabelActive : ""}`} style={{ width: "56px" }}>9:40</label>
-                <div className={styles.slider} style={{ transform: (isSettingsDisabled ? lockedShift : shift) === "9h40m" ? "translateX(45px)" : "translateX(0px)" }}></div>
+                <input
+                  type="radio"
+                  id="shift-8"
+                  name="shiftValue"
+                  value="8h"
+                  checked={(isSettingsDisabled ? lockedShift : shift) === "8h"}
+                  onChange={() => setShift("8h")}
+                  disabled={isSettingsDisabled}
+                  className={styles.radioInput}
+                />
+                <label
+                  htmlFor="shift-8"
+                  className={`${styles.radioLabel} ${
+                    (isSettingsDisabled ? lockedShift : shift) === "8h"
+                      ? styles.radioLabelActive
+                      : ""
+                  }`}
+                >
+                  8h
+                </label>
+                <input
+                  type="radio"
+                  id="shift-9"
+                  name="shiftValue"
+                  value="9h40m"
+                  checked={
+                    (isSettingsDisabled ? lockedShift : shift) === "9h40m"
+                  }
+                  onChange={() => setShift("9h40m")}
+                  disabled={isSettingsDisabled}
+                  className={styles.radioInput}
+                />
+                <label
+                  htmlFor="shift-9"
+                  className={`${styles.radioLabel} ${
+                    (isSettingsDisabled ? lockedShift : shift) === "9h40m"
+                      ? styles.radioLabelActive
+                      : ""
+                  }`}
+                  style={{ width: "56px" }}
+                >
+                  9:40
+                </label>
+                <div
+                  className={styles.slider}
+                  style={{
+                    transform:
+                      (isSettingsDisabled ? lockedShift : shift) === "9h40m"
+                        ? "translateX(45px)"
+                        : "translateX(0px)",
+                  }}
+                ></div>
               </div>
-              
+
               {/* Строка с выровненным временем старта и текущим временем работы без секунд */}
               <div className={styles.timeInfoLine}>
                 <span>START: {startTimeText}</span>
@@ -455,7 +502,6 @@ export default function PomodoroWidget() {
                 <span>WORKED: {formatTimeNoSeconds(shiftElapsedSeconds)}</span>
               </div>
             </div>
-
 
             <div className={`${styles.fieldGroupTarget} ${styles.cfgTarget}`}>
               <span className={styles.fieldLabel}>Target</span>
@@ -531,6 +577,17 @@ export default function PomodoroWidget() {
               >
                 {isSoundEnabled ? "🔊" : "🔇"}
               </button>
+              {/* НОВАЯ КНОПКА: Открытие/закрытие отчета */}
+              <button
+                type="button"
+                onClick={() => setShowReport(!showReport)}
+                className={`${styles.shadowBtn} ${
+                  showReport ? styles.btnReportActive : styles.btnReport
+                }`}
+                style={{ fontSize: "0.65rem", padding: "0 8px" }}
+              >
+                📋 LOG
+              </button>
 
               <button
                 type="button"
@@ -578,17 +635,47 @@ export default function PomodoroWidget() {
                 </button>
               </div>
 
-                           {/* Ряд 2: Корректировка времени (в кнопках выводим только минуты) */}
-                           <div style={{ display: "flex", width: "100%", gap: "4px", alignItems: "center" }}>
+              {/* Ряд 2: Корректировка времени (в кнопках выводим только минуты) */}
+              <div
+                style={{
+                  display: "flex",
+                  width: "100%",
+                  gap: "4px",
+                  alignItems: "center",
+                }}
+              >
                 <div className={styles.currentTimeBadge}>
                   {formatTimeNoSeconds(shiftElapsedSeconds)}
                 </div>
-                <button type="button" onClick={() => adjustShiftTime(-1)} className={styles.adjBtnWide}>-1m</button>
-                <button type="button" onClick={() => adjustShiftTime(-10)} className={styles.adjBtnWide}>-10m</button>
-                <button type="button" onClick={() => adjustShiftTime(10)} className={styles.adjBtnWide}>+10m</button>
-                <button type="button" onClick={() => adjustShiftTime(1)} className={styles.adjBtnWide}>+1m</button>
+                <button
+                  type="button"
+                  onClick={() => adjustShiftTime(-1)}
+                  className={styles.adjBtnWide}
+                >
+                  -1m
+                </button>
+                <button
+                  type="button"
+                  onClick={() => adjustShiftTime(-10)}
+                  className={styles.adjBtnWide}
+                >
+                  -10m
+                </button>
+                <button
+                  type="button"
+                  onClick={() => adjustShiftTime(10)}
+                  className={styles.adjBtnWide}
+                >
+                  +10m
+                </button>
+                <button
+                  type="button"
+                  onClick={() => adjustShiftTime(1)}
+                  className={styles.adjBtnWide}
+                >
+                  +1m
+                </button>
               </div>
-
             </div>
           </div>
         </div>
@@ -682,8 +769,8 @@ export default function PomodoroWidget() {
             <span className={styles.extendedPaceText}>Time Elapsed</span>
           </div>
 
-          {/* СТРОКА ПРОГРЕССА СМЕНЫ */}
-          <div
+                   {/* СТРОКА ПРОГРЕССА СМЕНЫ */}
+                   <div
             className={styles.bottomProgressBarTrack}
             style={{ marginRight: "12px", marginTop: "4px" }}
           >
@@ -696,7 +783,53 @@ export default function PomodoroWidget() {
             </span>
           </div>
         </div>
-      </div>
-    </div>
+      </div> {/* Конец widgetContainer */}
+
+      {/* НОВЫЙ БЛОК: Построчный отчет из истории Done */}
+      {showReport && (
+        <div className={styles.reportSection}>
+          <div className={styles.reportHeader}>
+            <h3>Shift Production Log</h3>
+            <button 
+              type="button" 
+              onClick={() => { if(confirm("Clear history?")) { setDoneLogs([]); localStorage.removeItem("p_doneLogs"); } }} 
+              className={styles.clearLogBtn}
+            >
+              Clear
+            </button>
+          </div>
+          <div className={styles.tableWrapper}>
+            <table className={styles.reportTable}>
+              <thead>
+                <tr>
+                  <th># Fact</th>
+                  <th>Time Done</th>
+                  <th>Duration (Stopwatch)</th>
+                  <th>Current Plan</th>
+                </tr>
+              </thead>
+              <tbody>
+                {doneLogs.length === 0 ? (
+                  <tr>
+                    <td colSpan={4} style={{ textAlign: "center", color: "#94a3b8", padding: "12px" }}>
+                      No items processed yet.
+                    </td>
+                  </tr>
+                ) : (
+                  doneLogs.map((item, index) => (
+                    <tr key={index}>
+                      <td><strong>{item.factCount} pcs</strong></td>
+                      <td>{item.timestamp}</td>
+                      <td>{item.duration}</td>
+                      <td>{item.planPcs} pcs</td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+    </div> // Конец layoutWrapper
   );
 }

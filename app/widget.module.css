@@ -626,3 +626,125 @@
     justify-content: flex-start !important; /* Подтягивает блок Target к верхней линии к остальным */
     gap: 2px;
   }
+
+  /* ==========================================================================
+   СТИЛИ ДЛЯ КНОПКИ LOG И ТАБЛИЦЫ ОТЧЕТА (PRODUCTION LOG)
+   ========================================================================== */
+
+/* Кнопка LOG (Обычное состояние) */
+.btnReport {
+    background-color: #0284c7 !important; /* Красивый синий цвет */
+  }
+  .btnReport:hover {
+    background-color: #0369a1 !important;
+  }
+  
+  /* Кнопка LOG (Когда отчет открыт) */
+  .btnReportActive {
+    background-color: #bae6fd !important;
+    color: #0369a1 !important;
+    border: 1px solid #7dd3fc !important;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15) !important;
+  }
+  
+  /* Обертка всей секции отчета */
+  .reportSection {
+    width: 100%;
+    max-width: 510px; /* Идеально совпадает с максимальной шириной виджета */
+    margin-top: 12px;
+    background-color: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 10px;
+    box-sizing: border-box;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  }
+  
+  /* Шапка отчета с кнопкой Clear */
+  .reportHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid #f1f5f9;
+  }
+  
+  .reportHeader h3 {
+    margin: 0;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #1e293b;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+  
+  /* Кнопка очистки истории */
+  .clearLogBtn {
+    background-color: #fff1f2;
+    border: 1px solid #ffe4e6;
+    color: #e11d48;
+    font-size: 0.6rem;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: all 0.1s ease;
+  }
+  .clearLogBtn:hover {
+    background-color: #ffe4e6;
+    color: #be123c;
+  }
+  
+  /* Контейнер таблицы с прокруткой */
+  .tableWrapper {
+    max-height: 180px; /* Если деталей больше 5-6, появится аккуратный скролл */
+    overflow-y: auto;
+    border-radius: 4px;
+    border: 1px solid #f1f5f9;
+  }
+  
+  /* Сама таблица логов */
+  .reportTable {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.7rem;
+    text-align: left;
+  }
+  
+  .reportTable th {
+    background-color: #f8fafc;
+    color: #64748b;
+    font-weight: 700;
+    padding: 6px 8px;
+    text-transform: uppercase;
+    font-size: 0.58rem;
+    letter-spacing: 0.02em;
+    position: sticky;
+    top: 0; /* Шапка таблицы не уезжает при скролле */
+    z-index: 1;
+  }
+  
+  .reportTable td {
+    padding: 6px 8px;
+    border-bottom: 1px solid #f1f5f9;
+    color: #334155;
+    font-family: monospace; /* Чтобы цифры и время стояли ровно друг под другом */
+  }
+  
+  .reportTable tbody tr:hover {
+    background-color: #f8fafc; /* Легкий подсвет строки при наведении */
+  }
+  
+  /* Адаптация отчета под узкие мобильные экраны (меньше 520px) */
+  @media (max-width: 520px) {
+    .reportSection {
+      max-width: 340px !important;
+      width: 340px !important;
+      margin-left: auto !important;
+      margin-right: 0 !important;
+    }
+  }
+  
