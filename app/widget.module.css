@@ -45,7 +45,7 @@
     display: flex;
     flex-direction: column;
     align-items: center; 
-    justify-content: flex-start !important; /* Выравнивание контента внутри группы от верхнего края */
+    justify-content: flex-start !important;
     gap: 2px;
   }
   
@@ -63,35 +63,49 @@
     border: 1px solid #cbd5e1;
     border-radius: 4px;
     color: #1e293b;
-    font-size: 0.72rem !important; /* Делаем шрифт аккуратным и мелким */
+    font-size: 0.72rem !important; 
     font-weight: 700;
     font-family: monospace;
-    width: 44px !important; /* Сужаем поле, так как цифры там небольшие */
-    height: 20px; /* Делаем поле чуть ниже и аккуратнее */
+    width: 44px !important; 
+    height: 20px; 
     text-align: center;
     outline: none;
   }
   .inputNumberWide:focus { border-color: #0f766e; }
   .inputNumberWide:disabled { opacity: 0.6; cursor: not-allowed; background-color: #f1f5f9; }
   
+  .fieldGroupTarget {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start !important;
+    gap: 2px;
+  }
+  
   .targetDisplayDisabled {
     background-color: #f1f5f9;
     border: 1px dashed #cbd5e1;
     border-radius: 4px;
-    font-size: 0.72rem !important; /* Шрифт такой же, как в Rate */
+    font-size: 0.72rem !important; 
     font-weight: 700;
     color: #94a3b8;
     font-family: monospace;
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 20px; /* Высота совпадает с инпутом Rate */
-    width: 48px; /* Делаем блок компактным */
+    height: 20px; 
+    width: 48px; 
     box-sizing: border-box;
     cursor: not-allowed;
     gap: 1px;
   }
   
+  .unitText {
+    font-size: 0.6rem !important; 
+    color: #94a3b8;
+    font-weight: 600;
+    font-family: sans-serif;
+  }
   .toggleContainer {
     display: flex;
     align-items: center;
@@ -99,7 +113,7 @@
     background-color: #ffffff;
     border: 1px solid #cbd5e1;
     border-radius: 4px;
-    height: 24px;
+    height: 20px; 
     min-width: 94px;
     box-sizing: border-box;
   }
@@ -111,7 +125,7 @@
     justify-content: center;
     width: 45px;
     height: 100%;
-    font-size: 0.75rem;
+    font-size: 0.68rem; 
     font-weight: 700;
     color: #64748b;
     cursor: pointer;
@@ -119,14 +133,12 @@
     transition: color 0.12s ease-in-out;
   }
   
-  .radioLabelActive {
-    color: #ffffff !important;
-  }
+  .radioLabelActive { color: #ffffff !important; }
   
   .slider {
     position: absolute;
-    top: 2px; left: 2px;
-    height: calc(100% - 4px);
+    top: 1px; left: 2px;
+    height: calc(100% - 2px);
     width: 45px;
     background-color: #0f766e;
     border-radius: 3px;
@@ -134,11 +146,35 @@
     z-index: 1;
   }
   
+  .timeInfoLine {
+    display: flex;
+    align-items: center !important; 
+    justify-content: center;
+    gap: 6px;
+    font-size: 0.52rem;
+    color: #64748b;
+    font-weight: 800;
+    margin-top: 5px; 
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    line-height: 1 !important; 
+    height: 10px; 
+  }
+  
+  .dividerDot {
+    color: #cbd5e1;
+    font-size: 0.6rem;
+    line-height: 1 !important;
+    display: flex;
+    align-items: center;
+  }
+  
   .controlAndAdjustColumn {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    gap: 8px;
+    gap: 4px !important;
     height: 100%;
   }
   
@@ -155,7 +191,7 @@
     justify-content: space-between;
     gap: 4px;
     width: 100%;
-    height: 18px;
+    height: auto;
   }
   
   .shadowBtn {
@@ -185,15 +221,30 @@
   .btnSoundOn { background-color: #f0fdf4 !important; border: 1px solid #bbf7d0 !important; }
   .btnSoundOff { background-color: #f1f5f9 !important; border: 1px solid #cbd5e1 !important; }
   
+  .btnReport { background-color: #0284c7 !important; }
+  .btnReport:hover { background-color: #0369a1 !important; }
+  
+  .btnReportActive {
+    background-color: #bae6fd !important;
+    color: #0369a1 !important;
+    border: 1px solid #7dd3fc !important;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15) !important;
+  }
+  
+  .adjBtnWide, .currentTimeBadge {
+    font-family: monospace !important;
+    font-size: 0.62rem !important;
+    font-weight: 700 !important;
+    height: 20px !important; 
+    box-sizing: border-box !important;
+  }
+  
   .adjBtnWide {
     flex: 1;
     background-color: #ffffff; 
     border: 1px solid #cbd5e1; 
     color: #475569;
     border-radius: 3px; 
-    font-size: 0.58rem; 
-    font-weight: 800; 
-    height: 18px; 
     padding: 0; 
     cursor: pointer;
     display: flex;
@@ -202,6 +253,17 @@
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
   }
   .adjBtnWide:hover { background-color: #f1f5f9; }
+  
+  .currentTimeBadge {
+    background-color: #f8fafc;
+    border: 1px solid #cbd5e1;
+    color: #0f766e; 
+    min-width: 45px;
+    padding: 0 3px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
   
   .timeDisplay, .stopwatchDisplay {
     display: flex;
@@ -221,47 +283,25 @@
   .paceBlack { color: #0f172a; } 
   .paceRed { color: #dc2626; font-weight: 900; } 
   
-/* Расширяем сам блок статистики */
-.blockStats {
-    flex: 1 !important; /* Позволяет блоку занять все доступное свободное пространство */
-    min-width: 140px; /* Увеличиваем минимальную ширину */
+  .blockStats {
+    flex: 1 !important; 
+    min-width: 140px; 
     padding: 0 10px !important;
   }
   
-  /* Настраиваем контейнер строк */
   .compactStatsBox {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    width: 100% !important; /* Растягиваем коробку на всю ширину блока */
+    width: 100% !important; 
     height: 100%;
     line-height: 1.2;
     gap: 1px;
   }
-  /* Выравниваем строки «по линейке» от левого до правого края */
-.progressRow { 
-    display: flex; 
-    justify-content: space-between; /* Название слева, цифры строго справа */
-    align-items: center;
-    width: 100% !important; 
-  }
   
-  /* Шрифт для названий (Plan:, Fact:) */
-  .rowLabel { 
-    font-size: 0.58rem; 
-    font-weight: 700; 
-    color: #64748b; 
-    text-transform: uppercase; 
-  }
-  
-  /* Шрифт для значений — теперь он идеально совпадает по размеру с Rate! */
-  .rowValue { 
-    font-size: 0.72rem !important; /* Одинаковый размер шрифта во всем виджете */
-    font-weight: 700; 
-    color: #1e293b; 
-    font-family: monospace; 
-  }
-
+  .progressRow { display: flex; justify-content: space-between; align-items: center; width: 100% !important; }
+  .rowLabel { font-size: 0.58rem; font-weight: 700; color: #64748b; text-transform: uppercase; }
+  .rowValue { font-size: 0.72rem !important; font-weight: 700; color: #1e293b; font-family: monospace; }
   .textGreen { color: #16a34a !important; }
   .textRed { color: #dc2626 !important; }
   
@@ -284,8 +324,6 @@
     align-items: center;
     justify-content: center;
   }
-  .unitText { font-size: 0.65rem; color: #94a3b8; font-weight: 500; font-family: sans-serif; }
-  
   .dDoneBtn {
     width: 60px;
     height: calc(100% - 4px); 
@@ -357,583 +395,89 @@
     mix-blend-mode: difference; 
   }
   
-  /* Элементы разметки для мобильной структуры */
-  .configGrid { 
-    display: flex; 
-    align-items: flex-start !important; /* Намертво прижимает Rate, Time, Target к верхнему краю */
-    gap: 6px; 
-    width: 100%; 
-    height: 100%; 
-    padding-top: 4px; /* Небольшой аккуратный отступ сверху внутри блока */
-    box-sizing: border-box;
-  }
-
-
-  /* ==========================================================================
-   СТИЛИ ДЛЯ КНОПКИ LOG И ТАБЛИЦЫ ОТЧЕТА (PRODUCTION LOG)
-   ========================================================================== */
-
-/* Кнопка LOG (Обычное состояние) */
-.btnReport {
-    background-color: #0284c7 !important; /* Красивый синий цвет */
-  }
-  .btnReport:hover {
-    background-color: #0369a1 !important;
-  }
+  .configGrid { display: flex; align-items: flex-start !important; gap: 6px; width: 100%; height: 100%; padding-top: 4px; box-sizing: border-box; }
   
-  /* Кнопка LOG (Когда отчет открыт) */
-  .btnReportActive {
-    background-color: #bae6fd !important;
-    color: #0369a1 !important;
-    border: 1px solid #7dd3fc !important;
-    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15) !important;
-  }
-  
-  /* Обертка всей секции отчета */
+  /* ДАШБОРД-ЛОГ ОТЧЕТА */
   .reportSection {
-    width: 100%;
-    max-width: 510px; /* Идеально совпадает с максимальной шириной виджета */
-    margin-top: 12px;
-    background-color: #ffffff;
-    border: 1px solid #e2e8f0;
-    border-radius: 8px;
-    padding: 10px;
-    box-sizing: border-box;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  }
-  
-  /* Шапка отчета с кнопкой Clear */
-  .reportHeader {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 8px;
-    padding-bottom: 6px;
-    border-bottom: 1px solid #f1f5f9;
-  }
-  
-  .reportHeader h3 {
-    margin: 0;
-    font-size: 0.8rem;
-    font-weight: 700;
-    color: #1e293b;
-    text-transform: uppercase;
-    letter-spacing: 0.03em;
-  }
-  
-  /* Кнопка очистки истории */
-  .clearLogBtn {
-    background-color: #fff1f2;
-    border: 1px solid #ffe4e6;
-    color: #e11d48;
-    font-size: 0.6rem;
-    font-weight: 700;
-    padding: 2px 8px;
-    border-radius: 4px;
-    cursor: pointer;
-    text-transform: uppercase;
-    transition: all 0.1s ease;
-  }
-  .clearLogBtn:hover {
-    background-color: #ffe4e6;
-    color: #be123c;
-  }
-  
-  /* Контейнер таблицы с прокруткой */
-  .tableWrapper {
-    max-height: 180px; /* Если деталей больше 5-6, появится аккуратный скролл */
-    overflow-y: auto;
-    border-radius: 4px;
-    border: 1px solid #f1f5f9;
-  }
-  
-  /* Сама таблица логов */
-  .reportTable {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 0.7rem;
-    text-align: left;
-  }
-  
-  /* Модные плоские строки — СДЕЛАНЫ В 2 РАЗА УЖЕ */
-.reportTable th {
-    padding: 6px 12px; /* Компактные отступы для шапки */
-    font-size: 0.52rem;
-  }
-  
-  .reportTable td {
-    padding: 3px 12px !important; /* Минимальные отступы сверху и снизу */
-    border-bottom: 1px solid #f1f5f9 !important; 
-    color: #334155;
-    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace !important;
-    font-weight: 500;
-    height: 22px !important; /* Уменьшили высоту строки почти в два раза! */
-    font-size: 0.68rem !important; /* Немного уменьшили шрифт для баланса */
-    box-sizing: border-box;
-  }
-  
-  /* Уменьшаем размер зеленого бэйджа ФАКТА под новую узкую строку */
-  .factCell strong {
-    padding: 0px 6px !important; /* Тонкий бэйдж */
-    border-radius: 4px;
-    font-size: 0.62rem;
-    font-weight: 700;
-    line-height: 1.4;
-  }
-  
-  .reportTable tbody tr:hover {
-    background-color: #f8fafc; /* Легкий подсвет строки при наведении */
-  }
-
-
-
-/* СТУПЕНЬ 2: Точки "840" и "720" (от 1100px до 521px) — ПРОСТОРНЫЕ 2 РЯДА */
-@media (max-width: 1100px) and (min-width: 521px) {
-    .widgetContainer {
-      transform: scale(1) !important;
-      display: flex !important;
-      flex-direction: row !important;
-      flex-wrap: wrap !important;  
-      height: auto !important;     
-      max-width: 510px !important; 
-      gap: 6px !important;
-      padding: 6px !important;
-      background-color: #f1f5f9 !important; 
-      border: 1px solid #cbd5e1 !important;
-      margin-left: auto !important; 
-      margin-right: 0 !important; 
-      align-items: stretch !important;
-      overflow: visible !important; 
-    }
-  
-    .concaveBlock {
-      height: 76px !important;      
-      box-sizing: border-box !important;
-      padding: 0 8px !important;       
-      flex: none !important;        
-    }
-  
-    /* РЯД 1 (ВЕРХНИЙ ЭТАЖ) */
-    .widgetContainer > .concaveBlock:nth-child(3) {
-      order: 1 !important;
-      width: calc(45% - 3px) !important; 
-    }
-    .widgetContainer > .concaveBlock:nth-child(1) {
-      order: 2 !important;
-      width: calc(55% - 3px) !important; 
-    }
-  
-    /* РЯД 2 (НИЖНИЙ ЭТАЖ) */
-    .widgetContainer > .concaveBlock:nth-child(2) {
-      order: 3 !important;
-      width: calc(35% - 3px) !important; 
-    }
-    
-    .widgetContainer > .concaveBlock:nth-child(4) {
-      order: 4 !important;
-      width: calc(65% - 3px) !important; 
-      flex: 0 0 calc(65% - 3px) !important;
-      padding-top: 4px !important;
-      padding-bottom: 4px !important;
-      height: 84px !important; 
-    }
-  
-.toggleContainer {
-  display: flex;
-  align-items: center;
-  position: relative;
-  background-color: #ffffff;
-  border: 1px solid #cbd5e1;
-  border-radius: 4px;
-  height: 20px; /* Высота теперь тоже 20px, как у Rate и Target */
-  min-width: 94px;
-  box-sizing: border-box;
-}
-
-.radioLabel {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 45px;
-  height: 100%;
-  font-size: 0.68rem; /* Чуть уменьшаем шрифт для компактности */
-  font-weight: 700;
-  color: #64748b;
-  cursor: pointer;
-  z-index: 2;
-}
-
-.slider {
-  position: absolute;
-  top: 1px; left: 2px;
-  height: calc(100% - 2px);
-  width: 45px;
-  background-color: #0f766e;
-  border-radius: 3px;
-  z-index: 1;
-}
-
-    .radioInput[value="9h40m"]:checked ~ .slider { transform: translateX(45px) !important; }
-    .gridRow { height: 22px !important; }
-    .shadowBtn { height: 22px !important; font-size: 0.65rem !important; }
-    
-    .blockControls .controlAndAdjustColumn {
-      gap: 7px !important; 
-      height: 100% !important;
-      justify-content: center !important;
-    }
-    
-    .dDoneBtn { 
-      margin-right: 0 !important; 
-      height: calc(100% + 8px) !important; 
-      margin-top: -4px !important; 
-    }
-  }
-  
-  /* СТУПЕНЬ 3: НАСТОЯЩИЙ МОБИЛЬНЫЙ ВИД (Меньше 520px, включая 500px и 492px) */
-  @media (max-width: 520px) {
-    
-    .widgetContainer > .concaveBlock:nth-child(2) {
-      display: none !important;
-    }
-  
-    .widgetContainer {
-      display: grid !important;
-      grid-template-columns: 145px 1fr !important; 
-      grid-template-rows: auto auto !important;   
-      max-width: 340px !important;    
-      width: 340px !important;
-      height: auto !important; 
-      gap: 5px !important;
-      padding: 5px !important;
-      background-color: #f1f5f9 !important; 
-      border: 1px solid #cbd5e1 !important;
-      margin-right: 0 !important; 
-      margin-left: auto !important;
-      overflow: visible !important;
-    }
-  
-    .concaveBlock {
-      box-sizing: border-box !important;
-      height: 76px !important; 
-    }
-  
-    /* РЯД 1, ЛЕВАЯ КОЛОНКА */
-    .widgetContainer > .concaveBlock:nth-child(3) {
-      grid-column: 1 !important;
-      grid-row: 1 !important;
-      width: 145px !important; 
-      padding: 0 6px !important;
-      display: flex !important;
-      flex-direction: column !important;
-      justify-content: center !important;
-    }
-  
-    .widgetContainer > .concaveBlock:nth-child(3) .controlAndAdjustColumn {
-      gap: 6px !important; 
-      width: 100% !important;
-    }
-    .widgetContainer > .concaveBlock:nth-child(3) .gridRow {
-      height: 22px !important; 
-      width: 100% !important;
-    }
-    .widgetContainer > .concaveBlock:nth-child(3) .gridRowFullWidth {
-      height: 18px !important;
-      width: 100% !important;
-    }
-    .widgetContainer > .concaveBlock:nth-child(3) .shadowBtn {
-      height: 22px !important; 
-      font-size: 0.62rem !important;
-      flex: 1 !important;
-    }
-    .widgetContainer > .concaveBlock:nth-child(3) .adjBtnWide {
-      height: 18px !important;
-      font-size: 0.55rem !important;
-    }
-  
-    /* РЯД 1, ПРАВАЯ КОЛОНКА */
-    .widgetContainer > .concaveBlock:nth-child(1) {
-      grid-column: 2 !important;
-      grid-row: 1 !important;
-      width: 100% !important; 
-      padding: 4px 6px !important;
-    }
-  
-    .widgetContainer > .concaveBlock:nth-child(1) .configGrid {
-      display: grid !important;
-      grid-template-columns: 1fr 1fr !important; 
-      grid-template-rows: auto auto !important;   
-      row-gap: 3px !important;
-      column-gap: 4px !important; 
-      align-items: center !important;
-      justify-items: center !important; 
-      width: 100% !important;
-      height: 100% !important;
-    }
-  
-    .toggleContainer { height: 24px !important; min-width: 86px !important; }
-    .radioLabel { font-size: 0.7rem !important; width: 41px !important; }
-    .slider { width: 41px !important; height: calc(100% - 4px) !important; }
-    .radioInput[value="9h40m"]:checked ~ .slider { transform: translateX(41px) !important; }
-  
-    /* ЖЕЛЕЗОБЕТОННОЕ ИСПРАВЛЕНИЕ ДЛЯ СТРОКИ TARGET: 
-       Принудительно выстраиваем подпись и цифры строго в один горизонтальный ряд (row).
-       Свойство display: flex заставляет их встать плечом к плечу на мобильном */
-    .cfgTarget {
-      grid-column: span 2 !important; 
-      grid-row: 2 !important;
-      display: flex !important;       /* Включаем флекс */
-      flex-direction: row !important; /* Намертво фиксируем выравнивание в одну линию */
-      gap: 6px !important;            /* Красивый отступ между словом Target и цифрой */
-      justify-content: center !important;
-      align-items: center !important;
-      width: 100% !important;
-      height: 24px !important;       
-    }
-  
-    /* Исправление внутренней подписи: отменяем блочное поведение */
-    .cfgTarget .fieldLabel {
-      margin: 0 !important;
-      display: inline-block !important;
-    }
-  
-    /* РЯД 2 (НИЖНИЙ ЭТАЖ) */
-    .widgetContainer > .concaveBlock:nth-child(4) {
-      grid-column: span 2 !important; 
-      grid-row: 2 !important;
-      width: 100% !important;
-      padding-top: 4px !important;   
-      padding-bottom: 4px !important;
-      padding-right: 0 !important;   
-      height: 80px !important;       
-    }
-  
-    .widgetContainer > .concaveBlock:nth-child(4) .dDoneBtn {
-      margin-right: 0 !important;
-      width: 65px !important;        
-      padding: 0 10px !important;    
-      height: calc(100% + 8px) !important; 
-      margin-top: -4px !important;
-      border-top-right-radius: 6px !important;
-      border-bottom-right-radius: 6px !important;
-    }
-  }
-  
-  /* СТУПЕНЬ 4: Экстремально узкие экраны */
-  @media (max-width: 340px) {
-    .widgetContainer {
-      transform: scale(0.9) !important; 
-      transform-origin: bottom right !important;
-      margin-right: 0 !important; 
-    }
-  }
-  
-  /* Дополнительные стили для блока корректировки времени */
-.currentTimeBadge {
-    background-color: #f1f5f9;
-    border: 1px solid #cbd5e1;
-    border-radius: 3px;
-    color: #475569;
-    font-size: 0.65rem;
-    font-weight: 800;
-    font-family: monospace;
-    height: 18px;
-    min-width: 42px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05);
-    box-sizing: border-box;
-  }
-  
-  /* Расширяем высоту блока управления для вмещения двух рядов на десктопе */
-  .blockControls {
-    height: auto !important;
-    padding-top: 4px !important;
-    padding-bottom: 4px !important;
-  }
-
-  /* Новая линия информации под кнопками выбора времени смены */
-  .timeInfoLine {
-    display: flex;
-    align-items: center !important; /* Центрирует буквы строго по одной горизонтальной оси */
-    justify-content: center;
-    gap: 6px;
-    font-size: 0.52rem;
-    color: #64748b;
-    font-weight: 800;
-    margin-top: 5px; /* Отодвигаем строку чуть ниже от радио-кнопок, чтобы было свободно */
-    text-transform: uppercase;
-    letter-spacing: 0.02em;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    line-height: 1 !important; /* Убирает скрытые отступы шрифта по высоте */
-    height: 10px; /* Фиксированная базовая высота строки */
-  }
-  
-  .dividerDot {
-    color: #cbd5e1;
-    font-size: 0.6rem;
-    line-height: 1 !important;
-    display: flex;
-    align-items: center;
-  }
-  
-  
-  /* Принудительное выравнивание шрифтов и размеров для всех кнопок корректировок */
-  .adjBtnWide, .currentTimeBadge {
-    font-family: monospace !important;
-    font-size: 0.62rem !important;
-    font-weight: 700 !important;
-    height: 20px !important; /* Фиксированная высота для идеальной сетки */
-    box-sizing: border-box !important;
-  }
-  
-  .currentTimeBadge {
-    background-color: #f8fafc;
-    border: 1px solid #cbd5e1;
-    color: #0f766e; /* Выделяем цвет времени работы красивым бирюзовым */
-    min-width: 45px;
-    padding: 0 3px;
-  }
-  
-  /* Корректировка высоты контейнера управления под новые двухрядные кнопки */
-  .controlAndAdjustColumn {
-    gap: 4px !important;
-    justify-content: center !important;
-  }
-  .fieldGroupTarget {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-start !important; /* Подтягивает блок Target к верхней линии к остальным */
-    gap: 2px;
-  }
-
-  
-  /* Адаптация отчета под узкие мобильные экраны (меньше 520px) */
-  @media (max-width: 520px) {
-    .reportSection {
-      max-width: 340px !important;
-      width: 340px !important;
-      margin-left: auto !important;
-      margin-right: 0 !important;
-    }
-  }
-  
-
-
-
-  /* ==========================================================================
-   МОДНЫЙ И СТИЛЬНЫЙ ДАШБОРД-ЛОГ (В СТИЛЕ VERCEL / LINEAR)
-   ========================================================================== */
-
-.reportSection {
     width: 100%;
     max-width: 510px;
     margin-top: 14px;
     background-color: #ffffff;
     border: 1px solid #e2e8f0;
-    border-radius: 12px; /* Более мягкие, современные скругления углов */
+    border-radius: 12px;
     padding: 12px;
     box-sizing: border-box;
     box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.03), 0 4px 6px -4px rgba(0, 0, 0, 0.03);
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   }
+  .reportHeader { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; padding-bottom: 6px; border-bottom: 1px solid #f1f5f9; }
+  .reportHeader h3 { margin: 0; font-size: 0.75rem; font-weight: 700; color: #0f172a; text-transform: uppercase; letter-spacing: 0.05em; }
+  .clearLogBtn { background-color: #fff1f2; border: 1px solid #ffe4e6; color: #e11d48; font-size: 0.6rem; font-weight: 700; padding: 2px 8px; border-radius: 4px; cursor: pointer; text-transform: uppercase; transition: all 0.1s ease; }
+  .clearLogBtn:hover { background-color: #ffe4e6; color: #be123c; }
   
-  .reportHeader h3 {
-    margin: 0;
-    font-size: 0.75rem;
-    font-weight: 700;
-    color: #0f172a;
-    text-transform: uppercase;
-    letter-spacing: 0.05em; /* Современный разреженный трекинг */
-  }
-  
-  .tableWrapper {
-    max-height: 240px;
-    overflow-y: auto;
-    border: 1px solid #f1f5f9;
-    border-radius: 8px;
-    background-color: #ffffff;
-  }
-  
-  /* Стилизация скроллбара под Mac-стиль, чтобы не портил дизайн */
+  .tableWrapper { max-height: 240px; overflow-y: auto; border: 1px solid #f1f5f9; border-radius: 8px; background-color: #ffffff; }
   .tableWrapper::-webkit-scrollbar { width: 5px; }
   .tableWrapper::-webkit-scrollbar-track { background: transparent; }
   .tableWrapper::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
   
-  .reportTable {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 0.72rem;
+  .reportTable { width: 100%; border-collapse: collapse; font-size: 0.72rem; }
+  .reportTable th { background-color: rgba(248, 250, 252, 0.95); backdrop-filter: blur(4px); color: #64748b; font-weight: 600; padding: 6px 12px; font-size: 0.52rem; text-transform: uppercase; letter-spacing: 0.05em; position: sticky; top: 0; z-index: 1; border-bottom: 1px solid #e2e8f0; }
+  .reportTable td { padding: 3px 12px !important; border-bottom: 1px solid #f1f5f9 !important; color: #334155; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace !important; font-weight: 500; height: 22px !important; font-size: 0.68rem !important; box-sizing: border-box; }
+  .reportTable tbody tr { transition: background-color 0.15s ease; }
+  .reportTable tbody tr:hover { background-color: #f8fafc; }
+  .reportTable td:nth-child(1) { color: #0f172a; font-weight: 600; }
+  .reportTable td:nth-child(2) { color: #475569; }
+  .reportTable td:nth-child(3) { color: #94a3b8; }
+  .factCell { text-align: right; }
+  .factCell strong { background-color: #f0fdf4; color: #15803d; padding: 0px 6px !important; border-radius: 4px; font-size: 0.62rem; font-weight: 700; line-block: inline-block; border: 1px solid #dcfce7; line-height: 1.4; }
+  
+  .blockControls { height: auto !important; padding-top: 4px !important; padding-bottom: 4px !important; }
+  
+  /* ==========================================================================
+     ОБНОВЛЕННАЯ АДАПТАЦИЯ (ИСПРАВЛЯЕТ НАЕЗДЫ И СЕТКУ В 1065px)
+     ========================================================================== */
+  
+  @media (max-width: 1100px) and (min-width: 601px) {
+    .widgetContainer {
+      max-width: 100% !important;
+      width: max-content !important;
+      height: 76px !important;
+      display: flex !important;
+      flex-direction: row !important;
+      flex-wrap: nowrap !important; 
+      padding: 0 !important;
+      background-color: #ffffff !important;
+      border: none !important;
+      overflow: hidden !important;
+      gap: 4px !important;
+    }
+    .concaveBlock { height: 100% !important; padding: 0 6px !important; flex: none !important; }
+    .blockStats { flex: 1 1 auto !important; min-width: 120px !important; }
+    .shadowBtn { padding: 0 6px !important; font-size: 0.6rem !important; }
+    .adjBtnWide { font-size: 0.58rem !important; }
+    .dDoneBtn { width: 52px !important; font-size: 0.75rem !important; }
   }
   
-  /* Современная минималистичная шапка */
-  .reportTable th {
-    background-color: rgba(248, 250, 252, 0.95);
-    backdrop-filter: blur(4px); /* Эффект размытия при скролле */
-    color: #64748b;
-    font-weight: 600;
-    padding: 10px 12px;
-    font-size: 0.55rem;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    position: sticky;
-    top: 0;
-    z-index: 1;
-    border-bottom: 1px solid #e2e8f0;
+  @media (max-width: 600px) {
+    .widgetContainer > .concaveBlock:nth-child(2) { display: none !important; }
+    .widgetContainer { display: grid !important; grid-template-columns: 145px 1fr !important; grid-template-rows: auto auto !important; max-width: 340px !important; width: 340px !important; height: auto !important; gap: 5px !important; padding: 5px !important; background-color: #f1f5f9 !important; border: 1px solid #cbd5e1 !important; margin-right: 0 !important; margin-left: auto !important; overflow: visible !important; }
+    .concaveBlock { box-sizing: border-box !important; height: 76px !important; }
+    .widgetContainer > .concaveBlock:nth-child(3) { grid-column: 1 !important; grid-row: 1 !important; width: 145px !important; padding: 0 6px !important; display: flex !important; flex-direction: column !important; justify-content: center !important; }
+    .widgetContainer > .concaveBlock:nth-child(3) .controlAndAdjustColumn { gap: 4px !important; width: 100% !important; }
+    .widgetContainer > .concaveBlock:nth-child(3) .gridRow { height: 22px !important; width: 100% !important; }
+    .widgetContainer > .concaveBlock:nth-child(3) .gridRowFullWidth { height: auto !important; width: 100% !important; }
+    .widgetContainer > .concaveBlock:nth-child(1) { grid-column: 2 !important; grid-row: 1 !important; width: 100% !important; padding: 4px 6px !important; }
+    .widgetContainer > .concaveBlock:nth-child(1) .configGrid { display: grid !important; grid-template-columns: 1fr 1fr !important; grid-template-rows: auto auto !important; row-gap: 3px !important; column-gap: 4px !important; align-items: center !important; justify-items: center !important; width: 100% !important; height: 100% !important; }
+    .widgetContainer > .concaveBlock:nth-child(1) .cfgRate { grid-column: 1 !important; grid-row: 1 !important; }
+    .widgetContainer > .concaveBlock:nth-child(1) .cfgTime { grid-column: 2 !important; grid-row: 1 !important; }
+    .cfgTarget { grid-column: span 2 !important; grid-row: 2 !important; display: flex !important; flex-direction: row !important; gap: 6px !important; justify-content: center !important; align-items: center !important; width: 100% !important; height: 24px !important; }
+    .cfgTarget .fieldLabel { margin: 0 !important; display: inline-block !important; }
+    .widgetContainer > .concaveBlock:nth-child(4) { grid-column: span 2 !important; grid-row: 2 !important; width: 100% !important; padding-top: 4px !important; padding-bottom: 4px !important; padding-right: 0 !important; height: 80px !important; }
+    .widgetContainer > .concaveBlock:nth-child(4) .dDoneBtn { margin-right: 0 !important; width: 65px !important; padding: 0 10px !important; height: calc(100% + 8px) !important; margin-top: -4px !important; border-top-right-radius: 6px !important; border-bottom-right-radius: 6px !important; }
+    .reportSection { max-width: 340px !important; width: 340px !important; margin-left: auto !important; margin-right: 0 !important; }
   }
   
-  /* Модные плоские строки с мягким переходом */
-  .reportTable td {
-    padding: 10px 12px;
-    border-bottom: 1px solid #f1f5f9 !important; /* Очень бледная, стильная полоса */
-    color: #334155;
-    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace !important;
-    font-weight: 500;
-    height: 38px;
-    box-sizing: border-box;
-  }
-  
-  /* Подсветка строки при наведении в стиле современных приложений */
-  .reportTable tbody tr {
-    transition: background-color 0.15s ease;
-  }
-  .reportTable tbody tr:hover {
-    background-color: #f8fafc; 
-  }
-  
-  /* СТИЛЬНЫЕ ТЕГИ ДЛЯ ДАННЫХ (вместо голого текста) */
-  
-  /* Столбец TIME DONE: делаем как бэйдж */
-  .reportTable td:nth-child(1) {
-    color: #0f172a;
-    font-weight: 600;
-  }
-  
-  /* Столбец DURATION (секундомер): мягкий сине-серый акцент */
-  .reportTable td:nth-child(2) {
-    color: #475569;
-  }
-  
-  /* Столбец PLAN: приглушенный серый */
-  .reportTable td:nth-child(3) {
-    color: #94a3b8;
-  }
-  
-  /* Столбец ФАКТ: превращаем в красивый зеленый индикатор */
-  .factCell {
-    text-align: right; /* Прижимаем к правому краю для красоты */
-  }
-  .factCell strong {
-    background-color: #f0fdf4; /* Мягкий пастельный фон */
-    color: #15803d; /* Приглушенный зеленый текст */
-    padding: 3px 8px;
-    border-radius: 6px;
-    font-size: 0.68rem;
-    font-weight: 700;
-    display: inline-block;
-    border: 1px solid #dcfce7;
+  @media (max-width: 340px) {
+    .widgetContainer { transform: scale(0.9) !important; transform-origin: bottom right !important; margin-right: 0 !important; }
   }
   
