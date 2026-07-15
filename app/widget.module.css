@@ -753,3 +753,119 @@
     }
   }
   
+
+
+
+  /* ==========================================================================
+   МОДНЫЙ И СТИЛЬНЫЙ ДАШБОРД-ЛОГ (В СТИЛЕ VERCEL / LINEAR)
+   ========================================================================== */
+
+.reportSection {
+    width: 100%;
+    max-width: 510px;
+    margin-top: 14px;
+    background-color: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px; /* Более мягкие, современные скругления углов */
+    padding: 12px;
+    box-sizing: border-box;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.03), 0 4px 6px -4px rgba(0, 0, 0, 0.03);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  }
+  
+  .reportHeader h3 {
+    margin: 0;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #0f172a;
+    text-transform: uppercase;
+    letter-spacing: 0.05em; /* Современный разреженный трекинг */
+  }
+  
+  .tableWrapper {
+    max-height: 240px;
+    overflow-y: auto;
+    border: 1px solid #f1f5f9;
+    border-radius: 8px;
+    background-color: #ffffff;
+  }
+  
+  /* Стилизация скроллбара под Mac-стиль, чтобы не портил дизайн */
+  .tableWrapper::-webkit-scrollbar { width: 5px; }
+  .tableWrapper::-webkit-scrollbar-track { background: transparent; }
+  .tableWrapper::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+  
+  .reportTable {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.72rem;
+  }
+  
+  /* Современная минималистичная шапка */
+  .reportTable th {
+    background-color: rgba(248, 250, 252, 0.95);
+    backdrop-filter: blur(4px); /* Эффект размытия при скролле */
+    color: #64748b;
+    font-weight: 600;
+    padding: 10px 12px;
+    font-size: 0.55rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    border-bottom: 1px solid #e2e8f0;
+  }
+  
+  /* Модные плоские строки с мягким переходом */
+  .reportTable td {
+    padding: 10px 12px;
+    border-bottom: 1px solid #f1f5f9 !important; /* Очень бледная, стильная полоса */
+    color: #334155;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace !important;
+    font-weight: 500;
+    height: 38px;
+    box-sizing: border-box;
+  }
+  
+  /* Подсветка строки при наведении в стиле современных приложений */
+  .reportTable tbody tr {
+    transition: background-color 0.15s ease;
+  }
+  .reportTable tbody tr:hover {
+    background-color: #f8fafc; 
+  }
+  
+  /* СТИЛЬНЫЕ ТЕГИ ДЛЯ ДАННЫХ (вместо голого текста) */
+  
+  /* Столбец TIME DONE: делаем как бэйдж */
+  .reportTable td:nth-child(1) {
+    color: #0f172a;
+    font-weight: 600;
+  }
+  
+  /* Столбец DURATION (секундомер): мягкий сине-серый акцент */
+  .reportTable td:nth-child(2) {
+    color: #475569;
+  }
+  
+  /* Столбец PLAN: приглушенный серый */
+  .reportTable td:nth-child(3) {
+    color: #94a3b8;
+  }
+  
+  /* Столбец ФАКТ: превращаем в красивый зеленый индикатор */
+  .factCell {
+    text-align: right; /* Прижимаем к правому краю для красоты */
+  }
+  .factCell strong {
+    background-color: #f0fdf4; /* Мягкий пастельный фон */
+    color: #15803d; /* Приглушенный зеленый текст */
+    padding: 3px 8px;
+    border-radius: 6px;
+    font-size: 0.68rem;
+    font-weight: 700;
+    display: inline-block;
+    border: 1px solid #dcfce7;
+  }
+  

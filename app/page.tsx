@@ -801,12 +801,12 @@ export default function PomodoroWidget() {
           </div>
           <div className={styles.tableWrapper}>
             <table className={styles.reportTable}>
-              <thead>
+            <thead>
                 <tr>
-                  <th># Fact</th>
                   <th>Time Done</th>
                   <th>Duration (Stopwatch)</th>
                   <th>Current Plan</th>
+                  <th style={{ textAlign: "right", paddingRight: "16px" }}># Fact</th> {/* <-- ИСПРАВЛЕНО ТУТ */}
                 </tr>
               </thead>
               <tbody>
