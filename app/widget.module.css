@@ -437,26 +437,88 @@
      ОБНОВЛЕННАЯ АДАПТАЦИЯ (ИСПРАВЛЯЕТ НАЕЗДЫ И СЕТКУ В 1065px)
      ========================================================================== */
   
-  @media (max-width: 1100px) and (min-width: 601px) {
+  /* ==========================================================================
+   ИСПРАВЛЕННАЯ СТУПЕНЬ 2: ДЛЯ ЭКРАНОВ ОТ 601px ДО 1100px (ВКЛЮЧАЯ 923px)
+   ========================================================================== */
+@media (max-width: 1100px) and (min-width: 601px) {
     .widgetContainer {
-      max-width: 100% !important;
-      width: max-content !important;
-      height: 76px !important;
+      max-width: 510px !important; /* Ограничиваем ширину, чтобы блоки разбились на 2 ровных этажа */
+      width: 510px !important;
+      height: auto !important; /* Убираем фиксированную высоту, чтобы вместить два этажа */
       display: flex !important;
       flex-direction: row !important;
-      flex-wrap: nowrap !important; 
-      padding: 0 !important;
-      background-color: #ffffff !important;
-      border: none !important;
-      overflow: hidden !important;
-      gap: 4px !important;
+      flex-wrap: wrap !important; /* РАЗРЕШАЕМ перенос, чтобы ничего не обрезалось за экраном */
+      padding: 6px !important;
+      background-color: #f1f5f9 !important; /* Легкий фон-подложка для красивой структуры */
+      border: 1px solid #cbd5e1 !important;
+      margin-left: auto !important; 
+      margin-right: 0 !important; 
+      align-items: stretch !important;
+      overflow: visible !important; /* Гарантируем, что ни один пиксель не будет скрыт */
+      gap: 6px !important;
     }
-    .concaveBlock { height: 100% !important; padding: 0 6px !important; flex: none !important; }
-    .blockStats { flex: 1 1 auto !important; min-width: 120px !important; }
-    .shadowBtn { padding: 0 6px !important; font-size: 0.6rem !important; }
-    .adjBtnWide { font-size: 0.58rem !important; }
-    .dDoneBtn { width: 52px !important; font-size: 0.75rem !important; }
+  
+    .concaveBlock {
+      height: 76px !important; /* Каждый отдельный блок внутри сохраняет свою стандартную высоту */
+      box-sizing: border-box !important;
+      padding: 0 8px !important;       
+      flex: none !important;        
+    }
+  
+    /* ИДЕАЛЬНОЕ РАСПРЕДЕЛЕНИЕ МЕСТА НА 2 ЭТАЖАХ */
+    
+    /* ЭТАЖ 1 (ВЕРХНИЙ): Блок управления (кнопки Старт, Стоп, Лог) и Конфигурация */
+    .widgetContainer > .concaveBlock:nth-child(3) {
+      order: 1 !important;
+      width: calc(45% - 3px) !important; /* Занимает чуть меньше половины верхнего ряда */
+    }
+    .widgetContainer > .concaveBlock:nth-child(1) {
+      order: 2 !important;
+      width: calc(55% - 3px) !important; /* Занимает оставшуюся часть верхнего ряда */
+    }
+  
+    /* ЭТАЖ 2 (НИЖНИЙ): Статистика (План/Факт) и Таймеры с кнопкой DONE */
+    .widgetContainer > .concaveBlock:nth-child(2) {
+      order: 3 !important;
+      width: calc(35% - 3px) !important; /* Компактно встает снизу слева */
+    }
+    
+    .widgetContainer > .concaveBlock:nth-child(4) {
+      order: 4 !important;
+      width: calc(65% - 3px) !important; /* Таймеры и DONE на всю оставшуюся ширину */
+      flex: 0 0 calc(65% - 3px) !important;
+      padding-top: 4px !important;
+      padding-bottom: 4px !important;
+      height: 84px !important; /* Чуть увеличиваем высоту под полосы прогресса */
+    }
+  
+    /* Оптимизация внутренних кнопок */
+    .toggleContainer { height: 24px !important; min-width: 94px !important; }
+    .radioLabel { font-size: 0.75rem !important; width: 45px !important; }
+    .slider { width: 45px !important; height: calc(100% - 4px) !important; }
+    .gridRow { height: 22px !important; }
+    
+    .shadowBtn { 
+      height: 22px !important; 
+      font-size: 0.65rem !important; 
+      padding: 0 8px !important;
+    }
+    
+    .blockControls .controlAndAdjustColumn {
+      gap: 6px !important; 
+      height: 100% !important;
+      justify-content: center !important;
+    }
+    
+    /* Кнопка DONE растягивается во всю высоту блока без сдвигов */
+    .dDoneBtn { 
+      margin-right: 0 !important; 
+      height: calc(100% + 8px) !important; 
+      margin-top: -4px !important; 
+      width: 60px !important;
+    }
   }
+  
   
   @media (max-width: 600px) {
     .widgetContainer > .concaveBlock:nth-child(2) { display: none !important; }
