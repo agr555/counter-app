@@ -12,7 +12,6 @@ type DoneLogItem = {
   planPcs: number; // План на момент нажатия
 };
 
-const [showReport, setShowReport] = useState<boolean>(false);
 
 const formatTime = (seconds: number) => {
   const minutes = Math.floor(seconds / 60);
@@ -84,6 +83,8 @@ export default function PomodoroWidget() {
   );
 
   const [doneLogs, setDoneLogs] = useState<DoneLogItem[]>([]);
+  const [showReport, setShowReport] = useState<boolean>(false);
+
 
   // Загрузка данных из памяти браузера при старте страницы (Защищенная версия)
   useEffect(() => {
