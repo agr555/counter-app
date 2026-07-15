@@ -63,11 +63,11 @@
     border: 1px solid #cbd5e1;
     border-radius: 4px;
     color: #1e293b;
-    font-size: 0.85rem;
+    font-size: 0.72rem !important; /* Делаем шрифт аккуратным и мелким */
     font-weight: 700;
     font-family: monospace;
-    width: 62px;
-    height: 24px;
+    width: 44px !important; /* Сужаем поле, так как цифры там небольшие */
+    height: 20px; /* Делаем поле чуть ниже и аккуратнее */
     text-align: center;
     outline: none;
   }
@@ -78,17 +78,18 @@
     background-color: #f1f5f9;
     border: 1px dashed #cbd5e1;
     border-radius: 4px;
-    font-size: 0.85rem;
+    font-size: 0.72rem !important; /* Шрифт такой же, как в Rate */
     font-weight: 700;
     color: #94a3b8;
     font-family: monospace;
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 24px;
-    width: 55px;
+    height: 20px; /* Высота совпадает с инпутом Rate */
+    width: 48px; /* Делаем блок компактным */
     box-sizing: border-box;
     cursor: not-allowed;
+    gap: 1px;
   }
   
   .toggleContainer {
@@ -220,18 +221,47 @@
   .paceBlack { color: #0f172a; } 
   .paceRed { color: #dc2626; font-weight: 900; } 
   
+/* Расширяем сам блок статистики */
+.blockStats {
+    flex: 1 !important; /* Позволяет блоку занять все доступное свободное пространство */
+    min-width: 140px; /* Увеличиваем минимальную ширину */
+    padding: 0 10px !important;
+  }
+  
+  /* Настраиваем контейнер строк */
   .compactStatsBox {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    min-width: 105px;
+    width: 100% !important; /* Растягиваем коробку на всю ширину блока */
     height: 100%;
-    line-height: 1.1;
+    line-height: 1.2;
+    gap: 1px;
+  }
+  /* Выравниваем строки «по линейке» от левого до правого края */
+.progressRow { 
+    display: flex; 
+    justify-content: space-between; /* Название слева, цифры строго справа */
+    align-items: center;
+    width: 100% !important; 
   }
   
-  .progressRow { display: flex; justify-content: space-between; width: 100%; }
-  .rowLabel { font-size: 0.58rem; font-weight: 700; color: #94a3b8; text-transform: uppercase; }
-  .rowValue { font-size: 0.65rem; font-weight: 700; color: #334155; font-family: monospace; }
+  /* Шрифт для названий (Plan:, Fact:) */
+  .rowLabel { 
+    font-size: 0.58rem; 
+    font-weight: 700; 
+    color: #64748b; 
+    text-transform: uppercase; 
+  }
+  
+  /* Шрифт для значений — теперь он идеально совпадает по размеру с Rate! */
+  .rowValue { 
+    font-size: 0.72rem !important; /* Одинаковый размер шрифта во всем виджете */
+    font-weight: 700; 
+    color: #1e293b; 
+    font-family: monospace; 
+  }
+
   .textGreen { color: #16a34a !important; }
   .textRed { color: #dc2626 !important; }
   
@@ -509,9 +539,41 @@
       height: 84px !important; 
     }
   
-    .toggleContainer { height: 24px !important; min-width: 94px !important; }
-    .radioLabel { font-size: 0.75rem !important; width: 45px !important; }
-    .slider { width: 45px !important; height: calc(100% - 4px) !important; }
+.toggleContainer {
+  display: flex;
+  align-items: center;
+  position: relative;
+  background-color: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 4px;
+  height: 20px; /* Высота теперь тоже 20px, как у Rate и Target */
+  min-width: 94px;
+  box-sizing: border-box;
+}
+
+.radioLabel {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 45px;
+  height: 100%;
+  font-size: 0.68rem; /* Чуть уменьшаем шрифт для компактности */
+  font-weight: 700;
+  color: #64748b;
+  cursor: pointer;
+  z-index: 2;
+}
+
+.slider {
+  position: absolute;
+  top: 1px; left: 2px;
+  height: calc(100% - 2px);
+  width: 45px;
+  background-color: #0f766e;
+  border-radius: 3px;
+  z-index: 1;
+}
+
     .radioInput[value="9h40m"]:checked ~ .slider { transform: translateX(45px) !important; }
     .gridRow { height: 22px !important; }
     .shadowBtn { height: 22px !important; font-size: 0.65rem !important; }
