@@ -5,6 +5,40 @@ import styles from "./widget.module.css";
 
 type ShiftType = "8h" | "9h40m";
 
+type DoneLogItem = {
+  timestamp: string;      // Время нажатия (например, 14:23:05)
+  duration: string;       // Длительность изготовления (значение секундомера)
+  factCount: number;      // Номер детали (Факт)
+  planPcs: number;        // План на момент нажатия
+};
+
+
+const formatTime = (seconds: number) => {
+  const minutes = Math.floor(seconds / 60);
+  const secs = seconds % 60;
+  return `${minutes.toString().padStart(2, "0")}:${secs
+    .toString()
+    .padStart(2, "0")}`;
+};
+
+const formatAccumulatedTime = (totalSecs: number) => {
+  const absoluteSecs = Math.abs(totalSecs);
+  const hrs = Math.floor(absoluteSecs / 3600);
+  const mins = Math.floor((absoluteSecs % 3600) / 60);
+  const secs = absoluteSecs % 60;
+
+  if (hrs > 0) return `${hrs}h ${mins}m`;
+  return `${mins}m ${secs}s`;
+};
+
+const formatTimeNoSeconds = (totalSecs: number) => {
+  const absoluteSecs = Math.abs(totalSecs);
+  const hrs = Math.floor(absoluteSecs / 3600);
+  const mins = Math.floor((absoluteSecs % 3600) / 60);
+  if (hrs > 0) return `${hrs}h ${mins}m`;
+  return `${mins}m`;
+};
+
 export default function PomodoroWidget() {
   // Настройки пользователя и счетчики
   const [coefficient, setCoefficient] = useState<number>(21);
@@ -48,51 +82,64 @@ export default function PomodoroWidget() {
     coefficient * (currentShiftMinutes / 60)
   );
 
-  // Загрузка данных из памяти браузера при старте страницы (Защищенная версия)
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const savedCoefficient = localStorage.getItem("p_coefficient");
-      const savedShift = localStorage.getItem("p_shift") as ShiftType;
-      const savedProcessedCount = localStorage.getItem("p_processedCount");
-      const savedRealSeconds = localStorage.getItem("p_totalRealSeconds");
-      const savedElapsed = localStorage.getItem("p_shiftElapsedSeconds");
-      const savedSound = localStorage.getItem("p_isSoundEnabled");
+  const [doneLogs, setDoneLogs] = useState<DoneLogItem[]>([]);
 
-      if (savedCoefficient) {
-        setCoefficient(parseInt(savedCoefficient, 10));
-        setLockedCoefficient(parseInt(savedCoefficient, 10));
+    // Загрузка данных из памяти браузера при старте страницы (Защищенная версия)
+    useEffect(() => {
+      if (typeof window !== "undefined") {
+        const savedCoefficient = localStorage.getItem("p_coefficient");
+        const savedShift = localStorage.getItem("p_shift") as ShiftType;
+        const savedProcessedCount = localStorage.getItem("p_processedCount");
+        const savedRealSeconds = localStorage.getItem("p_totalRealSeconds");
+        const savedElapsed = localStorage.getItem("p_shiftElapsedSeconds");
+        const savedSound = localStorage.getItem("p_isSoundEnabled");
+  
+        if (savedCoefficient) {
+          setCoefficient(parseInt(savedCoefficient, 10));
+          setLockedCoefficient(parseInt(savedCoefficient, 10));
+        }
+        if (savedShift) {
+          setShift(savedShift);
+          setLockedShift(savedShift);
+        }
+  
+        if (savedProcessedCount) {
+          setProcessedCount(parseInt(savedProcessedCount, 10));
+        } else {
+          setProcessedCount(0);
+        }
+  
+        if (savedRealSeconds) {
+          setTotalRealSeconds(parseInt(savedRealSeconds, 10));
+        } else {
+          setTotalRealSeconds(0);
+        }
+  
+        if (savedElapsed) {
+          setShiftAdjustmentSeconds(parseInt(savedElapsed, 10));
+        } else {
+          setShiftAdjustmentSeconds(0);
+        }
+  
+        if (savedSound) {
+          setIsSoundEnabled(savedSound === "true");
+        } else {
+          setIsSoundEnabled(true);
+        }
+  
+        // НАЧАЛО ВСТАВКИ: Загрузка логов истории DONE
+        const savedLogs = localStorage.getItem('p_doneLogs');
+        if (savedLogs) {
+          try {
+            setDoneLogs(JSON.parse(savedLogs));
+          } catch (e) {
+            console.error("Error parsing logs:", e);
+          }
+        }
+        // КОНЕЦ ВСТАВКИ
       }
-      if (savedShift) {
-        setShift(savedShift);
-        setLockedShift(savedShift);
-      }
-
-      if (savedProcessedCount) {
-        setProcessedCount(parseInt(savedProcessedCount, 10));
-      } else {
-        setProcessedCount(0);
-      }
-
-      if (savedRealSeconds) {
-        setTotalRealSeconds(parseInt(savedRealSeconds, 10));
-      } else {
-        setTotalRealSeconds(0);
-      }
-
-      if (savedElapsed) {
-        setShiftAdjustmentSeconds(parseInt(savedElapsed, 10));
-      } else {
-        setShiftAdjustmentSeconds(0);
-      }
-
-      if (savedSound) {
-        setIsSoundEnabled(savedSound === "true");
-      } else {
-        setIsSoundEnabled(true);
-      }
-    }
-  }, []);
-
+    }, []);
+  
   // Синхронизация замороженных параметров, пока кнопка СТАРТ не нажата
   useEffect(() => {
     if (!isRunning && timeLeft === totalTimerSeconds) {
@@ -158,6 +205,8 @@ export default function PomodoroWidget() {
     return () => clearInterval(interval);
   }, [isRunning, totalTimerSeconds, isSoundEnabled]);
 
+
+  
   const playQuietPeep = () => {
     if (typeof window === "undefined") return;
     try {
@@ -182,12 +231,79 @@ export default function PomodoroWidget() {
     }
   };
 
+
+  const exactCurrentPlanPcs =
+    totalTimerSeconds > 0 ? shiftElapsedSeconds / totalTimerSeconds : 0;
+  const planPercent =
+    lockedTarget > 0
+      ? Math.round((exactCurrentPlanPcs / lockedTarget) * 100)
+      : 0;
+  const planPcsRounded = Math.round(exactCurrentPlanPcs);
+
+  const factPercent =
+    lockedTarget > 0 ? Math.round((processedCount / lockedTarget) * 100) : 0;
+
+  const diffPercent = factPercent - planPercent;
+  const diffPcs = processedCount - planPcsRounded;
+
+  const pcsLeft = Math.max(0, lockedTarget - processedCount);
+  const avgRealTimeSeconds =
+    processedCount > 0 ? Math.round(totalRealSeconds / processedCount) : 0;
+
+  const maxDiffThreshold = 5;
+  const barWidthPercent =
+    exactCurrentPlanPcs > 0
+      ? Math.min(100, Math.round((Math.abs(diffPcs) / maxDiffThreshold) * 100))
+      : 0;
+
+  const paceRatio = totalTimerSeconds > 0 ? timeLeft / totalTimerSeconds : 1;
+  let paceColorClass = styles.paceGreen;
+
+  if (paceRatio <= 0.5 && paceRatio > 0.2) {
+    paceColorClass = styles.paceBlack;
+  } else if (paceRatio <= 0.2) {
+    paceColorClass = styles.paceRed;
+  }
+
+  const paceBarWidth = Math.round((1 - paceRatio) * 100);
+
+  const isSettingsDisabled = timeLeft !== totalTimerSeconds || isRunning;
+  const isDoneDisabled = !isRunning && processedCount === 0;
+/////////////////////
+
   const handleRealItemDone = useCallback(() => {
-    setProcessedCount((prev) => prev + 1);
+    const nextProcessedCount = processedCount + 1;
+    
+    // 1. Прибавляем значения к основным счетчикам
+    setProcessedCount(nextProcessedCount);
     setTotalRealSeconds((prev) => prev + stopwatchSeconds);
+
+    // 2. ФОРМИРУЕМ НОВУЮ СТРОКУ ДЛЯ ОТЧЕТА
+    const now = new Date();
+    const hrs = now.getHours().toString().padStart(2, "0");
+    const mins = now.getMinutes().toString().padStart(2, "0");
+    const secs = now.getSeconds().toString().padStart(2, "0");
+    const timestampStr = `${hrs}:${mins}:${secs}`; // Время нажатия кнопки
+
+    const newLogItem: DoneLogItem = {
+      timestamp: timestampStr,
+      duration: formatTime(stopwatchSeconds), // Длительность изготовления по секундомеру
+      factCount: nextProcessedCount,          // Номер выполненной детали (Факт)
+      planPcs: planPcsRounded,                // Текущий округленный план в штуках
+    };
+
+    // 3. Сохраняем в стейт и пушим массив в localStorage
+    setDoneLogs((prev) => {
+      const updatedLogs = [...prev, newLogItem];
+      localStorage.setItem("p_doneLogs", JSON.stringify(updatedLogs));
+      return updatedLogs;
+    });
+
+    // 4. Сбрасываем секундомер и таймер темпа детали на исходную позицию
     setStopwatchSeconds(0);
     setTimeLeft(totalTimerSeconds);
-  }, [stopwatchSeconds, totalTimerSeconds]);
+  }, [stopwatchSeconds, totalTimerSeconds, processedCount, planPcsRounded, formatTime]);
+
 
   useEffect(() => {
     const handleGlobalKey = (e: KeyboardEvent) => {
@@ -205,31 +321,6 @@ export default function PomodoroWidget() {
     return () => window.removeEventListener("keydown", handleGlobalKey);
   }, [isRunning, handleRealItemDone]);
 
-  const formatTime = (seconds: number) => {
-    const minutes = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-    return `${minutes.toString().padStart(2, "0")}:${secs
-      .toString()
-      .padStart(2, "0")}`;
-  };
-
-  const formatAccumulatedTime = (totalSecs: number) => {
-    const absoluteSecs = Math.abs(totalSecs);
-    const hrs = Math.floor(absoluteSecs / 3600);
-    const mins = Math.floor((absoluteSecs % 3600) / 60);
-    const secs = absoluteSecs % 60;
-
-    if (hrs > 0) return `${hrs}h ${mins}m`;
-    return `${mins}m ${secs}s`;
-  };
-
-  const formatTimeNoSeconds = (totalSecs: number) => {
-    const absoluteSecs = Math.abs(totalSecs);
-    const hrs = Math.floor(absoluteSecs / 3600);
-    const mins = Math.floor((absoluteSecs % 3600) / 60);
-    if (hrs > 0) return `${hrs}h ${mins}m`;
-    return `${mins}m`;
-  };
 
 
   const handleGlobalReset = () => {
@@ -247,6 +338,9 @@ export default function PomodoroWidget() {
       localStorage.removeItem("p_processedCount");
       localStorage.removeItem("p_totalRealSeconds");
       localStorage.removeItem("p_shiftElapsedSeconds");
+      setDoneLogs([]); // <-- ДОБАВИТЬ СЮДА ДЛЯ ОЧИСТКИ СТЕЙТА СТРОК
+      localStorage.removeItem("p_doneLogs"); // <-- ДОБАВИТЬ ДЛЯ ОЧИСТКИ ИЗ ПАМЯТИ БРАУЗЕРА
+
     } else {
       setIsRunning(wasActive);
     }
@@ -300,44 +394,6 @@ export default function PomodoroWidget() {
 
 
 
-
-  const exactCurrentPlanPcs =
-    totalTimerSeconds > 0 ? shiftElapsedSeconds / totalTimerSeconds : 0;
-  const planPercent =
-    lockedTarget > 0
-      ? Math.round((exactCurrentPlanPcs / lockedTarget) * 100)
-      : 0;
-  const planPcsRounded = Math.round(exactCurrentPlanPcs);
-
-  const factPercent =
-    lockedTarget > 0 ? Math.round((processedCount / lockedTarget) * 100) : 0;
-
-  const diffPercent = factPercent - planPercent;
-  const diffPcs = processedCount - planPcsRounded;
-
-  const pcsLeft = Math.max(0, lockedTarget - processedCount);
-  const avgRealTimeSeconds =
-    processedCount > 0 ? Math.round(totalRealSeconds / processedCount) : 0;
-
-  const maxDiffThreshold = 5;
-  const barWidthPercent =
-    exactCurrentPlanPcs > 0
-      ? Math.min(100, Math.round((Math.abs(diffPcs) / maxDiffThreshold) * 100))
-      : 0;
-
-  const paceRatio = totalTimerSeconds > 0 ? timeLeft / totalTimerSeconds : 1;
-  let paceColorClass = styles.paceGreen;
-
-  if (paceRatio <= 0.5 && paceRatio > 0.2) {
-    paceColorClass = styles.paceBlack;
-  } else if (paceRatio <= 0.2) {
-    paceColorClass = styles.paceRed;
-  }
-
-  const paceBarWidth = Math.round((1 - paceRatio) * 100);
-
-  const isSettingsDisabled = timeLeft !== totalTimerSeconds || isRunning;
-  const isDoneDisabled = !isRunning && processedCount === 0;
 
   const handleStartToggle = () => {
     if (!isRunning && timeLeft === totalTimerSeconds) {
