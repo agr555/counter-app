@@ -6,11 +6,12 @@ import styles from "./widget.module.css";
 type ShiftType = "8h" | "9h40m";
 
 type DoneLogItem = {
-  timestamp: string; // Время нажатия (например, 14:23:05)
-  duration: string; // Длительность изготовления (значение секундомера)
-  factCount: number; // Номер детали (Факт)
-  planPcs: number; // План на момент нажатия
+  timestamp: string;      // Текущее время нажатия DONE (например, 18:45:02)
+  duration: string;       // Время выполнения ПОСЛЕДНЕЙ детали (из секундомера)
+  planPcs: number;        // План на момент нажатия
+  factCount: number;      // Номер выполненной детали (Факт)
 };
+
 
 
 const formatTime = (seconds: number) => {
@@ -272,42 +273,36 @@ export default function PomodoroWidget() {
 
   const handleRealItemDone = useCallback(() => {
     const nextProcessedCount = processedCount + 1;
-
-    // 1. Прибавляем значения к основным счетчикам
-    setProcessedCount(nextProcessedCount);
-    setTotalRealSeconds((prev) => prev + stopwatchSeconds);
-
-    // 2. ФОРМИРУЕМ НОВУЮ СТРОКУ ДЛЯ ОТЧЕТА
+    
+    // Формируем точное время нажатия кнопки DONE (Текущее время)
     const now = new Date();
     const hrs = now.getHours().toString().padStart(2, "0");
     const mins = now.getMinutes().toString().padStart(2, "0");
     const secs = now.getSeconds().toString().padStart(2, "0");
-    const timestampStr = `${hrs}:${mins}:${secs}`; // Время нажатия кнопки
+    const timestampStr = `${hrs}:${mins}:${secs}`;
 
+    // Создаем строку отчета (Передаем точное время из stopwatchSeconds)
     const newLogItem: DoneLogItem = {
       timestamp: timestampStr,
-      duration: formatTime(stopwatchSeconds), // Длительность изготовления по секундомеру
-      factCount: nextProcessedCount, // Номер выполненной детали (Факт)
-      planPcs: planPcsRounded, // Текущий округленный план в штуках
+      duration: formatTime(stopwatchSeconds), // Время выполнения ПОСЛЕДНЕЙ детали!
+      planPcs: planPcsRounded,
+      factCount: nextProcessedCount,
     };
 
-    // 3. Сохраняем в стейт и пушим массив в localStorage
+    // Обновляем стейт и пушим массив в localStorage
     setDoneLogs((prev) => {
       const updatedLogs = [...prev, newLogItem];
       localStorage.setItem("p_doneLogs", JSON.stringify(updatedLogs));
       return updatedLogs;
     });
 
-    // 4. Сбрасываем секундомер и таймер темпа детали на исходную позицию
+    // Только после записи лога обновляем основные счетчики и сбрасываем секундомер
+    setProcessedCount(nextProcessedCount);
+    setTotalRealSeconds((prev) => prev + stopwatchSeconds);
     setStopwatchSeconds(0);
     setTimeLeft(totalTimerSeconds);
-  }, [
-    stopwatchSeconds,
-    totalTimerSeconds,
-    processedCount,
-    planPcsRounded,
-    formatTime,
-  ]);
+  }, [stopwatchSeconds, totalTimerSeconds, processedCount, planPcsRounded]);
+
 
   useEffect(() => {
     const handleGlobalKey = (e: KeyboardEvent) => {
@@ -801,34 +796,43 @@ export default function PomodoroWidget() {
           </div>
           <div className={styles.tableWrapper}>
             <table className={styles.reportTable}>
-            <thead>
+              <thead>
                 <tr>
                   <th>Time Done</th>
-                  <th>Duration (Stopwatch)</th>
+                  <th>Last Unit Duration</th>
                   <th>Current Plan</th>
-                  <th style={{ textAlign: "right", paddingRight: "16px" }}># Fact</th> {/* <-- ИСПРАВЛЕНО ТУТ */}
+                  <th style={{ textAlign: "right", paddingRight: "16px" }}># Fact</th>
                 </tr>
               </thead>
               <tbody>
-                {doneLogs.length === 0 ? (
+              {doneLogs.length === 0 ? (
                   <tr>
-                    <td colSpan={4} style={{ textAlign: "center", color: "#94a3b8", padding: "12px" }}>
+                    <td colSpan={4} style={{ textAlign: "center", color: "#94a3b8", padding: "16px", fontStyle: "italic" }}>
                       No items processed yet.
                     </td>
                   </tr>
                 ) : (
                   doneLogs.map((item, index) => (
                     <tr key={index}>
-                      <td><strong>{item.factCount} pcs</strong></td>
+                      {/* 1. Время, когда был нажат DONE для этой строки */}
                       <td>{item.timestamp}</td>
+                      
+                      {/* 2. Сколько секунд/минут выполнялась ПОСЛЕДНЯЯ деталь */}
                       <td>{item.duration}</td>
+                      
+                      {/* 3. Текущий план на момент клика */}
                       <td>{item.planPcs} pcs</td>
+                      
+                      {/* 4. Номер выполненной детали (Факт) */}
+                      <td className={styles.factCell}><strong>{item.factCount} pcs</strong></td>
                     </tr>
                   ))
                 )}
+
               </tbody>
             </table>
           </div>
+
         </div>
       )}
     </div> // Конец layoutWrapper
