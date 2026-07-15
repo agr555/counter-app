@@ -520,23 +520,188 @@
   }
   
   
-  @media (max-width: 600px) {
-    .widgetContainer > .concaveBlock:nth-child(2) { display: none !important; }
-    .widgetContainer { display: grid !important; grid-template-columns: 145px 1fr !important; grid-template-rows: auto auto !important; max-width: 340px !important; width: 340px !important; height: auto !important; gap: 5px !important; padding: 5px !important; background-color: #f1f5f9 !important; border: 1px solid #cbd5e1 !important; margin-right: 0 !important; margin-left: auto !important; overflow: visible !important; }
-    .concaveBlock { box-sizing: border-box !important; height: 76px !important; }
-    .widgetContainer > .concaveBlock:nth-child(3) { grid-column: 1 !important; grid-row: 1 !important; width: 145px !important; padding: 0 6px !important; display: flex !important; flex-direction: column !important; justify-content: center !important; }
-    .widgetContainer > .concaveBlock:nth-child(3) .controlAndAdjustColumn { gap: 4px !important; width: 100% !important; }
-    .widgetContainer > .concaveBlock:nth-child(3) .gridRow { height: 22px !important; width: 100% !important; }
-    .widgetContainer > .concaveBlock:nth-child(3) .gridRowFullWidth { height: auto !important; width: 100% !important; }
-    .widgetContainer > .concaveBlock:nth-child(1) { grid-column: 2 !important; grid-row: 1 !important; width: 100% !important; padding: 4px 6px !important; }
-    .widgetContainer > .concaveBlock:nth-child(1) .configGrid { display: grid !important; grid-template-columns: 1fr 1fr !important; grid-template-rows: auto auto !important; row-gap: 3px !important; column-gap: 4px !important; align-items: center !important; justify-items: center !important; width: 100% !important; height: 100% !important; }
-    .widgetContainer > .concaveBlock:nth-child(1) .cfgRate { grid-column: 1 !important; grid-row: 1 !important; }
-    .widgetContainer > .concaveBlock:nth-child(1) .cfgTime { grid-column: 2 !important; grid-row: 1 !important; }
-    .cfgTarget { grid-column: span 2 !important; grid-row: 2 !important; display: flex !important; flex-direction: row !important; gap: 6px !important; justify-content: center !important; align-items: center !important; width: 100% !important; height: 24px !important; }
-    .cfgTarget .fieldLabel { margin: 0 !important; display: inline-block !important; }
-    .widgetContainer > .concaveBlock:nth-child(4) { grid-column: span 2 !important; grid-row: 2 !important; width: 100% !important; padding-top: 4px !important; padding-bottom: 4px !important; padding-right: 0 !important; height: 80px !important; }
-    .widgetContainer > .concaveBlock:nth-child(4) .dDoneBtn { margin-right: 0 !important; width: 65px !important; padding: 0 10px !important; height: calc(100% + 8px) !important; margin-top: -4px !important; border-top-right-radius: 6px !important; border-bottom-right-radius: 6px !important; }
-    .reportSection { max-width: 340px !important; width: 340px !important; margin-left: auto !important; margin-right: 0 !important; }
+  /* СТУПЕНЬ 3: МОБИЛЬНЫЙ ВИД (Экран меньше 600px, включая 500px+) 
+   Полная пересборка сетки на Grid для устранения наездов элементов */
+@media (max-width: 600px) {
+  
+    /* Блок разницы (второй по счету) на мобильных скрываем для экономии ширины */
+    .widgetContainer > .concaveBlock:nth-child(2) {
+      display: none !important;
+    }
+  
+    .widgetContainer {
+      display: grid !important;
+      /* Разделяем виджет ровно на две колонки по горизонтали */
+      grid-template-columns: 170px 1fr !important; 
+      grid-template-rows: auto auto !important;   
+      max-width: 360px !important;    
+      width: 360px !important;
+      height: auto !important; 
+      gap: 6px !important;
+      padding: 6px !important;
+      background-color: #f1f5f9 !important; 
+      border: 1px solid #cbd5e1 !important;
+      margin-right: 0 !important; 
+      margin-left: auto !important;
+      overflow: visible !important;
+      box-sizing: border-box !important;
+    }
+  
+    .concaveBlock {
+      box-sizing: border-box !important;
+      height: auto !important; /* Убираем жесткую высоту, даем элементам встать ровно */
+      padding: 6px !important;
+    }
+  
+    /* ==========================================
+       ЛЕВАЯ КОЛОНКА: БЛОК УПРАВЛЕНИЯ И КОРРЕКТИРОВОК
+       ========================================== */
+    .widgetContainer > .concaveBlock:nth-child(3) {
+      grid-column: 1 !important;
+      grid-row: 1 / span 2 !important; /* Растягиваем блок кнопок на всю высоту (оба этажа) */
+      width: 100% !important; 
+      display: flex !important;
+      flex-direction: column !important;
+      justify-content: flex-start !important;
+      gap: 6px !important;
+    }
+  
+    .controlAndAdjustColumn {
+      width: 100% !important;
+      display: flex !important;
+      flex-direction: column !important;
+      gap: 6px !important;
+    }
+  
+    /* Верхний ряд главных кнопок управления */
+    .gridRow {
+      display: flex !important;
+      width: 100% !important;
+      gap: 4px !important;
+      height: 24px !important;
+    }
+    .gridRow .shadowBtn {
+      flex: 1 !important; /* Кнопки START, LOG, STOP теперь делят место поровну и не сминаются */
+      height: 100% !important;
+      font-size: 0.6rem !important;
+      padding: 0 !important;
+    }
+  
+    /* Ряды корректировок (-1, -10 и минуты) */
+    .gridRowFullWidth {
+      display: flex !important;
+      width: 100% !important;
+      gap: 3px !important;
+      height: 20px !important;
+    }
+    .adjBtnWide, .currentTimeBadge {
+      height: 20px !important;
+      font-size: 0.6rem !important;
+    }
+  
+    /* ==========================================
+       ПРАВАЯ КОЛОНКА: ЭТАЖ 1 (КОНФИГУРАЦИЯ)
+       ========================================== */
+    .widgetContainer > .concaveBlock:nth-child(1) {
+      grid-column: 2 !important;
+      grid-row: 1 !important;
+      width: 100% !important; 
+    }
+  
+    /* Перестраиваем инпуты в аккуратную сетку внутри правого верхнего блока */
+    .configGrid {
+      display: grid !important;
+      grid-template-columns: auto 1fr !important; 
+      grid-template-rows: auto auto !important;   
+      row-gap: 6px !important;
+      column-gap: 6px !important; 
+      align-items: center !important;
+      width: 100% !important;
+      height: auto !important;
+      padding: 0 !important;
+    }
+  
+    .cfgRate { grid-column: 1 !important; grid-row: 1 !important; }
+    .cfgTime { grid-column: 2 !important; grid-row: 1 !important; }
+    
+    /* Строка Target ложится ровно на второй ряд конфигурации */
+    .cfgTarget {
+      grid-column: span 2 !important; 
+      grid-row: 2 !important;
+      display: flex !important;       
+      flex-direction: row !important; 
+      gap: 6px !important;            
+      justify-content: center !important;
+      align-items: center !important;
+      width: 100% !important;
+      height: 20px !important;       
+    }
+    .cfgTarget .fieldLabel { margin: 0 !important; }
+  
+    /* ==========================================
+       ПРАВАЯ КОЛОНКА: ЭТАЖ 2 (ТАЙМЕРЫ И БОЛЬШАЯ DONE)
+       ========================================== */
+    .widgetContainer > .concaveBlock:nth-child(4) {
+      grid-column: 2 !important; 
+      grid-row: 2 !important;
+      width: 100% !important;
+      height: auto !important; 
+      padding: 6px !important;
+      display: flex !important;
+      flex-direction: column !important;
+      align-items: stretch !important;
+      gap: 4px !important;
+    }
+  
+    /* Перестраиваем внутренние счетчики LEFT/AVG и таймеры */
+    .widgetContainer > .concaveBlock:nth-child(4) > div:first-child {
+      display: flex !important;
+      flex-direction: row !important;
+      flex-wrap: wrap !important;
+      gap: 4px !important;
+      align-items: center !important;
+      justify-content: space-between !important;
+      width: 100% !important;
+    }
+  
+    /* Компактный блок LEFT/AVG */
+    .compactStatsBox {
+      min-width: 65px !important;
+      gap: 0px !important;
+    }
+    .compactStatsBox .rowLabel { font-size: 0.5rem !important; }
+    .compactStatsBox .rowValue { font-size: 0.6rem !important; }
+  
+    /* Счётчик выполненных деталей */
+    .widgetContainer > .concaveBlock:nth-child(4) .fieldGroup {
+      display: flex !important;
+      flex-direction: column !important;
+      align-items: center !important;
+    }
+  
+    /* Плитки STOPWATCH и PACE ложатся друг под друга, освобождая ширину */
+    .stopwatchDisplay, .timeDisplay {
+      display: flex !important;
+      flex-direction: column !important;
+      align-items: center !important;
+      min-width: 42px !important;
+    }
+  
+    /* Большая кнопка DONE встает аккуратно в правый край */
+    .widgetContainer > .concaveBlock:nth-child(4) .dDoneBtn {
+      width: 52px !important;
+      height: 34px !important; /* Удобный мобильный размер под палец */
+      font-size: 0.75rem !important;
+      margin: 0 !important;
+      border-radius: 4px !important;
+    }
+  
+    /* Нижние полосы прогресса растягиваются на всю ширину правого блока */
+    .extendedPaceTrack, .bottomProgressBarTrack {
+      width: 100% !important;
+      margin: 2px 0 0 0 !important;
+      height: 9px !important;
+    }
   }
   
   @media (max-width: 340px) {
