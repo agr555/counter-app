@@ -191,7 +191,7 @@
    2. СТРОГИЙ СТИЛЬ КНОПОК И ЦВЕТОВ (ВСЕГО 2 ЦВЕТА С ОТСТУПАМИ)
    ========================================================================== */
 
-/* Базовый шаблон формы для ВСЕХ кнопок на странице */
+/* Базовый шаблон для ВСЕХ кнопок на странице */
 .shadowBtn, .adjBtnWide, .dDoneBtn {
     border: none;
     font-weight: 700;
@@ -200,7 +200,7 @@
     align-items: center;
     justify-content: center;
     text-align: center;
-    border-radius: 6px; /* Строго одинаковое скругление углов */
+    border-radius: 6px; /* Строго одинаковое скругление углов для всех */
     box-sizing: border-box;
     transition: background-color 0.15s ease, transform 0.1s ease, box-shadow 0.15s ease;
   }
@@ -209,85 +209,52 @@
     transform: scale(0.96);
   }
   
-  /* СТИЛЬ 1: Фирменный изумрудный (Действие, Старт, Добавление, Лог) */
+  /* ЦВЕТ 1: Фирменный тёмно-бирюзовый (Действие, Старт, Добавление, Лог) */
   .btnStart, .btnReport, .adjBtnWide {
-    background-color: #0f766e;
-    color: #ffffff;
+    background-color: #0f766e !important;
+    color: #ffffff !important;
   }
   .btnStart:hover, .btnReport:hover, .adjBtnWide:hover {
-    background-color: #115e59;
+    background-color: #115e59 !important;
   }
   
-  /* СТИЛЬ 2: Спокойный Slate/Серый (Пауза, Звук, Сброс) */
+  /* ЦВЕТ 2: Спокойный Серый/Slate (Пауза, Звук, Сброс) */
   .btnPause, .btnReset, .btnSoundOn, .btnSoundOff, .btnReportActive {
-    background-color: #475569;
-    color: #ffffff;
+    background-color: #475569 !important;
+    color: #ffffff !important;
   }
   .btnPause:hover, .btnReset:hover, .btnSoundOn:hover, .btnSoundOff:hover {
-    background-color: #334155;
+    background-color: #334155 !important;
   }
   
-  /* Индивидуальные микро-настройки для десктопных рядов */
   .shadowBtn {
     height: 22px;
     padding: 0 10px;
     font-size: 0.65rem;
   }
   
-  .btnSoundOn { background-color: #334155 !important; border: 1px solid #475569 !important; }
-  .btnSoundOff { background-color: #64748b !important; }
-  .btnReportActive { background-color: #1e293b !important; box-shadow: inset 0 2px 4px rgba(0,0,0,0.2) !important; }
-  
-  /* Кнопки ручных корректировок деталей и времени */
-  .adjBtnWide {
-    flex: 1;
-    height: 20px !important;
-    font-size: 0.62rem !important;
-    font-family: monospace !important;
-  }
-  
-  .currentTimeBadge {
-    background-color: #f8fafc;
-    border: 1px solid #cbd5e1;
-    color: #0f766e; 
-    min-width: 45px;
-    height: 20px !important;
-    padding: 0 3px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: monospace !important;
-    font-size: 0.62rem !important;
-    font-weight: 700 !important;
-    border-radius: 6px;
-  }
-  
-  /* ИДЕАЛЬНАЯ, СИММЕТРИЧНАЯ КНОПКА DONE С БОЛЬШИМИ ОТСТУПАМИ */
+  /* Кнопка DONE (По умолчанию в тон основным кнопкам, с большими симметричными отступами) */
   .dDoneBtn {
-    height: 48px; /* Значительно увеличили высоту */
-    padding: 0 24px; /* Огромные, симметричные отступы от краев до текста */
-    font-size: 0.9rem;
+    width: auto;
+    min-width: 65px;
+    height: calc(100% - 4px); 
+    padding: 0 16px !important; /* Большие ровные отступы от краев до текста */
+    background-color: #0f766e !important; 
+    color: #ffffff !important;
+    font-size: 0.85rem;
     font-weight: 900;
-    letter-spacing: 0.05em;
-    background-color: #0f766e; /* По умолчанию в одном стиле с остальными */
-    color: #ffffff;
-    box-shadow: 0 4px 10px rgba(15, 118, 110, 0.2);
-    margin-top: 0 !important; /* Убираем старые кривые десктопные сдвиги */
+    margin-top: 2px;
+    box-shadow: 0 4px 6px -1px rgba(15, 118, 110, 0.25);
   }
   .dDoneBtn:hover:not(:disabled) {
-    background-color: #115e59;
-  }
-  .dDoneBtn:disabled {
-    background-color: #cbd5e1;
-    color: #94a3b8;
-    cursor: not-allowed;
-    box-shadow: none;
+    background-color: #115e59 !important;
   }
   
-  /* Исключение: Состояние просрочки — кнопка монолитно краснеет и пульсирует */
+  /* КРИТИЧЕСКИЙ КЛАСС ПРОСРОЧКИ: Включается, когда время вышло, а кнопка не нажата */
   .dDoneOverdue {
-    background-color: #dc2626 !important;
-    box-shadow: 0 0 15px rgba(220, 38, 38, 0.6) !important;
+    background-color: #dc2626 !important; /* Монолитно краснеет */
+    color: #ffffff !important;
+    box-shadow: 0 0 14px rgba(220, 38, 38, 0.6) !important;
     animation: pulseOverdue 1.4s infinite ease-in-out;
   }
   .dDoneOverdue:hover {
@@ -296,9 +263,10 @@
   
   @keyframes pulseOverdue {
     0% { transform: scale(1); }
-    50% { transform: scale(1.03); box-shadow: 0 0 20px rgba(220, 38, 38, 0.8) !important; }
+    50% { transform: scale(1.03); box-shadow: 0 0 18px rgba(220, 38, 38, 0.8) !important; }
     100% { transform: scale(1); }
   }
+  
   
   /* ==========================================================================
      3. ИНФОРМАЦИОННЫЕ ПАНЕЛИ И ИНДИКАТОРЫ
@@ -377,8 +345,12 @@
   .bgPaceBlack { background-color: #0f172a; }
   .bgPaceRed   { background-color: #dc2626; }
   
-  .bottomProgressBarFill { height: 100%; background-color: #0f766e; transition: width 0.3s ease-out; border-radius: 4px; }
-  
+  .bottomProgressBarFill { 
+    height: 100%; 
+    background-color: #2563eb !important; /* Приятный синий цвет прогресса смены */
+    transition: width 0.3s ease-out; 
+    border-radius: 4px; 
+  }
   /* ТАБЛИЦА ЛОГОВ */
   .reportSection {
     width: 100%;
