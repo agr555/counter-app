@@ -1,6 +1,5 @@
-
 /* ==========================================================================
-   1. ОБЩИЙ СТИЛЬ СТРАНИЦЫ И БЛОКОВ (МОНОЛИТНЫЙ ДИЗАЙН)
+   1. БАЗОВЫЕ СТИЛИ ДЛЯ БОЛЬШИХ ЭКРАНОВ (ОРИГИНАЛЬНАЯ ГЕОМЕТРИЯ)
    ========================================================================== */
 
    .layoutWrapper {
@@ -23,27 +22,26 @@
     border-radius: 8px;
     width: max-content; 
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    height: 76px; 
+    height: 76px; /* Фиксированная высота под две нижние полосы прогресса */
     overflow: hidden;
     gap: 6px;
     padding: 0;
-    box-shadow: 0 4px 20px rgba(15, 118, 110, 0.08); /* Мягкая фирменная тень */
   }
   
-  /* Все блоки теперь строго в одном стиле */
   .concaveBlock {
     display: flex;
     align-items: center;
     gap: 8px;
     height: 100%;
-    padding: 0 10px;
+    padding: 0 8px;
     background: #f8fafc;
     border: 1px solid #e2e8f0;
     border-radius: 6px;
+    box-shadow: inset 0 2px 4px rgba(148, 163, 184, 0.06); 
     box-sizing: border-box;
   }
   
-  .fieldGroup, .fieldGroupTarget {
+  .fieldGroup {
     display: flex;
     flex-direction: column;
     align-items: center; 
@@ -76,6 +74,14 @@
   .inputNumberWide:focus { border-color: #0f766e; }
   .inputNumberWide:disabled { opacity: 0.6; cursor: not-allowed; background-color: #f1f5f9; }
   
+  .fieldGroupTarget {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start !important;
+    gap: 2px;
+  }
+  
   .targetDisplayDisabled {
     background-color: #f1f5f9;
     border: 1px dashed #cbd5e1;
@@ -100,7 +106,6 @@
     font-weight: 600;
     font-family: sans-serif;
   }
-  
   .toggleContainer {
     display: flex;
     align-items: center;
@@ -152,6 +157,7 @@
     margin-top: 5px; 
     text-transform: uppercase;
     letter-spacing: 0.02em;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     line-height: 1 !important; 
     height: 10px; 
   }
@@ -187,122 +193,77 @@
     width: 100%;
     height: auto;
   }
-  /* ==========================================================================
-   2. СТРОГИЙ СТИЛЬ КНОПОК И ЦВЕТОВ (ВСЕГО 2 ЦВЕТА С ОТСТУПАМИ)
-   ========================================================================== */
-
-/* Базовый шаблон формы для ВСЕХ кнопок на странице */
-.shadowBtn, .adjBtnWide, .dDoneBtn {
+  
+  .shadowBtn {
+    height: 22px;
+    padding: 0 10px;
     border: none;
-    font-weight: 700;
+    border-radius: 4px;
+    font-size: 0.65rem;
+    font-weight: 800;
+    cursor: pointer;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1), inset 0 -1px 0 rgba(0, 0, 0, 0.12);
+    transition: transform 0.1s, box-shadow 0.1s;
+  }
+  .shadowBtn:active { transform: translateY(1px); box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08); }
+  
+  .btnStart { background-color: #16a34a; }
+  .btnStart:hover { background-color: #15803d; }
+  .btnPause { background-color: #ca8a04; }
+  .btnPause:hover { background-color: #a16207; }
+  .btnReset { background-color: #dc2626; }
+  .btnReset:hover { background-color: #b91c1c; }
+  
+  .btnSoundOn { background-color: #f0fdf4 !important; border: 1px solid #bbf7d0 !important; }
+  .btnSoundOff { background-color: #f1f5f9 !important; border: 1px solid #cbd5e1 !important; }
+  
+  .btnReport { background-color: #0284c7 !important; }
+  .btnReport:hover { background-color: #0369a1 !important; }
+  
+  .btnReportActive {
+    background-color: #bae6fd !important;
+    color: #0369a1 !important;
+    border: 1px solid #7dd3fc !important;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15) !important;
+  }
+  
+  .adjBtnWide, .currentTimeBadge {
+    font-family: monospace !important;
+    font-size: 0.62rem !important;
+    font-weight: 700 !important;
+    height: 20px !important; 
+    box-sizing: border-box !important;
+  }
+  
+  .adjBtnWide {
+    flex: 1;
+    background-color: #ffffff; 
+    border: 1px solid #cbd5e1; 
+    color: #475569;
+    border-radius: 3px; 
+    padding: 0; 
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    text-align: center;
-    border-radius: 6px; /* Строго одинаковое скругление углов */
-    box-sizing: border-box;
-    transition: background-color 0.15s ease, transform 0.1s ease, box-shadow 0.15s ease;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
   }
-  
-  .shadowBtn:active, .adjBtnWide:active, .dDoneBtn:active:not(:disabled) {
-    transform: scale(0.96);
-  }
-  
-  /* СТИЛЬ 1: Фирменный изумрудный (Действие, Старт, Добавление, Лог) */
-  .btnStart, .btnReport, .adjBtnWide {
-    background-color: #0f766e;
-    color: #ffffff;
-  }
-  .btnStart:hover, .btnReport:hover, .adjBtnWide:hover {
-    background-color: #115e59;
-  }
-  
-  /* СТИЛЬ 2: Спокойный Slate/Серый (Пауза, Звук, Сброс) */
-  .btnPause, .btnReset, .btnSoundOn, .btnSoundOff, .btnReportActive {
-    background-color: #475569;
-    color: #ffffff;
-  }
-  .btnPause:hover, .btnReset:hover, .btnSoundOn:hover, .btnSoundOff:hover {
-    background-color: #334155;
-  }
-  
-  /* Индивидуальные микро-настройки для десктопных рядов */
-  .shadowBtn {
-    height: 22px;
-    padding: 0 10px;
-    font-size: 0.65rem;
-  }
-  
-  .btnSoundOn { background-color: #334155 !important; border: 1px solid #475569 !important; }
-  .btnSoundOff { background-color: #64748b !important; }
-  .btnReportActive { background-color: #1e293b !important; box-shadow: inset 0 2px 4px rgba(0,0,0,0.2) !important; }
-  
-  /* Кнопки ручных корректировок деталей и времени */
-  .adjBtnWide {
-    flex: 1;
-    height: 20px !important;
-    font-size: 0.62rem !important;
-    font-family: monospace !important;
-  }
+  .adjBtnWide:hover { background-color: #f1f5f9; }
   
   .currentTimeBadge {
     background-color: #f8fafc;
     border: 1px solid #cbd5e1;
     color: #0f766e; 
     min-width: 45px;
-    height: 20px !important;
     padding: 0 3px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-family: monospace !important;
-    font-size: 0.62rem !important;
-    font-weight: 700 !important;
-    border-radius: 6px;
   }
-  
-  /* ИДЕАЛЬНАЯ, СИММЕТРИЧНАЯ КНОПКА DONE С БОЛЬШИМИ ОТСТУПАМИ */
-  .dDoneBtn {
-    height: 48px; /* Значительно увеличили высоту */
-    padding: 0 24px; /* Огромные, симметричные отступы от краев до текста */
-    font-size: 0.9rem;
-    font-weight: 900;
-    letter-spacing: 0.05em;
-    background-color: #0f766e; /* По умолчанию в одном стиле с остальными */
-    color: #ffffff;
-    box-shadow: 0 4px 10px rgba(15, 118, 110, 0.2);
-    margin-top: 0 !important; /* Убираем старые кривые десктопные сдвиги */
-  }
-  .dDoneBtn:hover:not(:disabled) {
-    background-color: #115e59;
-  }
-  .dDoneBtn:disabled {
-    background-color: #cbd5e1;
-    color: #94a3b8;
-    cursor: not-allowed;
-    box-shadow: none;
-  }
-  
-  /* Исключение: Состояние просрочки — кнопка монолитно краснеет и пульсирует */
-  .dDoneOverdue {
-    background-color: #dc2626 !important;
-    box-shadow: 0 0 15px rgba(220, 38, 38, 0.6) !important;
-    animation: pulseOverdue 1.4s infinite ease-in-out;
-  }
-  .dDoneOverdue:hover {
-    background-color: #b91c1c !important;
-  }
-  
-  @keyframes pulseOverdue {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.03); box-shadow: 0 0 20px rgba(220, 38, 38, 0.8) !important; }
-    100% { transform: scale(1); }
-  }
-  
-  /* ==========================================================================
-     3. ИНФОРМАЦИОННЫЕ ПАНЕЛИ И ИНДИКАТОРЫ
-     ========================================================================== */
   
   .timeDisplay, .stopwatchDisplay {
     display: flex;
@@ -315,14 +276,29 @@
   
   .timeLabel, .stopwatchLabel { font-size: 0.45rem; font-weight: 700; color: #94a3b8; line-height: 1; }
   .timeNumbers, .stopwatchNumbers { font-size: 0.85rem; font-weight: 700; font-family: monospace; line-height: 1.1; margin-top: 1px; }
+  
   .stopwatchNumbers { color: #3b82f6; }
   
   .paceGreen { color: #16a34a; }
   .paceBlack { color: #0f172a; } 
   .paceRed { color: #dc2626; font-weight: 900; } 
   
-  .blockStats { flex: 1 !important; min-width: 140px; padding: 0 10px !important; }
-  .compactStatsBox { display: flex; flex-direction: column; justify-content: center; width: 100% !important; height: 100%; line-height: 1.2; gap: 1px; }
+  .blockStats {
+    flex: 1 !important; 
+    min-width: 140px; 
+    padding: 0 10px !important;
+  }
+  
+  .compactStatsBox {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 100% !important; 
+    height: 100%;
+    line-height: 1.2;
+    gap: 1px;
+  }
+  
   .progressRow { display: flex; justify-content: space-between; align-items: center; width: 100% !important; }
   .rowLabel { font-size: 0.58rem; font-weight: 700; color: #64748b; text-transform: uppercase; }
   .rowValue { font-size: 0.72rem !important; font-weight: 700; color: #1e293b; font-family: monospace; }
@@ -335,21 +311,40 @@
   .bgBarRed { background-color: #dc2626; }
   
   .countDisplayOnly {
-    color: #0f766e;
+    color: #16a34a;
     font-size: 0.85rem;
     font-weight: 700;
     font-family: monospace;
     text-align: center;
-    border: 1px solid #0f766e;
-    border-radius: 6px;
+    border: 1px solid #14b8a6;
+    border-radius: 4px;
     height: 24px;
     width: 36px;
     display: flex;
     align-items: center;
     justify-content: center;
   }
+  .dDoneBtn {
+    width: 60px;
+    height: calc(100% - 4px); 
+    background-color: #0f766e;
+    border: none;
+    color: #ffffff;
+    font-size: 0.85rem;
+    font-weight: 900;
+    cursor: pointer;
+    margin-top: 2px;
+    border-top-right-radius: 6px;
+    border-bottom-right-radius: 6px;
+    border-top-left-radius: 4px; 
+    border-bottom-left-radius: 4px;
+    box-shadow: 0 4px 6px -1px rgba(15, 118, 110, 0.25), 0 2px 4px -1px rgba(0, 0, 0, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.2); 
+    transition: background-color 0.1s ease, transform 0.05s ease, box-shadow 0.1s ease;
+  }
+  .dDoneBtn:hover { background-color: #115e59; box-shadow: 0 6px 8px -1px rgba(15, 118, 110, 0.3), 0 3px 6px -1px rgba(0, 0, 0, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.2); }
+  .dDoneBtn:active { background-color: #134e4a; transform: translateY(0.5px); box-shadow: 0 2px 4px -1px rgba(15, 118, 110, 0.2), 0 1px 2px -1px rgba(0, 0, 0, 0.1), inset 0 1px 2px rgba(0, 0, 0, 0.2); }
   
-  .extendedPaceTrack, .bottomProgressBarTrack {
+  .extendedPaceTrack {
     width: calc(100% - 12px);
     height: 10px;
     background-color: #e2e8f0;
@@ -359,7 +354,7 @@
     box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.08);
   }
   .extendedPaceFill { height: 100%; transition: width 1s linear, background-color 0.2s ease; border-radius: 4px; }
-  .extendedPaceText, .bottomProgressBarText {
+  .extendedPaceText {
     position: absolute;
     inset: 0;
     display: flex;
@@ -372,14 +367,37 @@
     letter-spacing: 0.02em;
     mix-blend-mode: difference;
   }
-  
   .bgPaceGreen { background-color: #16a34a; }
   .bgPaceBlack { background-color: #0f172a; }
   .bgPaceRed   { background-color: #dc2626; }
   
-  .bottomProgressBarFill { height: 100%; background-color: #0f766e; transition: width 0.3s ease-out; border-radius: 4px; }
+  .bottomProgressBarTrack {
+    width: calc(100% - 12px);
+    height: 10px; 
+    background-color: #e2e8f0;
+    border-radius: 4px; 
+    position: relative;
+    overflow: hidden;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.08); 
+  }
+  .bottomProgressBarFill { height: 100%; background-color: #2563eb; transition: width 0.3s ease-out; border-radius: 4px; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15); }
+  .bottomProgressBarText {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.52rem; 
+    font-weight: 800;
+    color: #1e293b;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    mix-blend-mode: difference; 
+  }
   
-  /* ТАБЛИЦА ЛОГОВ */
+  .configGrid { display: flex; align-items: flex-start !important; gap: 6px; width: 100%; height: 100%; padding-top: 4px; box-sizing: border-box; }
+  
+  /* ДАШБОРД-ЛОГ ОТЧЕТА */
   .reportSection {
     width: 100%;
     max-width: 510px;
@@ -389,251 +407,304 @@
     border-radius: 12px;
     padding: 12px;
     box-sizing: border-box;
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.03);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.03), 0 4px 6px -4px rgba(0, 0, 0, 0.03);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   }
   .reportHeader { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; padding-bottom: 6px; border-bottom: 1px solid #f1f5f9; }
   .reportHeader h3 { margin: 0; font-size: 0.75rem; font-weight: 700; color: #0f172a; text-transform: uppercase; letter-spacing: 0.05em; }
-  .clearLogBtn { background-color: #fff1f2; border: 1px solid #ffe4e6; color: #e11d48; font-size: 0.6rem; font-weight: 700; padding: 2px 8px; border-radius: 4px; cursor: pointer; text-transform: uppercase; }
+  .clearLogBtn { background-color: #fff1f2; border: 1px solid #ffe4e6; color: #e11d48; font-size: 0.6rem; font-weight: 700; padding: 2px 8px; border-radius: 4px; cursor: pointer; text-transform: uppercase; transition: all 0.1s ease; }
   .clearLogBtn:hover { background-color: #ffe4e6; color: #be123c; }
   
-  .tableWrapper { max-height: 240px; overflow-y: auto; border: 1px solid #f1f5f9; border-radius: 8px; }
+  .tableWrapper { max-height: 240px; overflow-y: auto; border: 1px solid #f1f5f9; border-radius: 8px; background-color: #ffffff; }
   .tableWrapper::-webkit-scrollbar { width: 5px; }
+  .tableWrapper::-webkit-scrollbar-track { background: transparent; }
   .tableWrapper::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
   
   .reportTable { width: 100%; border-collapse: collapse; font-size: 0.72rem; }
-  .reportTable th { background-color: rgba(248, 250, 252, 0.95); backdrop-filter: blur(4px); color: #64748b; font-weight: 600; padding: 6px 12px; font-size: 0.52rem; text-transform: uppercase; position: sticky; top: 0; z-index: 1; border-bottom: 1px solid #e2e8f0; }
-  .reportTable td { padding: 3px 12px !important; border-bottom: 1px solid #f1f5f9 !important; color: #334155; font-family: monospace !important; font-weight: 500; height: 22px !important; font-size: 0.68rem !important; }
+  .reportTable th { background-color: rgba(248, 250, 252, 0.95); backdrop-filter: blur(4px); color: #64748b; font-weight: 600; padding: 6px 12px; font-size: 0.52rem; text-transform: uppercase; letter-spacing: 0.05em; position: sticky; top: 0; z-index: 1; border-bottom: 1px solid #e2e8f0; }
+  .reportTable td { padding: 3px 12px !important; border-bottom: 1px solid #f1f5f9 !important; color: #334155; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace !important; font-weight: 500; height: 22px !important; font-size: 0.68rem !important; box-sizing: border-box; }
+  .reportTable tbody tr { transition: background-color 0.15s ease; }
   .reportTable tbody tr:hover { background-color: #f8fafc; }
   .reportTable td:nth-child(1) { color: #0f172a; font-weight: 600; }
+  .reportTable td:nth-child(2) { color: #475569; }
+  .reportTable td:nth-child(3) { color: #94a3b8; }
   .factCell { text-align: right; }
-  .factCell strong { background-color: #f0fdf4; color: #15803d; padding: 0px 6px !important; border-radius: 4px; font-size: 0.62rem; font-weight: 700; display: inline-block; border: 1px solid #dcfce7; }
+  .factCell strong { background-color: #f0fdf4; color: #15803d; padding: 0px 6px !important; border-radius: 4px; font-size: 0.62rem; font-weight: 700; line-block: inline-block; border: 1px solid #dcfce7; line-height: 1.4; }
   
   .blockControls { height: auto !important; padding-top: 4px !important; padding-bottom: 4px !important; }
   
   /* ==========================================================================
-   4. СТУПЕНИ АДАПТИВНОСТИ БЕЗ УЖАТИЙ И ДЕФОРМАЦИЙ СЛОВА
+     ОБНОВЛЕННАЯ АДАПТАЦИЯ (ИСПРАВЛЯЕТ НАЕЗДЫ И СЕТКУ В 1065px)
+     ========================================================================== */
+  
+  /* ==========================================================================
+   ИСПРАВЛЕННАЯ СТУПЕНЬ 2: ДЛЯ ЭКРАНОВ ОТ 601px ДО 1100px (ВКЛЮЧАЯ 923px)
    ========================================================================== */
-
-/* СРЕДНИЕ ЭКРАНЫ (ОТ 601px ДО 1100px) */
 @media (max-width: 1100px) and (min-width: 601px) {
     .widgetContainer {
-      max-width: 510px !important; 
+      max-width: 510px !important; /* Ограничиваем ширину, чтобы блоки разбились на 2 ровных этажа */
       width: 510px !important;
-      height: auto !important; 
+      height: auto !important; /* Убираем фиксированную высоту, чтобы вместить два этажа */
       display: flex !important;
       flex-direction: row !important;
-      flex-wrap: wrap !important; 
+      flex-wrap: wrap !important; /* РАЗРЕШАЕМ перенос, чтобы ничего не обрезалось за экраном */
       padding: 6px !important;
-      background-color: #f1f5f9 !important; 
+      background-color: #f1f5f9 !important; /* Легкий фон-подложка для красивой структуры */
       border: 1px solid #cbd5e1 !important;
       margin-left: auto !important; 
       margin-right: 0 !important; 
       align-items: stretch !important;
+      overflow: visible !important; /* Гарантируем, что ни один пиксель не будет скрыт */
       gap: 6px !important;
     }
   
-    .concaveBlock { height: 76px !important; flex: none !important; }
+    .concaveBlock {
+      height: 76px !important; /* Каждый отдельный блок внутри сохраняет свою стандартную высоту */
+      box-sizing: border-box !important;
+      padding: 0 8px !important;       
+      flex: none !important;        
+    }
   
-    .widgetContainer > .concaveBlock:nth-child(3) { order: 1 !important; width: calc(45% - 3px) !important; }
-    .widgetContainer > .concaveBlock:nth-child(1) { order: 2 !important; width: calc(55% - 3px) !important; }
+    /* ИДЕАЛЬНОЕ РАСПРЕДЕЛЕНИЕ МЕСТА НА 2 ЭТАЖАХ */
     
-      /* ЭТАЖ 2 (НИЖНИЙ): Статистика (План/Факт) и Таймеры с кнопкой DONE */
-  .widgetContainer > .concaveBlock:nth-child(2) {
-    order: 3 !important;
-    width: calc(35% - 3px) !important; 
+    /* ЭТАЖ 1 (ВЕРХНИЙ): Блок управления (кнопки Старт, Стоп, Лог) и Конфигурация */
+    .widgetContainer > .concaveBlock:nth-child(3) {
+      order: 1 !important;
+      width: calc(45% - 3px) !important; /* Занимает чуть меньше половины верхнего ряда */
+    }
+    .widgetContainer > .concaveBlock:nth-child(1) {
+      order: 2 !important;
+      width: calc(55% - 3px) !important; /* Занимает оставшуюся часть верхнего ряда */
+    }
+  
+    /* ЭТАЖ 2 (НИЖНИЙ): Статистика (План/Факт) и Таймеры с кнопкой DONE */
+    .widgetContainer > .concaveBlock:nth-child(2) {
+      order: 3 !important;
+      width: calc(35% - 3px) !important; /* Компактно встает снизу слева */
+    }
+    
+    .widgetContainer > .concaveBlock:nth-child(4) {
+      order: 4 !important;
+      width: calc(65% - 3px) !important; /* Таймеры и DONE на всю оставшуюся ширину */
+      flex: 0 0 calc(65% - 3px) !important;
+      padding-top: 4px !important;
+      padding-bottom: 4px !important;
+      height: 84px !important; /* Чуть увеличиваем высоту под полосы прогресса */
+    }
+  
+    /* Оптимизация внутренних кнопок */
+    .toggleContainer { height: 24px !important; min-width: 94px !important; }
+    .radioLabel { font-size: 0.75rem !important; width: 45px !important; }
+    .slider { width: 45px !important; height: calc(100% - 4px) !important; }
+    .gridRow { height: 22px !important; }
+    
+    .shadowBtn { 
+      height: 22px !important; 
+      font-size: 0.65rem !important; 
+      padding: 0 8px !important;
+    }
+    
+    .blockControls .controlAndAdjustColumn {
+      gap: 6px !important; 
+      height: 100% !important;
+      justify-content: center !important;
+    }
+    
+    /* Кнопка DONE растягивается во всю высоту блока без сдвигов */
+    .dDoneBtn { 
+      margin-right: 0 !important; 
+      height: calc(100% + 8px) !important; 
+      margin-top: -4px !important; 
+      width: 60px !important;
+    }
   }
   
-  .widgetContainer > .concaveBlock:nth-child(4) {
-    order: 4 !important;
-    width: calc(65% - 3px) !important; 
-    flex: 0 0 calc(65% - 3px) !important;
-    padding-top: 4px !important;
-    padding-bottom: 4px !important;
-    height: 84px !important; 
-  }
-
-  /* Оптимизация внутренних кнопок */
-  .toggleContainer { height: 24px !important; min-width: 94px !important; }
-  .radioLabel { font-size: 0.75rem !important; width: 45px !important; }
-  .slider { width: 45px !important; height: calc(100% - 4px) !important; }
-  .gridRow { height: 22px !important; }
   
-  .shadowBtn { 
-    height: 22px !important; 
-    font-size: 0.65rem !important; 
-    padding: 0 8px !important;
-  }
-  
-  .blockControls .controlAndAdjustColumn {
-    gap: 6px !important; 
-    height: 100% !important;
-    justify-content: center !important;
-  }
-  
-  .dDoneBtn { 
-    margin-right: 0 !important; 
-    height: calc(100% + 8px) !important; 
-    margin-top: -4px !important; 
-    width: 60px !important;
-  }
-} /* <--- ЗАКРЫВАЕМ СТУПЕНЬ 2 */
-
-
-/* СТУПЕНЬ 3: МОБИЛЬНЫЙ ВИД (Экран меньше 600px) */
+  /* СТУПЕНЬ 3: МОБИЛЬНЫЙ ВИД (Экран меньше 600px, включая 500px+) 
+   Полная пересборка сетки на Grid для устранения наездов элементов */
 @media (max-width: 600px) {
-
-  /* Блок разницы на мобильных скрываем для экономии ширины */
-  .widgetContainer > .concaveBlock:nth-child(2) {
-    display: none !important;
-  }
-
-  .widgetContainer {
-    display: grid !important;
-    grid-template-columns: 165px 1fr !important; 
-    grid-template-rows: auto auto !important;   
-    max-width: 375px !important;    
-    width: 100% !important;
-    height: auto !important; 
-    gap: 6px !important;
-    padding: 8px !important;
-    background-color: #f1f5f9 !important; 
-    border: 1px solid #cbd5e1 !important;
-    box-sizing: border-box !important;
-    border-radius: 8px !important;
-  }
-
-  .concaveBlock {
-    box-sizing: border-box !important;
-    height: auto !important; 
-    padding: 8px !important;
-    border-radius: 6px !important;
-  }
-
-  /* ЛЕВАЯ КОЛОНКА: БЛОК УПРАВЛЕНИЯ И КОРРЕКТИРОВОК */
-  .widgetContainer > .concaveBlock:nth-child(3) {
-    grid-column: 1 !important;
-    grid-row: 1 / span 2 !important; 
-    display: flex !important;
-    flex-direction: column !important;
-    gap: 6px !important;
-  }
-
-  .controlAndAdjustColumn {
-    width: 100% !important;
-    display: flex !important;
-    flex-direction: column !important;
-    gap: 6px !important;
-  }
-
-  .gridRow {
-    display: flex !important;
-    width: 100% !important;
-    gap: 4px !important;
-    height: 24px !important;
-  }
-  .gridRow .shadowBtn {
-    flex: 1 !important; 
-    height: 100% !important;
-    font-size: 0.65rem !important;
-    padding: 0 4px !important;
-  }
-
-  .gridRowFullWidth {
-    display: flex !important;
-    width: 100% !important;
-    gap: 4px !important;
-    height: 24px !important;
-  }
-  .adjBtnWide, .currentTimeBadge {
-    height: 24px !important;
-    font-size: 0.68rem !important;
-  }
-  .adjBtnWide {
-    padding: 0 4px !important;
-  }
-
-  /* ПРАВАЯ КОЛОНКА: ЭТАЖ 1 (КОНФИГУРАЦИЯ) */
-  .widgetContainer > .concaveBlock:nth-child(1) {
-    grid-column: 2 !important;
-    grid-row: 1 !important;
-    width: 100% !important; 
-  }
-
-  .configGrid {
-    display: grid !important;
-    grid-template-columns: auto 1fr !important; 
-    grid-template-rows: auto auto !important;   
-    row-gap: 6px !important;
-    column-gap: 6px !important; 
-    align-items: center !important;
-    width: 100% !important;
-    height: auto !important;
-    padding: 0 !important;
-  }
-
-  .cfgRate { grid-column: 1 !important; grid-row: 1 !important; }
-  .cfgTime { grid-column: 2 !important; grid-row: 1 !important; }
   
-  .cfgTarget {
-    grid-column: span 2 !important; 
-    grid-row: 2 !important;
-    display: flex !important;       
-    flex-direction: row !important; 
-    gap: 6px !important;            
-    justify-content: center !important;
-    align-items: center !important;
-    width: 100% !important;
-    height: 24px !important;       
+    /* Блок разницы (второй по счету) на мобильных скрываем для экономии ширины */
+    .widgetContainer > .concaveBlock:nth-child(2) {
+      display: none !important;
+    }
+  
+    .widgetContainer {
+      display: grid !important;
+      /* Разделяем виджет ровно на две колонки по горизонтали */
+      grid-template-columns: 170px 1fr !important; 
+      grid-template-rows: auto auto !important;   
+      max-width: 360px !important;    
+      width: 360px !important;
+      height: auto !important; 
+      gap: 6px !important;
+      padding: 6px !important;
+      background-color: #f1f5f9 !important; 
+      border: 1px solid #cbd5e1 !important;
+      margin-right: 0 !important; 
+      margin-left: auto !important;
+      overflow: visible !important;
+      box-sizing: border-box !important;
+    }
+  
+    .concaveBlock {
+      box-sizing: border-box !important;
+      height: auto !important; /* Убираем жесткую высоту, даем элементам встать ровно */
+      padding: 6px !important;
+    }
+  
+    /* ==========================================
+       ЛЕВАЯ КОЛОНКА: БЛОК УПРАВЛЕНИЯ И КОРРЕКТИРОВОК
+       ========================================== */
+    .widgetContainer > .concaveBlock:nth-child(3) {
+      grid-column: 1 !important;
+      grid-row: 1 / span 2 !important; /* Растягиваем блок кнопок на всю высоту (оба этажа) */
+      width: 100% !important; 
+      display: flex !important;
+      flex-direction: column !important;
+      justify-content: flex-start !important;
+      gap: 6px !important;
+    }
+  
+    .controlAndAdjustColumn {
+      width: 100% !important;
+      display: flex !important;
+      flex-direction: column !important;
+      gap: 6px !important;
+    }
+  
+    /* Верхний ряд главных кнопок управления */
+    .gridRow {
+      display: flex !important;
+      width: 100% !important;
+      gap: 4px !important;
+      height: 24px !important;
+    }
+    .gridRow .shadowBtn {
+      flex: 1 !important; /* Кнопки START, LOG, STOP теперь делят место поровну и не сминаются */
+      height: 100% !important;
+      font-size: 0.6rem !important;
+      padding: 0 !important;
+    }
+  
+    /* Ряды корректировок (-1, -10 и минуты) */
+    .gridRowFullWidth {
+      display: flex !important;
+      width: 100% !important;
+      gap: 3px !important;
+      height: 20px !important;
+    }
+    .adjBtnWide, .currentTimeBadge {
+      height: 20px !important;
+      font-size: 0.6rem !important;
+    }
+  
+    /* ==========================================
+       ПРАВАЯ КОЛОНКА: ЭТАЖ 1 (КОНФИГУРАЦИЯ)
+       ========================================== */
+    .widgetContainer > .concaveBlock:nth-child(1) {
+      grid-column: 2 !important;
+      grid-row: 1 !important;
+      width: 100% !important; 
+    }
+  
+    /* Перестраиваем инпуты в аккуратную сетку внутри правого верхнего блока */
+    .configGrid {
+      display: grid !important;
+      grid-template-columns: auto 1fr !important; 
+      grid-template-rows: auto auto !important;   
+      row-gap: 6px !important;
+      column-gap: 6px !important; 
+      align-items: center !important;
+      width: 100% !important;
+      height: auto !important;
+      padding: 0 !important;
+    }
+  
+    .cfgRate { grid-column: 1 !important; grid-row: 1 !important; }
+    .cfgTime { grid-column: 2 !important; grid-row: 1 !important; }
+    
+    /* Строка Target ложится ровно на второй ряд конфигурации */
+    .cfgTarget {
+      grid-column: span 2 !important; 
+      grid-row: 2 !important;
+      display: flex !important;       
+      flex-direction: row !important; 
+      gap: 6px !important;            
+      justify-content: center !important;
+      align-items: center !important;
+      width: 100% !important;
+      height: 20px !important;       
+    }
+    .cfgTarget .fieldLabel { margin: 0 !important; }
+  
+    /* ==========================================
+       ПРАВАЯ КОЛОНКА: ЭТАЖ 2 (ТАЙМЕРЫ И БОЛЬШАЯ DONE)
+       ========================================== */
+    .widgetContainer > .concaveBlock:nth-child(4) {
+      grid-column: 2 !important; 
+      grid-row: 2 !important;
+      width: 100% !important;
+      height: auto !important; 
+      padding: 6px !important;
+      display: flex !important;
+      flex-direction: column !important;
+      align-items: stretch !important;
+      gap: 4px !important;
+    }
+  
+    /* Перестраиваем внутренние счетчики LEFT/AVG и таймеры */
+    .widgetContainer > .concaveBlock:nth-child(4) > div:first-child {
+      display: flex !important;
+      flex-direction: row !important;
+      flex-wrap: wrap !important;
+      gap: 4px !important;
+      align-items: center !important;
+      justify-content: space-between !important;
+      width: 100% !important;
+    }
+  
+    /* Компактный блок LEFT/AVG */
+    .compactStatsBox {
+      min-width: 65px !important;
+      gap: 0px !important;
+    }
+    .compactStatsBox .rowLabel { font-size: 0.5rem !important; }
+    .compactStatsBox .rowValue { font-size: 0.6rem !important; }
+  
+    /* Счётчик выполненных деталей */
+    .widgetContainer > .concaveBlock:nth-child(4) .fieldGroup {
+      display: flex !important;
+      flex-direction: column !important;
+      align-items: center !important;
+    }
+  
+    /* Плитки STOPWATCH и PACE ложатся друг под друга, освобождая ширину */
+    .stopwatchDisplay, .timeDisplay {
+      display: flex !important;
+      flex-direction: column !important;
+      align-items: center !important;
+      min-width: 42px !important;
+    }
+  
+    /* Большая кнопка DONE встает аккуратно в правый край */
+    .widgetContainer > .concaveBlock:nth-child(4) .dDoneBtn {
+      width: 52px !important;
+      height: 34px !important; /* Удобный мобильный размер под палец */
+      font-size: 0.75rem !important;
+      margin: 0 !important;
+      border-radius: 4px !important;
+    }
+  
+    /* Нижние полосы прогресса растягиваются на всю ширину правого блока */
+    .extendedPaceTrack, .bottomProgressBarTrack {
+      width: 100% !important;
+      margin: 2px 0 0 0 !important;
+      height: 9px !important;
+    }
   }
-  .cfgTarget .fieldLabel { margin: 0 !important; }
-
-  /* ПРАВАЯ КОЛОНКА: ЭТАЖ 2 (ТАЙМЕРЫ И БОЛЬШАЯ DONE) */
-  .widgetContainer > .concaveBlock:nth-child(4) {
-    grid-column: 2 !important; 
-    grid-row: 2 !important;
-    width: 100% !important;
-    height: auto !important; 
-    padding: 8px !important;
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: stretch !important;
-    gap: 6px !important;
+  
+  @media (max-width: 340px) {
+    .widgetContainer { transform: scale(0.9) !important; transform-origin: bottom right !important; margin-right: 0 !important; }
   }
-
-  .widgetContainer > .concaveBlock:nth-child(4) > div:first-child {
-    display: flex !important;
-    flex-direction: row !important;
-    flex-wrap: wrap !important;
-    gap: 4px !important;
-    align-items: center !important;
-    justify-content: space-between !important;
-    width: 100% !important;
-  }
-
-  .compactStatsBox { min-width: 50px !important; }
-  .stopwatchDisplay, .timeDisplay { min-width: 38px !important; }
-
-  /* Кнопка DONE на мобильном с защитными отступами */
-  .widgetContainer > .concaveBlock:nth-child(4) .dDoneBtn {
-    width: 56px !important;
-    height: 38px !important; 
-    font-size: 0.75rem !important;
-    padding: 0 8px !important;
-    margin: 0 !important;
-    border-radius: 6px !important;
-  }
-
-  .extendedPaceTrack, .bottomProgressBarTrack {
-    width: 100% !important;
-    margin: 4px 0 0 0 !important;
-    height: 10px !important;
-  }
-} /* <--- ЗАКРЫВАЕМ СТУПЕНЬ 3 */
-
-/* ЭКСТРЕМАЛЬНО МАЛЕНЬКИЕ ЭКРАНЫ */
-@media (max-width: 340px) {
-  .widgetContainer { 
-    transform: scale(0.88) !important; 
-    transform-origin: bottom right !important; 
-  }
-}
+  
