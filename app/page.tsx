@@ -432,7 +432,7 @@ export default function PomodoroWidget() {
               />
             </div>
 
-//3
+
             <div className={`${styles.fieldGroup} ${styles.cfgTime}`}>
               <span className={styles.fieldLabel}>Time</span>
               <div
@@ -587,7 +587,7 @@ export default function PomodoroWidget() {
                 📋 LOG
               </button>
 
-//4
+
               <button
                 type="button"
                 onClick={handleGlobalReset}
@@ -767,8 +767,8 @@ export default function PomodoroWidget() {
             />
             <span className={styles.extendedPaceText}>Time Elapsed</span>
           </div>
-          
-//5
+
+
                    {/* СТРОКА ПРОГРЕССА СМЕНЫ */}
                    <div
             className={styles.bottomProgressBarTrack}
