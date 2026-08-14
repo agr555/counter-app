@@ -337,13 +337,16 @@
 /* ИДЕАЛЬНАЯ КНОПКА DONE С ОТСТУПАМИ ПО 35px */
 .dDoneBtn {
   width: auto !important;
-  height: 42px; 
-  padding: 0 35px !important; /* СТРОГО ПО 35px от краев до слова DONE */
-  font-size: 0.85rem;
-  font-weight: 900;
-  letter-spacing: 0.05em;
+  max-width: max-content !important; /* Запрещаем кнопке бесконтрольно расти */
+  height: 42px !important; 
+  padding: 0 35px !important; /* Ваши идеальные отступы по 35px */
+  font-size: 0.85rem !important;
+  font-weight: 900 !important;
+  letter-spacing: 0.05em !important;
   color: #ffffff !important;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1) !important;
+  flex: none !important; /* Запрещаем Flexbox растягивать кнопку */
+  white-space: nowrap !important; /* Текст DONE всегда строго в одну строчку */
 }
 
 /* Цвет 1: Зеленый (Вы укладываетесь в норму) */

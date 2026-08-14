@@ -1,17 +1,6 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
-//<link rel="manifest" href="/manifest.json" />
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
-
+// НАЗВАНИЕ ВКЛАДКИ В БРАУЗЕРЕ (Как вы и просили!)
 export const metadata: Metadata = {
   title: "No simple counter",
   description: "Amazing counter",
@@ -23,8 +12,23 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`}>
-      <body>{children}</body>
+    <html lang="ru">
+      <head>
+        {/* Железный, принудительный сброс шрифтов для ВСЕХ элементов сайта */}
+        <style>{`
+          * {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
+            box-sizing: border-box !important;
+          }
+          body {
+            margin: 0;
+            background-color: transparent;
+          }
+        `}</style>
+      </head>
+      <body>
+        {children}
+      </body>
     </html>
   );
 }
