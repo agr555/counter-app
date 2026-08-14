@@ -211,7 +211,7 @@ export default function PomodoroWidget() {
     }
     setShiftAdjustmentSeconds((prev) => { const newValue = prev - minutesAmount * 60; return newValue < 0 ? 0 : newValue; });
     const currentShiftMins = shift === "9h40m" ? 9 * 60 + 40 : 8 * 60;
-    const currentShiftMins = shift === "9h40m" ? 9 * 60 + 40 : 8 * 60;
+ 
     const currentTargetPcs = Math.round(coefficient * (currentShiftMins / 60));
 
     setLockedCoefficient(coefficient);
