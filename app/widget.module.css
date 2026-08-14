@@ -1,5 +1,5 @@
 /* ==========================================================================
-   1. БАЗОВАЯ ГЕОМЕТРИЯ И СТРОГИЙ ДИЗАЙН КАРТОЧЕК
+   1. БАЗОВАЯ ГЕОМЕТРИЯ И СТРОГИЙ ДИЗАЙН КАРТОЧЕК (ДЕСКТОП)
    ========================================================================== */
 
    .layoutWrapper {
@@ -16,29 +16,29 @@
   
   .widgetContainer {
     display: flex;
-    align-items: center;
+    align-items: stretch; /* ИСПРАВЛЕНО: блоки теперь одинаковой высоты */
     justify-content: flex-start;
     background-color: #ffffff;
     border-radius: 8px;
     width: max-content; 
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    height: 76px; /* Фиксированная высота десктопа */
-    overflow: hidden;
+    min-height: 82px; /* ИСПРАВЛЕНО: увеличили высоту с 76px, чтобы текст снизу не обрезался */
+    overflow: visible; /* ИСПРАВЛЕНО: убрали hidden, полосы прогресса теперь полностью видны */
     gap: 6px;
-    padding: 0;
+    padding: 4px; /* Дали небольшой внутренний отступ общему контейнеру */
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
   }
   
-  /* Все карточки блоков теперь строго в одном стиле */
+  /* Все карточки блоков на странице теперь строго в одном стиле */
   .concaveBlock {
     display: flex;
-    align-items: center;
-    gap: 8px;
-    height: 100%;
-    padding: 0 10px;
+    flex-direction: column; /* ИСПРАВЛЕНО: элементы внутри карточек дышат вертикально */
+    justify-content: center;
+    gap: 6px;
+    padding: 6px 12px; /* Добавили боковые отступы */
     background: #f8fafc;
     border: 1px solid #e2e8f0;
-    border-radius: 6px; /* Единое скругление углов */
+    border-radius: 6px;
     box-shadow: inset 0 2px 4px rgba(148, 163, 184, 0.04); 
     box-sizing: border-box;
   }
@@ -47,7 +47,7 @@
   .fieldGroup, .fieldGroupTarget, .cfgRate, .cfgTime, .cfgTarget {
     display: flex;
     flex-direction: column;
-    align-items: flex-start; /* Подписи прижаты влево */
+    align-items: flex-start;
     justify-content: center;
     gap: 2px;
   }
@@ -70,8 +70,8 @@
     font-size: 0.72rem !important; 
     font-weight: 700;
     font-family: monospace;
-    width: 44px !important; 
-    height: 20px; 
+    width: 48px !important; 
+    height: 22px; 
     text-align: center;
     outline: none;
   }
@@ -89,8 +89,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 20px; 
-    width: 48px; 
+    height: 22px; 
+    width: 54px; 
     box-sizing: border-box;
     gap: 1px;
   }
@@ -105,8 +105,8 @@
     background-color: #ffffff;
     border: 1px solid #cbd5e1;
     border-radius: 6px;
-    height: 20px; 
-    min-width: 105px; /* Расширили рамку, чтобы текст не зажимался */
+    height: 22px; 
+    min-width: 105px;
     box-sizing: border-box;
   }
   
@@ -139,7 +139,7 @@
   .configGrid { 
     display: flex; 
     align-items: center; 
-    gap: 8px; 
+    gap: 10px; 
     height: 100%; 
     box-sizing: border-box; 
   }
@@ -155,8 +155,8 @@
   
   .timeAlertText {
     font-size: 0.55rem;
-    color: #dc2626 !important; /* Ярко-красный */
-    font-weight: 900 !important; /* Максимально жирный */
+    color: #dc2626 !important;
+    font-weight: 900 !important;
     text-transform: uppercase;
     letter-spacing: 0.02em;
   }
@@ -165,164 +165,147 @@
     color: #dc2626 !important;
     font-size: 0.6rem;
   }
+  
   /* ==========================================================================
-   2. СТРОГИЙ ДИЗАЙН КНОПОК И ЦВЕТОВ (ВСЕГО 2 ЦВЕТА С ОТСТУПАМИ)
-   ========================================================================== */
-
-/* Общий шаблон формы для ВСЕХ кнопок на странице */
-.shadowBtn, .adjBtnWide, .dDoneBtn, .shadowBtnMini {
-  border: none;
-  font-weight: 800;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  border-radius: 6px !important; /* У всех кнопок строго одинаковые углы */
-  box-sizing: border-box;
-  transition: background-color 0.15s ease, transform 0.1s ease, box-shadow 0.15s ease;
-}
-
-.shadowBtn:active, .adjBtnWide:active, .dDoneBtn:active:not(:disabled), .shadowBtnMini:active {
-  transform: scale(0.96);
-}
-
-/* СТИЛЬ 1: Фирменный изумрудный (START, LOG, кнопки корректировок) */
-.btnStart, .btnReport, .adjBtnWide {
-  background-color: #0f766e !important;
-  color: #ffffff !important;
-}
-.btnStart:hover, .btnReport:hover, .adjBtnWide:hover {
-  background-color: #115e59 !important;
-}
-
-/* СТИЛЬ 2: Спокойный Сланцево-Серый/Slate (PAUSE, STOP, ЗВУК) */
-.btnPause, .btnReset, .btnSoundOn, .btnSoundOff, .btnReportActive {
-  background-color: #475569 !important;
-  color: #ffffff !important;
-}
-.btnPause:hover, .btnReset:hover, .btnSoundOn:hover, .btnSoundOff:hover {
-  background-color: #334155 !important;
-}
-
-/* Основные кнопки управления десктопа */
-.shadowBtn {
-  height: 22px;
-  padding: 0 10px;
-  font-size: 0.65rem;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
-}
-
-/* Маленькие кнопки звука и лога, перенесенные в блок статистики */
-.shadowBtnMini {
-  height: 18px;
-  padding: 0 6px;
-  font-size: 0.6rem;
-}
-.btnSoundOn { background-color: #334155 !important; }
-.btnReportActive { background-color: #1e293b !important; box-shadow: inset 0 2px 4px rgba(0,0,0,0.15) !important; }
-
-/* НОВЫЙ БЛОК Б: Одинаковые по ширине кнопки корректировок */
-.gridRowMain {
-  display: flex;
-  gap: 4px;
-  width: 100%;
-}
-.gridRowMain .shadowBtn {
-  flex: 1; /* Кнопки START и STOP делят верхний ряд поровну */
-}
-
-.gridRowFullWidthLabel {
-  display: flex;
-  align-items: center;
-  width: 100%;
-  gap: 6px;
-}
-
-/* Текстовые метки перед кнопками (PCS: и TIME:) */
-.adjustPrefixLabel {
-  font-size: 0.55rem;
-  font-weight: 800;
-  color: #64748b;
-  min-width: 32px; /* Фиксированное место под надпись, чтобы сетка кнопок шла ровно */
-  text-align: left;
-}
-
-/* Сетка, делающая кнопки корректировок строго одинаковыми */
-.adjustButtonsSubGrid {
-  display: flex;
-  flex: 1;
-  gap: 4px;
-}
-
-.adjBtnWide {
-  flex: 1 !important; /* Каждая кнопка забирает ровно четверть строки */
-  height: 20px !important;
-  font-size: 0.62rem !important;
-  font-family: monospace !important;
-}
-
-.currentTimeBadge {
-  background-color: #f8fafc;
-  border: 1px solid #cbd5e1;
-  color: #0f766e; 
-  flex: 1;
-  height: 20px !important;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: monospace !important;
-  font-size: 0.62rem !important;
-  font-weight: 700 !important;
-  border-radius: 6px;
-}
-
-/* ИДЕАЛЬНАЯ КНОПКА DONE С ОТСТУПАМИ ПО 35px */
-.dDoneBtn {
-  width: auto !important;
-  height: calc(100% - 4px);
-  padding: 0 35px !important; /* СТРОГО ПО 35px от краев до слова DONE */
-  font-size: 0.85rem;
-  font-weight: 900;
-  margin-top: 2px;
-  letter-spacing: 0.05em;
-  color: #ffffff !important;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-/* Цвет 1: Зеленый (Вы укладываетесь в норму) */
-.doneGreen {
-  background-color: #16a34a !important;
-}
-.doneGreen:hover {
-  background-color: #15803d !important;
-}
-
-/* Цвет 2: Красный (Опоздание на 1 деталь) */
-.doneRed {
-  background-color: #dc2626 !important;
-  box-shadow: 0 0 10px rgba(220, 38, 38, 0.4) !important;
-}
-.doneRed:hover {
-  background-color: #b91c1c !important;
-}
-
-/* Цвет 3: Черный + Мигание (Опоздание на 2 и более детали) */
-.doneBlackBlink {
-  background-color: #0f172a !important;
-  box-shadow: 0 0 12px rgba(15, 23, 42, 0.6) !important;
-  animation: criticalXScale 1.2s infinite ease-in-out; /* Включена пульсация со сжатием */
-}
-.doneBlackBlink:hover {
-  background-color: #000000 !important;
-}
-
-/* ИСПРАВЛЕНО: Анимация сжимает кнопку исключительно по ширине (X) */
-@keyframes criticalXScale {
-  0% { transform: scaleX(1); }
-  50% { transform: scaleX(0.88); box-shadow: 0 0 16px rgba(220, 38, 38, 0.6) !important; }
-  100% { transform: scaleX(1); }
-}
+     2. СТРОГИЙ ДИЗАЙН КНОПОК И ЦВЕТОВ (ВСЕГО 2 ЦВЕТА С ОТСТУПАМИ)
+     ========================================================================== */
+  
+  .shadowBtn, .adjBtnWide, .dDoneBtn, .shadowBtnMini {
+    border: none;
+    font-weight: 800;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    border-radius: 6px !important;
+    box-sizing: border-box;
+    transition: background-color 0.15s ease, transform 0.1s ease, box-shadow 0.15s ease;
+  }
+  
+  .shadowBtn:active, .adjBtnWide:active, .dDoneBtn:active:not(:disabled), .shadowBtnMini:active {
+    transform: scale(0.96);
+  }
+  
+  /* СТИЛЬ 1: Изумрудный */
+  .btnStart, .btnReport, .adjBtnWide { background-color: #0f766e !important; color: #ffffff !important; }
+  .btnStart:hover, .btnReport:hover, .adjBtnWide:hover { background-color: #115e59 !important; }
+  
+  /* СТИЛЬ 2: Slate */
+  .btnPause, .btnReset, .btnSoundOn, .btnSoundOff, .btnReportActive { background-color: #475569 !important; color: #ffffff !important; }
+  .btnPause:hover, .btnReset:hover, .btnSoundOn:hover, .btnSoundOff:hover { background-color: #334155 !important; }
+  
+  .shadowBtn {
+    height: 24px;
+    padding: 0 12px;
+    font-size: 0.65rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+  }
+  
+  .shadowBtnMini {
+    height: 18px;
+    padding: 0 6px;
+    font-size: 0.6rem;
+  }
+  .btnSoundOn { background-color: #334155 !important; }
+  .btnReportActive { background-color: #1e293b !important; box-shadow: inset 0 2px 4px rgba(0,0,0,0.15) !important; }
+  
+  /* БЛОК Б: Кнопки корректировок и управление */
+  .blockControls {
+    min-width: 190px; /* ИСПРАВЛЕНО: дали фиксированную ширину блоку Б на десктопе, чтобы текст не ехал */
+  }
+  .controlAndAdjustColumn {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 5px !important;
+  }
+  .gridRowMain {
+    display: flex;
+    gap: 4px;
+    width: 100%;
+  }
+  .gridRowMain .shadowBtn {
+    flex: 1;
+  }
+  
+  .gridRowFullWidthLabel {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    gap: 8px; /* ИСПРАВЛЕНО: увеличили зазор между надписью PCS/TIME и кнопками */
+  }
+  
+  .adjustPrefixLabel {
+    font-size: 0.55rem;
+    font-weight: 800;
+    color: #64748b;
+    min-width: 32px; /* Фиксированное место под надпись, чтобы сетка кнопок шла ровно */
+    text-align: left;
+  }
+  
+  .adjustButtonsSubGrid {
+    display: flex;
+    flex: 1;
+    gap: 4px;
+  }
+  
+  .adjBtnWide {
+    flex: 1 !important;
+    height: 22px !important;
+    font-size: 0.65rem !important;
+    font-family: monospace !important;
+  }
+  
+  .currentTimeBadge {
+    background-color: #f8fafc;
+    border: 1px solid #cbd5e1;
+    color: #0f766e; 
+    flex: 1;
+    height: 22px !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: monospace !important;
+    font-size: 0.65rem !important;
+    font-weight: 700 !important;
+    border-radius: 6px;
+  }
+  
+  /* ИДЕАЛЬНАЯ КНОПКА DONE С ОТСТУПАМИ ПО 35px */
+  .dDoneBtn {
+    width: auto !important;
+    height: 42px; /* Увеличили десктопную высоту */
+    padding: 0 35px !important; /* Строго по 35px с обеих сторон от текста до краев */
+    font-size: 0.85rem;
+    font-weight: 900;
+    letter-spacing: 0.05em;
+    color: #ffffff !important;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .doneGreen { background-color: #16a34a !important; }
+  .doneGreen:hover { background-color: #15803d !important; }
+  
+  .doneRed {
+    background-color: #dc2626 !important;
+    box-shadow: 0 0 10px rgba(220, 38, 38, 0.4) !important;
+  }
+  .doneRed:hover { background-color: #b91c1c !important; }
+  
+  .doneBlackBlink {
+    background-color: #0f172a !important;
+    box-shadow: 0 0 12px rgba(15, 23, 42, 0.6) !important;
+    animation: criticalXScale 1.2s infinite ease-in-out;
+  }
+  .doneBlackBlink:hover { background-color: #000000 !important; }
+  
+  @keyframes criticalXScale {
+    0% { transform: scaleX(1); }
+    50% { transform: scaleX(0.88); box-shadow: 0 0 16px rgba(220, 38, 38, 0.6) !important; }
+    100% { transform: scaleX(1); }
+  }
+  
 /* ==========================================================================
    3. ИНФОРМАЦИОННЫЕ ИНДИКАТОРЫ И ОТЧЕТЫ ЛОГОВ
    ========================================================================== */
@@ -442,56 +425,90 @@
    4. ОБНОВЛЕННЫЕ СТУПЕНИ АДАПТИВНОСТИ ДЛЯ ВЕРСЕЛА
    ========================================================================== */
 
-/* СТУПЕНЬ 2: ДЛЯ СРЕДНИХ ЭКРАНОВ И ПЛАНШЕТОВ (ОТ 601px ДО 1100px) — СЕТКА 2х2 */
+
+/* СТУПЕНЬ 2: ДЛЯ СРЕДНИХ ЭКРАНОВ И ПЛАНШЕТОВ (ОТ 601px ДО 1100px) — ИДЕАЛЬНАЯ СЕТКА 2х2 */
 @media (max-width: 1100px) and (min-width: 601px) {
   .widgetContainer {
-    max-width: 520px !important; 
-    width: 520px !important;
-    height: auto !important; /* Сбросили 76px десктопа */
+    max-width: 760px !important; /* Увеличили ширину общего контейнера, чтобы блокам хватало места */
+    width: 100% !important;
+    height: auto !important; /* ИСПРАВЛЕНО: убрали жесткие 76px десктопа, теперь блоки раскрываются вниз */
     display: grid !important;
-    grid-template-columns: 1fr 1fr !important; /* ИСПРАВЛЕНО: Два ровных столбика по два блока */
+    grid-template-columns: 1fr 1fr !important; /* ИСПРАВЛЕНО: Два абсолютно ровных и симметричных столбика */
     grid-template-rows: auto auto !important;   
-    padding: 8px !important;
+    padding: 10px !important; 
     background-color: #f1f5f9 !important; 
     border: 1px solid #cbd5e1 !important;
     margin-left: auto !important; 
     margin-right: 0 !important; 
-    gap: 8px !important;
+    gap: 10px !important;
+    overflow: visible !important; /* ИСПРАВЛЕНО: полосы прогресса больше не прячутся */
   }
 
   .concaveBlock {
-    height: auto !important; 
-    min-height: 76px !important;
+    height: auto !important; /* Блоки подстраиваются под контент и не зажимают элементы */
+    min-height: 90px !important; /* Минимальная высота, чтобы блоки выглядели монолитно */
     box-sizing: border-box !important;
-    padding: 8px !important;       
+    padding: 10px !important;       
     width: 100% !important;
     display: flex !important;
-    flex-direction: column !important;
+    flex-direction: column !important; /* Внутри блоков элементы ложатся аккуратными рядами */
     justify-content: center !important;
     align-items: stretch !important;
+    border-radius: 6px !important;
   }
 
-  /* Порядок карточек в сетке 2х2 */
-  .blockConfig   { grid-column: 1 !important; grid-row: 1 !important; order: 1 !important; }
-  .blockControls { grid-column: 2 !important; grid-row: 1 !important; order: 2 !important; }
-  .blockStats    { grid-column: 1 !important; grid-row: 2 !important; order: 3 !important; }
-  .blockAction   { grid-column: 2 !important; grid-row: 2 !important; order: 4 !important; }
+  /* Жестко фиксируем позиции карточек в сетке 2х2 */
+  .blockConfig   { grid-column: 1 !important; grid-row: 1 !important; order: 1 !important; } /* Блок А — верхний левый */
+  .blockControls { grid-column: 2 !important; grid-row: 1 !important; order: 2 !important; } /* Блок Б — верхний правый */
+  .blockStats    { grid-column: 1 !important; grid-row: 2 !important; order: 3 !important; } /* Блок С — нижний левый */
+  .blockAction   { grid-column: 2 !important; grid-row: 2 !important; order: 4 !important; } /* Блок Д — нижний правый */
 
-  /* Корректировка внутренних рядов под 2 столбика */
+  /* Расправляем контент внутри блоков на всю ширину столбиков */
   .configGrid, .controlAndAdjustColumn, .compactStatsBox, .actionMainGrid {
     width: 100% !important;
     flex-direction: column !important;
     gap: 6px !important;
   }
-  .gridRow, .gridRowMain, .gridRowFullWidthLabel { width: 100% !important; height: 24px !important; }
-  .actionMainGrid { flex-direction: row !important; flex-wrap: wrap !important; justify-content: space-between !important; }
 
-  /* Кнопка DONE на средних экранах */
+  /* Блок А: инпуты и переключатели */
+  .cfgRate, .cfgTime, .cfgTarget { align-items: center !important; width: 100% !important; }
+  .inputNumberWide, .targetDisplayDisabled, .toggleContainer { height: 24px !important; margin-top: 2px !important; }
+  .timeInfoLine { gap: 8px !important; margin-top: 4px !important; }
+
+  /* Блок Б: кнопки корректировок и управления */
+  .gridRowMain { width: 100% !important; height: 28px !important; gap: 4px !important; }
+  .gridRowFullWidthLabel { width: 100% !important; height: 24px !important; gap: 4px !important; }
+  .adjBtnWide, .currentTimeBadge { height: 24px !important; font-size: 0.65rem !important; }
+
+  /* Блок С: статистика и выравнивание иконок лога/звука */
+  .statsExtraControlsRow { height: 24px !important; margin-top: 4px !important; }
+
+  /* Блок Д: таймеры и DONE */
+  .actionMainGrid { 
+    flex-direction: row !important; 
+    flex-wrap: wrap !important; 
+    justify-content: space-between !important; 
+    align-items: center !important; 
+    gap: 6px !important; 
+  }
+  .actionStatsBlock { min-width: 60px !important; }
+  .stopwatchDisplay, .timeDisplay { min-width: 45px !important; }
+
+  /* Кнопка DONE строго держит свои симметричные отступы 35px и не ломается */
   .dDoneBtn { 
-    height: 34px !important; 
+    height: 36px !important; 
     width: auto !important;
-    padding: 0 35px !important; /* Держим 35px */
-    font-size: 0.8rem !important;
+    padding: 0 35px !important; /* Сохраняем отступы 35px с обеих сторон от текста */
+    font-size: 0.85rem !important;
+    margin: 0 !important;
+    display: inline-flex !important;
+  }
+
+  /* Полосы прогресса раскрываются на всю ширину правого нижнего столбика */
+  .extendedPaceTrack, .bottomProgressBarTrack { 
+    width: 100% !important; 
+    margin-top: 4px !important; 
+    height: 11px !important; 
   }
 }
 
