@@ -168,9 +168,13 @@ export default function PomodoroWidget() {
     setProcessedCount(nextProcessedCount);
     setTotalRealSeconds((prev) => prev + stopwatchSeconds);
     setStopwatchSeconds(0);
-    setShiftAdjustmentSeconds(nextProcessedCount * totalTimerSeconds);
+    
+    // ИСПРАВЛЕНО: УБРАЛИ строчку подтягивания времени смены под факт!
+    // План больше НЕ приравнивается к факту, логика темпа полностью восстановлена.
+    
     setTimeLeft(totalTimerSeconds);
   }, [stopwatchSeconds, totalTimerSeconds, processedCount, planPcsRounded]);
+
 
   const currentNormsElapsed = totalTimerSeconds > 0 ? Math.floor(shiftElapsedSeconds / totalTimerSeconds) : 0;
   let doneButtonColorClass = styles.doneGreen;
