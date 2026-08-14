@@ -262,11 +262,11 @@
 .btnReportActive { background-color: #1e293b !important; box-shadow: inset 0 2px 4px rgba(0,0,0,0.15) !important; }
 
 /* ==========================================================================
-   2. КОМПАКТНЫЙ ДИЗАЙН БЛОКА Б (УБИРАЕМ ВСЕ СТРАННЫЕ ДЫРЫ)
+   2. КОМПАКТНЫЙ И КРУПНЫЙ ДИЗАЙН БЛОКА Б (БЕЗ ДЫР И СЖАТИЯ)
    ========================================================================== */
 
    .blockControls { 
-    min-width: auto !important; /* ИСПРАВЛЕНО: убрали жесткие 190px, блок теперь сжимается по кнопкам */
+    min-width: auto !important;
     width: max-content !important;
   }
   
@@ -290,7 +290,7 @@
     display: flex; 
     align-items: center; 
     width: 100%; 
-    gap: 6px; /* Оптимальный зазор между надписью и кнопками */
+    gap: 6px; 
   }
   
   /* Метка перед кнопками (PCS:, TIME:) */
@@ -298,30 +298,29 @@
     font-size: 0.55rem; 
     font-weight: 800; 
     color: #64748b; 
-    min-width: auto !important; /* ИСПРАВЛЕНО: убрали жесткую ширину, которая создавала дыру */
-    margin-right: 2px;
+    min-width: 32px !important; /* Дали фиксированное место под надпись, чтобы кнопки шли в один ряд */
     text-align: left; 
   }
   
-  /* Сетка кнопок корректировок — задаем им оптимальный размер под разрешение 400 */
   .adjustButtonsSubGrid { 
     display: flex; 
     gap: 4px; 
   }
   
+  /* ИСПРАВЛЕНО: Кнопки стали крупными и одинаковыми на десктопе */
   .adjBtnWide { 
-    width: 34px !important; /* ИСПРАВЛЕНО: жесткий оптимальный размер кнопки, чтобы они не растягивались */
+    width: 44px !important; /* Задали хорошую, заметную ширину вместо микро-кнопок */
     height: 22px !important; 
     font-size: 0.65rem !important; 
     font-family: monospace !important; 
-    flex: none !important; /* Запрещаем кнопкам неконтролируемо расширяться */
+    flex: none !important; 
   }
   
   .currentTimeBadge { 
     background-color: #f8fafc; 
     border: 1px solid #cbd5e1; 
     color: #0f766e; 
-    width: 34px !important; /* Плашка времени смены точно такая же аккуратная, как кнопки */
+    width: 44px !important; /* Плашка времени смены точно такая же крупная, как кнопки */
     height: 22px !important; 
     display: flex; 
     align-items: center; 
@@ -332,6 +331,7 @@
     border-radius: 6px; 
     flex: none !important;
   }
+  
   
 
 /* ИДЕАЛЬНАЯ КНОПКА DONE С ОТСТУПАМИ ПО 35px */
@@ -666,9 +666,8 @@
     font-size: 0.68rem !important;
     font-weight: 700 !important;
   }
-  /* БЛОК Б */
-  /* ==========================================
-     МОБИЛЬНЫЙ БЛОК Б (БЕЗ ДЫР И РАСТЯГИВАНИЯ)
+    /* ==========================================
+     МОБИЛЬНЫЙ БЛОК Б (КРУПНЫЕ КНОПКИ ПОД ПАЛЕЦ)
      ========================================== */
      .blockControls { 
       width: 100% !important; 
@@ -677,25 +676,31 @@
     .controlAndAdjustColumn { 
       width: 100% !important; 
       gap: 8px !important; 
-      align-items: center !important; /* Центрируем ряды кнопок на мобильном */
+      align-items: center !important; 
     }
     .gridRowMain { 
       height: 32px !important; 
       gap: 6px !important; 
-      width: max-content !important; /* Ряд СТАРТ/СТОП не тянется на весь экран */
+      width: 100% !important; /* На мобильном СТАРТ/СТОП могут занять всю ширину столбика */
     }
     .gridRowFullWidthLabel { 
-      height: 26px !important; 
+      height: 28px !important; 
       gap: 6px !important; 
-      width: max-content !important; /* Ряды корректировок сжимаются в аккуратный блок по центру */
+      width: max-content !important; 
     }
     
-    /* Кнопки корректировок на мобильном встают в свой идеальный размер */
-    .adjBtnWide, .currentTimeBadge { 
-      width: 38px !important; /* Чуть крупнее под мобильный палец, но без дыр */
-      height: 26px !important; 
-      font-size: 0.68rem !important; 
+    .adjustPrefixLabel {
+      font-size: 0.65rem !important;
+      min-width: 36px !important;
     }
+  
+    /* ИСПРАВЛЕНО: Крупные, отличные кнопки для мобильного режима */
+    .adjBtnWide, .currentTimeBadge { 
+      width: 54px !important; /* Увеличили до 54px, теперь они крупные и по ним легко попасть */
+      height: 28px !important; 
+      font-size: 0.72rem !important; 
+    }
+  
   
   /* БЛОК С */
   /* БЛОК С */
