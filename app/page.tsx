@@ -27,18 +27,18 @@ const formatTimeNoSeconds = (totalSecs: number) => {
 };
 
 export default function PomodoroWidget() {
-  const [coefficient, setCoefficient] = useState<number>(21);
+  const [coefficient, setCoefficient] = useState<number>(500);
   const [shift, setShift] = useState<ShiftType>("9h40m");
-  const [processedCount, setProcessedCount] = useState<number>(0);
+  const [processedCount, setProcessedCount] = useState<number>(2);
 
-  const [lockedCoefficient, setLockedCoefficient] = useState<number>(21);
+  const [lockedCoefficient, setLockedCoefficient] = useState<number>(500);
   const [lockedShift, setLockedShift] = useState<ShiftType>("9h40m");
-  const [lockedTarget, setLockedTarget] = useState<number>(203);
+  const [lockedTarget, setLockedTarget] = useState<number>(4833);
 
   const [isRunning, setIsRunning] = useState<boolean>(false);
   const [stopwatchSeconds, setStopwatchSeconds] = useState<number>(0);
-  const [totalRealSeconds, setTotalRealSeconds] = useState<number>(0);
-  const [shiftElapsedSeconds, setShiftAdjustmentSeconds] = useState<number>(0);
+  const [totalRealSeconds, setTotalRealSeconds] = useState<number>(169);
+  const [shiftElapsedSeconds, setShiftAdjustmentSeconds] = useState<number>(180);
 
   const [isSoundEnabled, setIsSoundEnabled] = useState<boolean>(true);
   const [startTimeText, setStartTimeText] = useState<string>("--:--");
@@ -47,8 +47,8 @@ export default function PomodoroWidget() {
   const totalShiftMinutes = lockedShift === "9h40m" ? 9 * 60 + 40 : 8 * 60;
   const netWorkingMinutes = totalShiftMinutes - 45;
 
-  const totalTimerSeconds = lockedTarget > 0 ? Math.round((netWorkingMinutes * 60) / lockedTarget) : 25 * 60;
-  const [timeLeft, setTimeLeft] = useState<number>(totalTimerSeconds);
+  const totalTimerSeconds = lockedTarget > 0 ? Math.round((netWorkingMinutes * 60) / lockedTarget) : 7;
+  const [timeLeft, setTimeLeft] = useState<number>(7);
 
   const currentShiftMinutes = shift === "9h40m" ? 9 * 60 + 40 : 8 * 60;
   const currentTargetPositions = Math.round(coefficient * (currentShiftMinutes / 60));
@@ -65,23 +65,15 @@ export default function PomodoroWidget() {
       const savedElapsed = localStorage.getItem("p_shiftElapsedSeconds");
       const savedSound = localStorage.getItem("p_isSoundEnabled");
 
-      if (savedCoefficient) {
-        setCoefficient(parseInt(savedCoefficient, 10));
-        setLockedCoefficient(parseInt(savedCoefficient, 10));
-      }
-      if (savedShift) {
-        setShift(savedShift);
-        setLockedShift(savedShift);
-      }
+      if (savedCoefficient) { setCoefficient(parseInt(savedCoefficient, 10)); setLockedCoefficient(parseInt(savedCoefficient, 10)); }
+      if (savedShift) { setShift(savedShift); setLockedShift(savedShift); }
       if (savedProcessedCount) setProcessedCount(parseInt(savedProcessedCount, 10));
       if (savedRealSeconds) setTotalRealSeconds(parseInt(savedRealSeconds, 10));
       if (savedElapsed) setShiftAdjustmentSeconds(parseInt(savedElapsed, 10));
       if (savedSound) setIsSoundEnabled(savedSound === "true");
 
       const savedLogs = localStorage.getItem("p_doneLogs");
-      if (savedLogs) {
-        try { setDoneLogs(JSON.parse(savedLogs)); } catch (e) { console.error(e); }
-      }
+      if (savedLogs) { try { setDoneLogs(JSON.parse(savedLogs)); } catch (e) { console.error(e); } }
     }
   }, []);
 
@@ -103,9 +95,7 @@ export default function PomodoroWidget() {
   }, [coefficient, shift, processedCount, totalRealSeconds, shiftElapsedSeconds, isSoundEnabled]);
 
   useEffect(() => {
-    if (!isRunning && timeLeft !== 0) {
-      setTimeLeft(totalTimerSeconds);
-    }
+    if (!isRunning && timeLeft !== 0) { setTimeLeft(totalTimerSeconds); }
   }, [totalTimerSeconds, isRunning, timeLeft]);
 
   useEffect(() => {
@@ -113,12 +103,8 @@ export default function PomodoroWidget() {
     const interval = setInterval(() => {
       setStopwatchSeconds((prev) => prev + 1);
       setShiftAdjustmentSeconds((prev) => prev + 1);
-
       setTimeLeft((prev) => {
-        if (prev <= 1) {
-          if (isSoundEnabled) playQuietPeep();
-          return totalTimerSeconds;
-        }
+        if (prev <= 1) { if (isSoundEnabled) playQuietPeep(); return totalTimerSeconds; }
         return prev - 1;
       });
     }, 1000);
@@ -133,13 +119,10 @@ export default function PomodoroWidget() {
       const ctx = new AudioCtx();
       const osc = ctx.createOscillator();
       const gain = ctx.createGain();
-      osc.connect(gain);
-      gain.connect(ctx.destination);
-      osc.type = "sine";
-      osc.frequency.setValueAtTime(650, ctx.currentTime);
+      osc.connect(gain); gain.connect(ctx.destination);
+      osc.type = "sine"; osc.frequency.setValueAtTime(650, ctx.currentTime);
       gain.gain.setValueAtTime(0.06, ctx.currentTime);
-      osc.start();
-      osc.stop(ctx.currentTime + 0.1);
+      osc.start(); osc.stop(ctx.currentTime + 0.1);
     } catch (e) { console.warn(e); }
   };
 
@@ -185,30 +168,24 @@ export default function PomodoroWidget() {
     setProcessedCount(nextProcessedCount);
     setTotalRealSeconds((prev) => prev + stopwatchSeconds);
     setStopwatchSeconds(0);
-    
     setShiftAdjustmentSeconds(nextProcessedCount * totalTimerSeconds);
     setTimeLeft(totalTimerSeconds);
   }, [stopwatchSeconds, totalTimerSeconds, processedCount, planPcsRounded]);
 
+  // Вычисление динамического класса цвета для DONE
   const currentNormsElapsed = totalTimerSeconds > 0 ? Math.floor(shiftElapsedSeconds / totalTimerSeconds) : 0;
   let doneButtonColorClass = styles.doneGreen;
 
   if (currentNormsElapsed > processedCount) {
     const overdueCount = currentNormsElapsed - processedCount;
-    if (overdueCount === 1) {
-      doneButtonColorClass = styles.doneRed;
-    } else if (overdueCount >= 2) {
-      doneButtonColorClass = styles.doneBlackBlink;
-    }
+    if (overdueCount === 1) { doneButtonColorClass = styles.doneRed; }
+    else if (overdueCount >= 2) { doneButtonColorClass = styles.doneBlackBlink; }
   }
 
   useEffect(() => {
     const handleGlobalKey = (e: KeyboardEvent) => {
       if (e.shiftKey && (e.key === "A" || e.key === "a" || e.key === "ф" || e.key === "Ф")) {
-        if (document.activeElement?.tagName !== "INPUT" && isRunning) {
-          e.preventDefault();
-          handleRealItemDone();
-        }
+        if (document.activeElement?.tagName !== "INPUT" && isRunning) { e.preventDefault(); handleRealItemDone(); }
       }
     };
     window.addEventListener("keydown", handleGlobalKey);
@@ -216,41 +193,24 @@ export default function PomodoroWidget() {
   }, [isRunning, handleRealItemDone]);
 
   const handleGlobalReset = () => {
-    const wasActive = isRunning;
-    setIsRunning(false);
+    const wasActive = isRunning; setIsRunning(false);
     if (confirm("Reset all shift progress and configuration?")) {
-      setProcessedCount(0);
-      setStopwatchSeconds(0);
-      setTotalRealSeconds(0);
-      setShiftAdjustmentSeconds(0);
-      setTimeLeft(totalTimerSeconds);
-      setStartTimeText("--:--");
-      setActualStartObject(null);
-      localStorage.removeItem("p_processedCount");
-      localStorage.removeItem("p_totalRealSeconds");
-      localStorage.removeItem("p_shiftElapsedSeconds");
-      setDoneLogs([]);
-      localStorage.removeItem("p_doneLogs");
-    } else {
-      setIsRunning(wasActive);
-    }
+      setProcessedCount(0); setStopwatchSeconds(0); setTotalRealSeconds(0); setShiftAdjustmentSeconds(0); setTimeLeft(totalTimerSeconds); setStartTimeText("--:--"); setActualStartObject(null);
+      localStorage.removeItem("p_processedCount"); localStorage.removeItem("p_totalRealSeconds"); localStorage.removeItem("p_shiftElapsedSeconds");
+      setDoneLogs([]); localStorage.removeItem("p_doneLogs");
+    } else { setIsRunning(wasActive); }
   };
 
   const adjustCount = (amount: number) => { setProcessedCount((prev) => Math.max(0, prev + amount)); };
 
   const adjustShiftTime = (minutesAmount: number) => {
     if (actualStartObject) {
-      const timeShiftMs = minutesAmount * 60 * 1000;
-      const updatedDate = new Date(actualStartObject.getTime() + timeShiftMs);
+      const updatedDate = new Date(actualStartObject.getTime() + minutesAmount * 60 * 1000);
       setActualStartObject(updatedDate);
       setStartTimeText(`${updatedDate.getHours().toString().padStart(2, "0")}:${updatedDate.getMinutes().toString().padStart(2, "0")}`);
     }
-
-    setShiftAdjustmentSeconds((prev) => {
-      const newValue = prev - minutesAmount * 60;
-      return newValue < 0 ? 0 : newValue;
-    });
-
+    setShiftAdjustmentSeconds((prev) => { const newValue = prev - minutesAmount * 60; return newValue < 0 ? 0 : newValue; });
+    const currentShiftMins = shift === "9h40m" ? 9 * 60 + 40 : 8 * 60;
     const currentShiftMins = shift === "9h40m" ? 9 * 60 + 40 : 8 * 60;
     const currentTargetPcs = Math.round(coefficient * (currentShiftMins / 60));
 
@@ -272,7 +232,9 @@ export default function PomodoroWidget() {
       if (!actualStartObject) {
         const now = new Date();
         setActualStartObject(now);
-        setStartTimeText(`${now.getHours().toString().padStart(2, "0")}:${now.getMinutes().toString().padStart(2, "0")}`);
+        const hrs = now.getHours().toString().padStart(2, "0");
+        const mins = now.getMinutes().toString().padStart(2, "0");
+        setStartTimeText(`${hrs}:${mins}`);
       }
     }
     setIsRunning(!isRunning);
@@ -282,8 +244,8 @@ export default function PomodoroWidget() {
     <div className={styles.layoutWrapper}>
       <div className={styles.widgetContainer}>
         
-                {/* BLOCK A: CONFIGURATION (Блок настроек с измененной структурой колонок) */}
-                <div className={`${styles.concaveBlock} ${styles.blockConfig}`}>
+        {/* BLOCK A: CONFIGURATION (Блок настроек с измененной структурой колонок) */}
+        <div className={`${styles.concaveBlock} ${styles.blockConfig}`}>
           <div className={styles.configGrid}>
             
             {/* ЛЕВАЯ КОЛОНКА: Выбор смены, START и WORKED */}
@@ -331,8 +293,7 @@ export default function PomodoroWidget() {
           </div>
         </div>
 
-
-        {/* BLOCK B: CONTROLS & MANUAL ADJUSTMENTS (Управление и ровная сетка) */}
+        {/* BLOCK B: CONTROLS & MANUAL ADJUSTMENTS (Управление и ровные корректировки) */}
         <div className={`${styles.concaveBlock} ${styles.blockControls}`}>
           <div className={styles.controlAndAdjustColumn}>
             
@@ -368,8 +329,8 @@ export default function PomodoroWidget() {
           </div>
         </div>
 
-                {/* BLOCK C: PROGRESS WITH LOG & SOUND (Блок статистики с логом и звуком) */}
-                <div className={`${styles.concaveBlock} ${styles.blockStats}`}>
+        {/* BLOCK C: PROGRESS WITH LOG & SOUND (Громкость, лог и дифф перенесены сюда) */}
+        <div className={`${styles.concaveBlock} ${styles.blockStats}`}>
           <div className={styles.compactStatsBox}>
             <div className={styles.progressRow}>
               <span className={styles.rowLabel}>Plan:</span>
@@ -380,12 +341,11 @@ export default function PomodoroWidget() {
               <span className={styles.rowValue}>{processedCount} pcs ({factPercent}%)</span>
             </div>
             
-            {/* Ряд с кнопками звука и лога */}
-            <div className={styles.gridRow} style={{ marginTop: "4px", width: "100%", justifyContent: "space-between" }}>
-              <button type="button" onClick={() => setIsSoundEnabled(!isSoundEnabled)} className={`${styles.shadowBtn} ${isSoundEnabled ? styles.btnSoundOn : styles.btnSoundOff}`} style={{ height: "20px", padding: "0 6px" }}>
+            <div className={styles.statsExtraControlsRow}>
+              <button type="button" onClick={() => setIsSoundEnabled(!isSoundEnabled)} className={`${styles.shadowBtnMini} ${isSoundEnabled ? styles.btnSoundOn : styles.btnSoundOff}`}>
                 {isSoundEnabled ? "🔊" : "🔇"}
               </button>
-              <button type="button" onClick={() => setShowReport(!showReport)} className={`${styles.shadowBtn} ${showReport ? styles.btnReportActive : styles.btnReport}`} style={{ height: "20px", padding: "0 6px" }}>
+              <button type="button" onClick={() => setShowReport(!showReport)} className={`${styles.shadowBtnMini} ${showReport ? styles.btnReportActive : styles.btnReport}`}>
                 📋 LOG
               </button>
               <div className={styles.rowValue} style={{ fontWeight: "700" }}>
@@ -401,14 +361,14 @@ export default function PomodoroWidget() {
           </div>
         </div>
 
-        {/* BLOCK D: ACTION DONE BUTTON & TIMERS (Блок с кнопкой DONE) */}
+        {/* BLOCK D: ACTION DONE BUTTON & TIMERS (Строгий блок с кнопкой DONE) */}
         <div className={`${styles.concaveBlock} ${styles.blockAction}`}>
-          <div className={styles.gridRow} style={{ width: "100%", justifyContent: "space-between", height: "auto" }}>
+          <div className={styles.actionMainRow} style={{ width: "100%", height: "auto" }}>
             
-            <div className={styles.fieldGroup} style={{ alignItems: "flex-start", gap: "1px" }}>
-              <div style={{ fontSize: "0.5rem", fontWeight: "800", color: "#94a3b8" }}>LEFT: <span style={{ fontFamily: "monospace", color: "#1e293b", fontSize: "0.65rem" }}>{pcsLeft}</span></div>
-              <div style={{ fontSize: "0.5rem", fontWeight: "800", color: "#94a3b8" }}>AVG P: <span style={{ fontFamily: "monospace", color: "#1e293b", fontSize: "0.65rem" }}>{formatTime(totalTimerSeconds)}</span></div>
-              <div style={{ fontSize: "0.5rem", fontWeight: "800", color: "#94a3b8" }}>AVG R: <span style={{ fontFamily: "monospace", color: "#1e293b", fontSize: "0.65rem" }}>{formatTime(avgRealTimeSeconds)}</span></div>
+            <div className={styles.compactStatsBoxMini}>
+              <div className={styles.progressRow}><span className={styles.rowLabel} style={{ fontSize: "0.5rem" }}>Left:</span><span className={styles.rowValue} style={{ fontSize: "0.65rem" }}>{pcsLeft}</span></div>
+              <div className={styles.progressRow}><span className={styles.rowLabel} style={{ fontSize: "0.5rem" }}>Avg P:</span><span className={styles.rowValue} style={{ fontSize: "0.65rem" }}>{formatTime(totalTimerSeconds)}</span></div>
+              <div className={styles.progressRow}><span className={styles.rowLabel} style={{ fontSize: "0.5rem" }}>Avg R:</span><span className={styles.rowValue} style={{ fontSize: "0.65rem" }}>{formatTime(avgRealTimeSeconds)}</span></div>
             </div>
 
             <div className={styles.fieldGroup}>
@@ -416,13 +376,13 @@ export default function PomodoroWidget() {
               <div className={styles.countDisplayOnly}>{processedCount}</div>
             </div>
 
-            <div className={styles.fieldGroup}>
-              <span className={styles.fieldLabel} style={{ fontSize: "0.5rem" }}>STOPWATCH</span>
+            <div className={styles.timeDisplay}>
+              <span className={styles.timeLabel} style={{ fontSize: "0.5rem" }}>STOPWATCH</span>
               <span className={styles.stopwatchNumbers}>{formatTime(stopwatchSeconds)}</span>
             </div>
 
-            <div className={styles.fieldGroup}>
-              <span className={styles.fieldLabel} style={{ fontSize: "0.5rem" }}>PACE</span>
+            <div className={styles.timeDisplay}>
+              <span className={styles.timeLabel} style={{ fontSize: "0.5rem" }}>PACE</span>
               <span className={`${styles.timeNumbers} ${paceColorClass}`}>{formatTime(timeLeft)}</span>
             </div>
 
@@ -503,4 +463,3 @@ export default function PomodoroWidget() {
     </div>
   );
 }
-
