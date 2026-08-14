@@ -282,25 +282,11 @@ export default function PomodoroWidget() {
     <div className={styles.layoutWrapper}>
       <div className={styles.widgetContainer}>
         
-        {/* BLOCK A: CONFIGURATION (Блок настроек) */}
-        <div className={`${styles.concaveBlock} ${styles.blockConfig}`}>
+                {/* BLOCK A: CONFIGURATION (Блок настроек с измененной структурой колонок) */}
+                <div className={`${styles.concaveBlock} ${styles.blockConfig}`}>
           <div className={styles.configGrid}>
             
-            <div className={styles.cfgRate}>
-              <label htmlFor="coefficient" className={styles.fieldLabel}>Rate / Hour</label>
-              <input
-                id="coefficient"
-                type="number"
-                step="1"
-                min="1"
-                max="999999"
-                value={isSettingsDisabled ? lockedCoefficient : coefficient}
-                onChange={(e) => setCoefficient(parseInt(e.target.value) || 0)}
-                disabled={isSettingsDisabled}
-                className={styles.inputNumberWide}
-              />
-            </div>
-
+            {/* ЛЕВАЯ КОЛОНКА: Выбор смены, START и WORKED */}
             <div className={styles.cfgTime}>
               <span className={styles.fieldLabel}>Time</span>
               <div className={styles.toggleContainer} style={{ opacity: isSettingsDisabled ? 0.7 : 1 }}>
@@ -316,16 +302,35 @@ export default function PomodoroWidget() {
               </div>
             </div>
 
-            <div className={styles.cfgTarget}>
-              <span className={styles.fieldLabel}>Target</span>
-              <div className={styles.targetDisplayDisabled}>
-                {isSettingsDisabled ? lockedTarget : currentTargetPositions}
-                <span className={styles.unitText}>pcs</span>
+            {/* ПРАВАЯ КОЛОНКА: Настройка Rate/Hour и Target ниже */}
+            <div className={styles.cfgRate}>
+              <div className={styles.fieldGroup}>
+                <label htmlFor="coefficient" className={styles.fieldLabel}>Rate / Hour</label>
+                <input
+                  id="coefficient"
+                  type="number"
+                  step="1"
+                  min="1"
+                  max="999999"
+                  value={isSettingsDisabled ? lockedCoefficient : coefficient}
+                  onChange={(e) => setCoefficient(parseInt(e.target.value) || 0)}
+                  disabled={isSettingsDisabled}
+                  className={styles.inputNumberWide}
+                />
+              </div>
+              
+              <div className={styles.cfgTarget}>
+                <span className={styles.fieldLabel}>Target</span>
+                <div className={styles.targetDisplayDisabled}>
+                  {isSettingsDisabled ? lockedTarget : currentTargetPositions}
+                  <span className={styles.unitText}>pcs</span>
+                </div>
               </div>
             </div>
 
           </div>
         </div>
+
 
         {/* BLOCK B: CONTROLS & MANUAL ADJUSTMENTS (Управление и ровная сетка) */}
         <div className={`${styles.concaveBlock} ${styles.blockControls}`}>
