@@ -27,18 +27,21 @@ const formatTimeNoSeconds = (totalSecs: number) => {
 };
 
 export default function PomodoroWidget() {
-  const [coefficient, setCoefficient] = useState<number>(500);
+  const [coefficient, setCoefficient] = useState<number>(21);
   const [shift, setShift] = useState<ShiftType>("9h40m");
-  const [processedCount, setProcessedCount] = useState<number>(2);
+  const [processedCount, setProcessedCount] = useState<number>(0);
 
-  const [lockedCoefficient, setLockedCoefficient] = useState<number>(500);
+  const [lockedCoefficient, setLockedCoefficient] = useState<number>(21);
   const [lockedShift, setLockedShift] = useState<ShiftType>("9h40m");
-  const [lockedTarget, setLockedTarget] = useState<number>(4833);
+  const [lockedTarget, setLockedTarget] = useState<number>(203);
 
   const [isRunning, setIsRunning] = useState<boolean>(false);
   const [stopwatchSeconds, setStopwatchSeconds] = useState<number>(0);
-  const [totalRealSeconds, setTotalRealSeconds] = useState<number>(169);
-  const [shiftElapsedSeconds, setShiftAdjustmentSeconds] = useState<number>(180);
+  const [totalRealSeconds, setTotalRealSeconds] = useState<number>(0);
+  const [shiftElapsedSeconds, setShiftAdjustmentSeconds] = useState<number>(0);
+
+  // НОВЫЙ СЧЁТЧИК: считает секунды от последнего нажатия DONE для текущей позиции
+  const [currentPositionSeconds, setCurrentPositionSeconds] = useState<number>(0);
 
   const [isSoundEnabled, setIsSoundEnabled] = useState<boolean>(true);
   const [startTimeText, setStartTimeText] = useState<string>("--:--");
@@ -47,8 +50,9 @@ export default function PomodoroWidget() {
   const totalShiftMinutes = lockedShift === "9h40m" ? 9 * 60 + 40 : 8 * 60;
   const netWorkingMinutes = totalShiftMinutes - 45;
 
-  const totalTimerSeconds = lockedTarget > 0 ? Math.round((netWorkingMinutes * 60) / lockedTarget) : 7;
-  const [timeLeft, setTimeLeft] = useState<number>(7);
+  // Время нормы на одну деталь в секундах (например, 25 минут = 1500 сек)
+  const totalTimerSeconds = lockedTarget > 0 ? Math.round((netWorkingMinutes * 60) / lockedTarget) : 25 * 60;
+  const [timeLeft, setTimeLeft] = useState<number>(totalTimerSeconds);
 
   const currentShiftMinutes = shift === "9h40m" ? 9 * 60 + 40 : 8 * 60;
   const currentTargetPositions = Math.round(coefficient * (currentShiftMinutes / 60));
@@ -56,6 +60,7 @@ export default function PomodoroWidget() {
   const [doneLogs, setDoneLogs] = useState<DoneLogItem[]>([]);
   const [showReport, setShowReport] = useState<boolean>(false);
 
+  // Восстановление данных
   useEffect(() => {
     if (typeof window !== "undefined") {
       const savedCoefficient = localStorage.getItem("p_coefficient");
@@ -64,6 +69,7 @@ export default function PomodoroWidget() {
       const savedRealSeconds = localStorage.getItem("p_totalRealSeconds");
       const savedElapsed = localStorage.getItem("p_shiftElapsedSeconds");
       const savedSound = localStorage.getItem("p_isSoundEnabled");
+      const savedPosSeconds = localStorage.getItem("p_currentPositionSeconds");
 
       if (savedCoefficient) { setCoefficient(parseInt(savedCoefficient, 10)); setLockedCoefficient(parseInt(savedCoefficient, 10)); }
       if (savedShift) { setShift(savedShift); setLockedShift(savedShift); }
@@ -71,20 +77,14 @@ export default function PomodoroWidget() {
       if (savedRealSeconds) setTotalRealSeconds(parseInt(savedRealSeconds, 10));
       if (savedElapsed) setShiftAdjustmentSeconds(parseInt(savedElapsed, 10));
       if (savedSound) setIsSoundEnabled(savedSound === "true");
+      if (savedPosSeconds) setCurrentPositionSeconds(parseInt(savedPosSeconds, 10));
 
       const savedLogs = localStorage.getItem("p_doneLogs");
       if (savedLogs) { try { setDoneLogs(JSON.parse(savedLogs)); } catch (e) { console.error(e); } }
     }
   }, []);
 
-  useEffect(() => {
-    if (!isRunning && timeLeft === totalTimerSeconds) {
-      setLockedCoefficient(coefficient);
-      setLockedShift(shift);
-      setLockedTarget(currentTargetPositions);
-    }
-  }, [coefficient, shift, isRunning, currentTargetPositions, timeLeft, totalTimerSeconds]);
-
+  // Синхронизация localStorage
   useEffect(() => {
     localStorage.setItem("p_coefficient", coefficient.toString());
     localStorage.setItem("p_shift", shift);
@@ -92,17 +92,19 @@ export default function PomodoroWidget() {
     localStorage.setItem("p_totalRealSeconds", totalRealSeconds.toString());
     localStorage.setItem("p_shiftElapsedSeconds", shiftElapsedSeconds.toString());
     localStorage.setItem("p_isSoundEnabled", isSoundEnabled.toString());
-  }, [coefficient, shift, processedCount, totalRealSeconds, shiftElapsedSeconds, isSoundEnabled]);
+    localStorage.setItem("p_currentPositionSeconds", currentPositionSeconds.toString());
+  }, [coefficient, shift, processedCount, totalRealSeconds, shiftElapsedSeconds, isSoundEnabled, currentPositionSeconds]);
 
-  useEffect(() => {
-    if (!isRunning && timeLeft !== 0) { setTimeLeft(totalTimerSeconds); }
-  }, [totalTimerSeconds, isRunning, timeLeft]);
-
+  // ЕДИНЫЙ ГЛАВНЫЙ ИНТЕРВАЛ ВРЕМЕНИ
   useEffect(() => {
     if (!isRunning) return;
     const interval = setInterval(() => {
       setStopwatchSeconds((prev) => prev + 1);
       setShiftAdjustmentSeconds((prev) => prev + 1);
+      
+      // ИСПРАВЛЕНО: Новый счётчик тикает строго вперёд каждую секунду, когда включён СТАРТ
+      setCurrentPositionSeconds((prev) => prev + 1);
+
       setTimeLeft((prev) => {
         if (prev <= 1) { if (isSoundEnabled) playQuietPeep(); return totalTimerSeconds; }
         return prev - 1;
@@ -110,6 +112,7 @@ export default function PomodoroWidget() {
     }, 1000);
     return () => clearInterval(interval);
   }, [isRunning, totalTimerSeconds, isSoundEnabled]);
+
 
   const playQuietPeep = () => {
     if (typeof window === "undefined") return;
@@ -171,25 +174,54 @@ export default function PomodoroWidget() {
     setTotalRealSeconds((prev) => prev + stopwatchSeconds);
     setStopwatchSeconds(0);
     
-    // МГНОВЕННЫЙ СБРОС ТАЙМЕРА: Кнопка гарантированно позеленеет для новой детали!
+    // ИСПРАВЛЕНО: При нажатии DONE локальный счётчик времени детали обнуляется! Кнопка сразу станет зеленой.
+    setCurrentPositionSeconds(0);
     setTimeLeft(totalTimerSeconds);
   }, [stopwatchSeconds, totalTimerSeconds, processedCount, planPcsRounded]);
+
+  const handleGlobalReset = () => {
+    const wasActive = isRunning; setIsRunning(false);
+    if (confirm("Reset all progress?")) {
+      setProcessedCount(0); setStopwatchSeconds(0); setTotalRealSeconds(0); setShiftAdjustmentSeconds(0); setTimeLeft(totalTimerSeconds); setStartTimeText("--:--"); setActualStartObject(null);
+      // ИСПРАВЛЕНО: Клик на STOP сбрасывает локальный таймер в 0
+      setCurrentPositionSeconds(0);
+      localStorage.clear(); setDoneLogs([]);
+    } else { setIsRunning(wasActive); }
+  };
+
+  const handleStartToggle = () => {
+    if (!isRunning && timeLeft === totalTimerSeconds) {
+      setLockedCoefficient(coefficient); setLockedShift(shift); setLockedTarget(currentTargetPositions);
+      if (!actualStartObject) {
+        const now = new Date(); setActualStartObject(now);
+        setStartTimeText(`${now.getHours().toString().padStart(2, "0")}:${now.getMinutes().toString().padStart(2, "0")}`);
+      }
+    }
+    
+    // ИСПРАВЛЕНО: При нажатии START (или при отжатии Паузы) локальный таймер сбрасывается в 0
+    if (!isRunning) {
+      setCurrentPositionSeconds(0);
+    }
+    
+    setIsRunning(!isRunning);
+  };
 
 
 
   const currentNormsElapsed = totalTimerSeconds > 0 ? Math.floor(shiftElapsedSeconds / totalTimerSeconds) : 0;
   // ---  ИНТЕРАКТИВНАЯ ЛОГИКА ЦВЕТА КНОПКИ DONE ---
-  let doneButtonColorClass = styles.doneGreen; // По умолчанию всегда зеленая (время идет)
+  // --- АБСОЛЮТНО НОВАЯ И ЧЕСТНАЯ ЛОГИКА ЛОКАЛЬНОГО ТАЙМЕРА ДЕТАЛИ ---
+  let doneButtonColorClass = styles.doneGreen; // По умолчанию кнопка всегда зеленая
 
-  // Если таймер текущей детали дошел до конца (или равен 0)
-  if (timeLeft <= 0) {
-    doneButtonColorClass = styles.doneRed; // Время на 1 деталь вышло (красная)
-  }
+  if (totalTimerSeconds > 0) {
+    // Считаем, сколько полных циклов (норм времени на деталь) натикало на локальном счётчике
+    const elapsedNormsCount = currentPositionSeconds / totalTimerSeconds;
 
-  // Если вы отстаете от общего темпа смены более чем на 2 детали в текущем цикле
-  const currentExpectedPlan = totalTimerSeconds > 0 ? Math.floor(shiftElapsedSeconds / totalTimerSeconds) : 0;
-  if (currentExpectedPlan - processedCount >= 2) {
-    doneButtonColorClass = styles.doneBlackBlink; // Критическое отставание на 2+ детали (черная и мигает)
+    if (elapsedNormsCount >= 1 && elapsedNormsCount < 2) {
+      doneButtonColorClass = styles.doneRed; // Натикало от 1 до 2 деталей по времени (красная)
+    } else if (elapsedNormsCount >= 2) {
+      doneButtonColorClass = styles.doneBlackBlink; // Натикало от 2 до бесконечности деталей по времени (черная и мигает)
+    }
   }
 
   useEffect(() => {
@@ -202,13 +234,7 @@ export default function PomodoroWidget() {
     return () => window.removeEventListener("keydown", handleGlobalKey);
   }, [isRunning, handleRealItemDone]);
 
-  const handleGlobalReset = () => {
-    const wasActive = isRunning; setIsRunning(false);
-    if (confirm("Reset all progress?")) {
-      setProcessedCount(0); setStopwatchSeconds(0); setTotalRealSeconds(0); setShiftAdjustmentSeconds(0); setTimeLeft(totalTimerSeconds); setStartTimeText("--:--"); setActualStartObject(null);
-      localStorage.clear(); setDoneLogs([]);
-    } else { setIsRunning(wasActive); }
-  };
+
 
   const adjustCount = (amount: number) => { setProcessedCount((prev) => Math.max(0, prev + amount)); };
 
@@ -228,16 +254,7 @@ export default function PomodoroWidget() {
     setTimeLeft(computedTimerSeconds); setIsRunning(true);
   };
 
-  const handleStartToggle = () => {
-    if (!isRunning && timeLeft === totalTimerSeconds) {
-      setLockedCoefficient(coefficient); setLockedShift(shift); setLockedTarget(currentTargetPositions);
-      if (!actualStartObject) {
-        const now = new Date(); setActualStartObject(now);
-        setStartTimeText(`${now.getHours().toString().padStart(2, "0")}:${now.getMinutes().toString().padStart(2, "0")}`);
-      }
-    }
-    setIsRunning(!isRunning);
-  };
+
 
   return (
     <div className={styles.layoutWrapper}>
