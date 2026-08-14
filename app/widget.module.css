@@ -1,6 +1,5 @@
-
 /* ==========================================================================
-   1. ОБЩИЙ СТИЛЬ СТРАНИЦЫ И БЛОКОВ (МОНОЛИТНЫЙ ДИЗАЙН)
+   1. БАЗОВАЯ ГЕОМЕТРИЯ И СТРОГИЙ ДИЗАЙН КАРТОЧЕК
    ========================================================================== */
 
    .layoutWrapper {
@@ -23,14 +22,14 @@
     border-radius: 8px;
     width: max-content; 
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    height: 76px; 
+    height: 76px; /* Фиксированная высота для десктопа */
     overflow: hidden;
     gap: 6px;
     padding: 0;
-    box-shadow: 0 4px 20px rgba(15, 118, 110, 0.08); /* Мягкая фирменная тень */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
   }
   
-  /* Все блоки теперь строго в одном стиле */
+  /* Все карточки блоков на странице теперь строго в одном стиле */
   .concaveBlock {
     display: flex;
     align-items: center;
@@ -39,15 +38,17 @@
     padding: 0 10px;
     background: #f8fafc;
     border: 1px solid #e2e8f0;
-    border-radius: 6px;
+    border-radius: 6px; /* Единое скругление для всей страницы */
+    box-shadow: inset 0 2px 4px rgba(148, 163, 184, 0.04); 
     box-sizing: border-box;
   }
   
-  .fieldGroup, .fieldGroupTarget {
+  /* Выравнивание подписей по левому краю */
+  .fieldGroup, .fieldGroupTarget, .cfgRate, .cfgTime, .cfgTarget {
     display: flex;
     flex-direction: column;
-    align-items: center; 
-    justify-content: flex-start !important;
+    align-items: flex-start; /* ИСПРАВЛЕНО: строго по левому краю */
+    justify-content: center;
     gap: 2px;
   }
   
@@ -57,13 +58,14 @@
     color: #64748b;
     text-transform: uppercase;
     letter-spacing: 0.03em;
-    text-align: center;
+    text-align: left; /* ИСПРАВЛЕНО: текст заголовков слева */
   }
   
+  /* Поля ввода и тумблеры */
   .inputNumberWide {
     background-color: #ffffff;
     border: 1px solid #cbd5e1;
-    border-radius: 4px;
+    border-radius: 6px;
     color: #1e293b;
     font-size: 0.72rem !important; 
     font-weight: 700;
@@ -79,7 +81,7 @@
   .targetDisplayDisabled {
     background-color: #f1f5f9;
     border: 1px dashed #cbd5e1;
-    border-radius: 4px;
+    border-radius: 6px;
     font-size: 0.72rem !important; 
     font-weight: 700;
     color: #94a3b8;
@@ -90,26 +92,21 @@
     height: 20px; 
     width: 48px; 
     box-sizing: border-box;
-    cursor: not-allowed;
     gap: 1px;
   }
   
-  .unitText {
-    font-size: 0.6rem !important; 
-    color: #94a3b8;
-    font-weight: 600;
-    font-family: sans-serif;
-  }
+  .unitText { font-size: 0.6rem !important; color: #94a3b8; font-weight: 600; }
   
+  /* Поля времени (сделали шире, чтобы влезало 5-6 цифр) */
   .toggleContainer {
     display: flex;
     align-items: center;
     position: relative;
     background-color: #ffffff;
     border: 1px solid #cbd5e1;
-    border-radius: 4px;
+    border-radius: 6px;
     height: 20px; 
-    min-width: 94px;
+    min-width: 105px; /* ИСПРАВЛЕНО: расширили поле, чтобы ничего не зажималось */
     box-sizing: border-box;
   }
   
@@ -118,539 +115,411 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 45px;
+    width: 50px;
     height: 100%;
     font-size: 0.68rem; 
     font-weight: 700;
     color: #64748b;
     cursor: pointer;
     z-index: 2;
-    transition: color 0.12s ease-in-out;
   }
-  
   .radioLabelActive { color: #ffffff !important; }
   
   .slider {
     position: absolute;
     top: 1px; left: 2px;
     height: calc(100% - 2px);
-    width: 45px;
+    width: 50px;
     background-color: #0f766e;
-    border-radius: 3px;
+    border-radius: 4px;
     transition: transform 0.15s ease-in-out;
     z-index: 1;
   }
   
+  .configGrid { 
+    display: flex; 
+    align-items: center; 
+    gap: 8px; 
+    height: 100%; 
+    box-sizing: border-box; 
+  }
+  
+  /* КРУПНЫЙ ЖИРНЫЙ КРАСНЫЙ СТИЛЬ ДЛЯ СТРОК ВРЕМЕНИ СТАРТА И РАБОТЫ */
   .timeInfoLine {
     display: flex;
-    align-items: center !important; 
-    justify-content: center;
+    align-items: center; 
+    justify-content: flex-start;
     gap: 6px;
-    font-size: 0.52rem;
-    color: #64748b;
-    font-weight: 800;
-    margin-top: 5px; 
+    margin-top: 4px; 
+  }
+  
+  .timeAlertText {
+    font-size: 0.55rem;
+    color: #dc2626 !important; /* ИСПРАВЛЕНО: Яркий красный цвет */
+    font-weight: 900 !important; /* ИСПРАВЛЕНО: Супер-жирный шрифт */
     text-transform: uppercase;
     letter-spacing: 0.02em;
-    line-height: 1 !important; 
-    height: 10px; 
   }
   
   .dividerDot {
-    color: #cbd5e1;
+    color: #dc2626 !important;
     font-size: 0.6rem;
-    line-height: 1 !important;
-    display: flex;
-    align-items: center;
   }
   
-  .controlAndAdjustColumn {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    gap: 4px !important;
-    height: 100%;
-  }
-  
-  .gridRow {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    height: 22px;
-  }
-  
-  .gridRowFullWidth {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 4px;
-    width: 100%;
-    height: auto;
-  }
   /* ==========================================================================
-   2. СТРОГИЙ СТИЛЬ КНОПОК И ЦВЕТОВ (ВСЕГО 2 ЦВЕТА С ОТСТУПАМИ)
+   2. СТРОГИЙ ДИЗАЙН КНОПОК И ЦВЕТОВ (ВСЕГО 2 ЦВЕТА С ОТСТУПАМИ)
    ========================================================================== */
 
-/* Базовый шаблон для ВСЕХ кнопок на странице */
+/* Общий базовый шаблон формы для ВСЕХ кнопок на странице */
 .shadowBtn, .adjBtnWide, .dDoneBtn {
-    border: none;
-    font-weight: 700;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    border-radius: 6px; /* Строго одинаковое скругление углов для всех */
-    box-sizing: border-box;
-    transition: background-color 0.15s ease, transform 0.1s ease, box-shadow 0.15s ease;
-  }
-  
-  .shadowBtn:active, .adjBtnWide:active, .dDoneBtn:active:not(:disabled) {
-    transform: scale(0.96);
-  }
-  
-  /* ЦВЕТ 1: Фирменный тёмно-бирюзовый (Действие, Старт, Добавление, Лог) */
-  .btnStart, .btnReport, .adjBtnWide {
-    background-color: #0f766e !important;
-    color: #ffffff !important;
-  }
-  .btnStart:hover, .btnReport:hover, .adjBtnWide:hover {
-    background-color: #115e59 !important;
-  }
-  
-  /* ЦВЕТ 2: Спокойный Серый/Slate (Пауза, Звук, Сброс) */
-  .btnPause, .btnReset, .btnSoundOn, .btnSoundOff, .btnReportActive {
-    background-color: #475569 !important;
-    color: #ffffff !important;
-  }
-  .btnPause:hover, .btnReset:hover, .btnSoundOn:hover, .btnSoundOff:hover {
-    background-color: #334155 !important;
-  }
-  
-  .shadowBtn {
-    height: 22px;
-    padding: 0 10px;
-    font-size: 0.65rem;
-  }
-  
-  /* Кнопка DONE (По умолчанию в тон основным кнопкам, с большими симметричными отступами) */
-  .dDoneBtn {
-    width: auto;
-    min-width: 65px;
-    height: calc(100% - 4px); 
-    padding: 0 16px !important; /* Большие ровные отступы от краев до текста */
-    background-color: #0f766e !important; 
-    color: #ffffff !important;
-    font-size: 0.85rem;
-    font-weight: 900;
-    margin-top: 2px;
-    box-shadow: 0 4px 6px -1px rgba(15, 118, 110, 0.25);
-  }
-  .dDoneBtn:hover:not(:disabled) {
-    background-color: #115e59 !important;
-  }
-  
-  /* КРИТИЧЕСКИЙ КЛАСС ПРОСРОЧКИ: Включается, когда время вышло, а кнопка не нажата */
-  .dDoneOverdue {
-    background-color: #dc2626 !important; /* Монолитно краснеет */
-    color: #ffffff !important;
-    box-shadow: 0 0 14px rgba(220, 38, 38, 0.6) !important;
-    animation: pulseOverdue 1.4s infinite ease-in-out;
-  }
-  .dDoneOverdue:hover {
-    background-color: #b91c1c !important;
-  }
-  
-  @keyframes pulseOverdue {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.03); box-shadow: 0 0 18px rgba(220, 38, 38, 0.8) !important; }
-    100% { transform: scale(1); }
-  }
-  
-  /* ==========================================================================
-   3. ИНФОРМАЦИОННЫЕ ИНДИКАТОРЫ (ВЕРНУЛИ КРАСНЫЙ ПРОГРЕСС)
+  border: none;
+  font-weight: 800;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  border-radius: 6px !important; /* У всех кнопок теперь строго одинаковые углы */
+  box-sizing: border-box;
+  transition: background-color 0.15s ease, transform 0.1s ease, box-shadow 0.15s ease;
+}
+
+.shadowBtn:active, .adjBtnWide:active, .dDoneBtn:active:not(:disabled) {
+  transform: scale(0.96);
+}
+
+/* СТИЛЬ 1: Фирменный изумрудный (START, LOG, кнопки корректировок) */
+.btnStart, .btnReport, .adjBtnWide {
+  background-color: #0f766e !important;
+  color: #ffffff !important;
+}
+.btnStart:hover, .btnReport:hover, .adjBtnWide:hover {
+  background-color: #115e59 !important;
+}
+
+/* СТИЛЬ 2: Спокойный Сланцево-Серый/Slate (PAUSE, STOP, ЗВУК) */
+.btnPause, .btnReset, .btnSoundOn, .btnSoundOff, .btnReportActive {
+  background-color: #475569 !important;
+  color: #ffffff !important;
+}
+.btnPause:hover, .btnReset:hover, .btnSoundOn:hover, .btnSoundOff:hover {
+  background-color: #334155 !important;
+}
+
+/* Настройки верхнего ряда главных кнопок */
+.shadowBtn {
+  height: 22px;
+  padding: 0 10px;
+  font-size: 0.65rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+}
+.btnSoundOn { background-color: #334155 !important; }
+.btnReportActive { background-color: #1e293b !important; box-shadow: inset 0 2px 4px rgba(0,0,0,0.15) !important; }
+
+/* КНОПКИ КОРРЕКТИРОВОК — СТРОГО ОДИНАКОВОЙ ШИРИНЫ */
+.adjBtnWide {
+  flex: 1 !important; /* Кнопки делят строку абсолютно поровну */
+  height: 20px !important;
+  font-size: 0.62rem !important;
+  font-family: monospace !important;
+}
+
+/* СТИЛИЗАЦИЯ ТРЕХ ЦВЕТОВ ДЛЯ КНОПКИ DONE С ОТСТУПАМИ ПО 35px */
+.dDoneBtn {
+  width: auto !important;
+  height: calc(100% - 4px);
+  padding: 0 35px !important; /* ИСПРАВЛЕНО: Строго по 35px от текста до краев кнопки */
+  font-size: 0.85rem;
+  font-weight: 900;
+  margin-top: 2px;
+  letter-spacing: 0.05em;
+  color: #ffffff !important;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Цвет 1: Зеленый (Время на деталь еще идет) */
+.doneGreen {
+  background-color: #16a34a !important;
+}
+.doneGreen:hover {
+  background-color: #15803d !important;
+}
+
+/* Цвет 2: Красный (Время на 1 деталь вышло) */
+.doneRed {
+  background-color: #dc2626 !important;
+  box-shadow: 0 0 10px rgba(220, 38, 38, 0.4) !important;
+}
+.doneRed:hover {
+  background-color: #b91c1c !important;
+}
+
+/* Цвет 3: Черный + Мигание (Время вышло на 2 и более детали) */
+.doneBlackBlink {
+  background-color: #0f172a !important;
+  box-shadow: 0 0 12px rgba(15, 23, 42, 0.6) !important;
+  animation: criticalBlink 1.2s infinite ease-in-out;
+}
+.doneBlackBlink:hover {
+  background-color: #000000 !important;
+}
+
+@keyframes criticalBlink {
+  0% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.03); opacity: 0.85; box-shadow: 0 0 18px rgba(220, 38, 38, 0.7) !important; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+/* ==========================================================================
+   3. ИНФОРМАЦИОННЫЕ ИНДИКАТОРЫ И ПОЛОСЫ ПРОГРЕССА
    ========================================================================== */
 
-.timeDisplay, .stopwatchDisplay {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    min-width: 54px;
-    height: 100%;
-  }
-  
-  .timeLabel, .stopwatchLabel { 
-    font-size: 0.45rem; 
-    font-weight: 700; 
-    color: #94a3b8; 
-    line-height: 1.2 !important; /* Увеличили, чтобы не поджимало сверху */
-    margin-bottom: 2px;
-  }
-  .timeNumbers, .stopwatchNumbers { 
-    font-size: 0.85rem; 
-    font-weight: 700; 
-    font-family: monospace; 
-    line-height: 1.2 !important; /* Увеличили, чтобы цифры не обрезались */
-  }
-  .stopwatchNumbers { color: #3b82f6; }
-  
-  .paceGreen { color: #16a34a; }
-  .paceBlack { color: #0f172a; } 
-  .paceRed { color: #dc2626; font-weight: 900; } 
-  
-  .blockStats { flex: 1 !important; min-width: 140px; padding: 0 10px !important; }
-  .compactStatsBox { display: flex; flex-direction: column; justify-content: center; width: 100% !important; height: 100%; line-height: 1.2; gap: 1px; }
-  .progressRow { display: flex; justify-content: space-between; align-items: center; width: 100% !important; }
-  .rowLabel { font-size: 0.58rem; font-weight: 700; color: #64748b; text-transform: uppercase; }
-  .rowValue { font-size: 0.72rem !important; font-weight: 700; color: #1e293b; font-family: monospace; }
-  .textGreen { color: #16a34a !important; }
-  .textRed { color: #dc2626 !important; }
-  
-  .statusBarTrack { width: 100%; height: 2px; background-color: #e2e8f0; border-radius: 1px; margin-top: 2px; overflow: hidden; }
-  .statusBarFill { height: 100%; width: 0%; transition: width 0.3s ease; }
-  .bgBarGreen { background-color: #16a34a; }
-  .bgBarRed { background-color: #dc2626; }
-  
-  .countDisplayOnly {
-    color: #0f766e;
-    font-size: 0.85rem;
-    font-weight: 700;
-    font-family: monospace;
-    text-align: center;
-    border: 1px solid #0f766e;
-    border-radius: 6px;
-    height: 24px;
-    width: 36px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  
-  .extendedPaceTrack, .bottomProgressBarTrack {
-    width: calc(100% - 12px);
-    height: 12px; /* Чуть увеличили высоту полос для читаемости текста внутри */
-    background-color: #e2e8f0;
-    border-radius: 4px;
-    position: relative;
-    overflow: hidden;
-    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.08);
-  }
-  .extendedPaceFill { height: 100%; transition: width 1s linear, background-color 0.2s ease; border-radius: 4px; }
-  .extendedPaceText, .bottomProgressBarText {
-    position: absolute;
-    inset: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.52rem;
-    font-weight: 800;
-    color: #1e293b;
-    text-transform: uppercase;
-    letter-spacing: 0.02em;
-    mix-blend-mode: difference;
-  }
-  
-  .bgPaceGreen { background-color: #16a34a; }
-  .bgPaceBlack { background-color: #0f172a; }
-  .bgPaceRed   { background-color: #dc2626; }
-  
-  /* ВЕРНУЛИ КРАСНЫЙ ЦВЕТ ДЛЯ НИЖНЕГО ПРОГРЕСС-БАРА СМЕНЫ */
-  .bottomProgressBarFill { 
-    height: 100%; 
-    background-color: #dc2626 !important; /* Яркий красный прогресс-бар */
-    transition: width 0.3s ease-out; 
-    border-radius: 4px; 
-  }
-  
-  /* ТАБЛИЦА ЛОГОВ */
-  .reportSection {
-    width: 100%;
-    max-width: 510px;
-    margin-top: 14px;
-    background-color: #ffffff;
-    border: 1px solid #e2e8f0;
-    border-radius: 12px;
-    padding: 12px;
-    box-sizing: border-box;
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.03);
-  }
-  .reportHeader { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; padding-bottom: 6px; border-bottom: 1px solid #f1f5f9; }
-  .reportHeader h3 { margin: 0; font-size: 0.75rem; font-weight: 700; color: #0f172a; text-transform: uppercase; letter-spacing: 0.05em; }
-  .clearLogBtn { background-color: #fff1f2; border: 1px solid #ffe4e6; color: #e11d48; font-size: 0.6rem; font-weight: 700; padding: 2px 8px; border-radius: 4px; cursor: pointer; text-transform: uppercase; }
-  .clearLogBtn:hover { background-color: #ffe4e6; color: #be123c; }
-  
-  .tableWrapper { max-height: 240px; overflow-y: auto; border: 1px solid #f1f5f9; border-radius: 8px; }
-  .tableWrapper::-webkit-scrollbar { width: 5px; }
-  .tableWrapper::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
-  
-  .reportTable { width: 100%; border-collapse: collapse; font-size: 0.72rem; }
-  .reportTable th { background-color: rgba(248, 250, 252, 0.95); backdrop-filter: blur(4px); color: #64748b; font-weight: 600; padding: 6px 12px; font-size: 0.52rem; text-transform: uppercase; position: sticky; top: 0; z-index: 1; border-bottom: 1px solid #e2e8f0; }
-  .reportTable td { padding: 3px 12px !important; border-bottom: 1px solid #f1f5f9 !important; color: #334155; font-family: monospace !important; font-weight: 500; height: 22px !important; font-size: 0.68rem !important; }
-  .reportTable tbody tr:hover { background-color: #f8fafc; }
-  .reportTable td:nth-child(1) { color: #0f172a; font-weight: 600; }
-  .factCell { text-align: right; }
-  .factCell strong { background-color: #f0fdf4; color: #15803d; padding: 0px 6px !important; border-radius: 4px; font-size: 0.62rem; font-weight: 700; display: inline-block; border: 1px solid #dcfce7; }
-  
-  .blockControls { height: auto !important; padding-top: 4px !important; padding-bottom: 4px !important; }
-  
-  /* ==========================================================================
-   4. СТУПЕНИ АДАПТИВНОСТИ БЕЗ УЖАТИЙ И ДЕФОРМАЦИЙ СЛОВА
+.blockStats {
+  flex: 1 !important; 
+  min-width: 140px; 
+  padding: 0 10px !important;
+}
+
+.compactStatsBox {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 100% !important; 
+  height: 100%;
+  line-height: 1.2;
+  gap: 1px;
+}
+
+.progressRow { display: flex; justify-content: space-between; align-items: center; width: 100% !important; }
+.rowLabel { font-size: 0.58rem; font-weight: 700; color: #64748b; text-transform: uppercase; }
+.rowValue { font-size: 0.72rem !important; font-weight: 700; color: #1e293b; font-family: monospace; }
+.textGreen { color: #16a34a !important; }
+.textRed { color: #dc2626 !important; }
+
+.statusBarTrack { width: 100%; height: 2px; background-color: #e2e8f0; border-radius: 1px; margin-top: 2px; overflow: hidden; }
+.statusBarFill { height: 100%; width: 0%; transition: width 0.3s ease; }
+.bgBarGreen { background-color: #16a34a; }
+.bgBarRed { background-color: #dc2626; }
+
+.extendedPaceTrack, .bottomProgressBarTrack {
+  width: calc(100% - 12px);
+  height: 10px;
+  background-color: #e2e8f0;
+  border-radius: 4px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.08);
+}
+.extendedPaceFill { height: 100%; transition: width 1s linear, background-color 0.2s ease; border-radius: 4px; }
+.extendedPaceText, .bottomProgressBarText {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.52rem;
+  font-weight: 800;
+  color: #1e293b;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  mix-blend-mode: difference;
+}
+
+.bgPaceGreen { background-color: #16a34a; }
+.bgPaceBlack { background-color: #0f172a; }
+.bgPaceRed   { background-color: #dc2626; }
+
+/* КРАСНЫЙ ПРОГРЕСС-БАР СМЕНЫ ВЕРНУЛСЯ НА МЕСТО */
+.bottomProgressBarFill { height: 100%; background-color: #dc2626 !important; transition: width 0.3s ease-out; border-radius: 4px; }
+/* ==========================================================================
+   3. НАВЕДЕНИЕ ПОРЯДКА В БЛОКЕ Д И ИСТОРИИ ЛОГОВ
    ========================================================================== */
 
-/* СРЕДНИЕ ЭКРАНЫ (ОТ 601px ДО 1100px) */
-@media (max-width: 1100px) and (min-width: 601px) {
-    .widgetContainer {
-      max-width: 510px !important; 
-      width: 510px !important;
-      height: auto !important; 
-      display: flex !important;
-      flex-direction: row !important;
-      flex-wrap: wrap !important; 
-      padding: 6px !important;
-      background-color: #f1f5f9 !important; 
-      border: 1px solid #cbd5e1 !important;
-      margin-left: auto !important; 
-      margin-right: 0 !important; 
-      align-items: stretch !important;
-      gap: 6px !important;
-    }
-  
-    .concaveBlock { height: 76px !important; flex: none !important; }
-  
-    .widgetContainer > .concaveBlock:nth-child(3) { order: 1 !important; width: calc(45% - 3px) !important; }
-    .widgetContainer > .concaveBlock:nth-child(1) { order: 2 !important; width: calc(55% - 3px) !important; }
-    
-      /* ЭТАЖ 2 (НИЖНИЙ): Статистика (План/Факт) и Таймеры с кнопкой DONE */
-  .widgetContainer > .concaveBlock:nth-child(2) {
-    order: 3 !important;
-    width: calc(35% - 3px) !important; 
-  }
-  
-  .widgetContainer > .concaveBlock:nth-child(4) {
-    order: 4 !important;
-    width: calc(65% - 3px) !important; 
-    flex: 0 0 calc(65% - 3px) !important;
-    padding-top: 4px !important;
-    padding-bottom: 4px !important;
-    height: 84px !important; 
-  }
+/* Пересобираем Блок Д в строгую линию без мешанины элементов */
+.blockAction {
+  flex-direction: column !important;
+  align-items: stretch !important;
+  gap: 4px !important;
+}
 
-  /* Оптимизация внутренних кнопок */
-  .toggleContainer { height: 24px !important; min-width: 94px !important; }
-  .radioLabel { font-size: 0.75rem !important; width: 45px !important; }
-  .slider { width: 45px !important; height: calc(100% - 4px) !important; }
-  .gridRow { height: 22px !important; }
-  
-  .shadowBtn { 
-    height: 22px !important; 
-    font-size: 0.65rem !important; 
-    padding: 0 8px !important;
-  }
-  
-  .blockControls .controlAndAdjustColumn {
-    gap: 6px !important; 
-    height: 100% !important;
-    justify-content: center !important;
-  }
-  
-  .dDoneBtn { 
-    margin-right: 0 !important; 
-    height: calc(100% + 8px) !important; 
-    margin-top: -4px !important; 
-    width: 60px !important;
-  }
-} /* <--- ЗАКРЫВАЕМ СТУПЕНЬ 2 */
+.actionMainGrid {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  height: auto;
+  gap: 8px;
+}
 
-/* СТУПЕНЬ 3: МОБИЛЬНЫЙ ВИД (ЭКРАНЫ МЕНЬШЕ 600px) — ПОЛНОЕ ИСПРАВЛЕНИЕ НАЕЗДОВ ЭЛЕМЕНТОВ */
+.actionStatsBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 58px;
+}
+
+.actionStatsRow {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.58rem;
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+.actionLabel {
+  font-size: 0.48rem;
+  font-weight: 800;
+  color: #94a3b8;
+  text-transform: uppercase;
+  line-height: 1;
+}
+
+.actionValue {
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: #1e293b;
+  font-family: monospace;
+}
+
+/* Зоны таймеров иDone */
+.actionFieldGroup, .actionTimerGroup {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-width: 48px;
+}
+
+.countDisplayOnly {
+  color: #0f766e;
+  font-size: 0.85rem;
+  font-weight: 800;
+  font-family: monospace;
+  text-align: center;
+  border: 1px solid #cbd5e1;
+  background-color: #ffffff;
+  border-radius: 6px;
+  height: 22px;
+  width: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 1px;
+}
+
+.stopwatchNumbers { font-size: 0.85rem; font-weight: 700; color: #3b82f6; font-family: monospace; }
+.timeNumbers { font-size: 0.85rem; font-weight: 800; font-family: monospace; }
+
+/* ДАШБОРД-ЛОГ ОТЧЕТА */
+.reportSection {
+  width: 100%;
+  max-width: 510px;
+  margin-top: 14px;
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 12px;
+  box-sizing: border-box;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.03);
+}
+.reportHeader { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; padding-bottom: 6px; border-bottom: 1px solid #f1f5f9; }
+.reportHeader h3 { margin: 0; font-size: 0.75rem; font-weight: 700; color: #0f172a; text-transform: uppercase; letter-spacing: 0.05em; }
+.clearLogBtn { background-color: #fff1f2; border: 1px solid #ffe4e6; color: #e11d48; font-size: 0.6rem; font-weight: 700; padding: 2px 8px; border-radius: 4px; cursor: pointer; text-transform: uppercase; }
+.clearLogBtn:hover { background-color: #ffe4e6; color: #be123c; }
+
+.tableWrapper { max-height: 240px; overflow-y: auto; border: 1px solid #f1f5f9; border-radius: 8px; background-color: #ffffff; }
+.reportTable { width: 100%; border-collapse: collapse; font-size: 0.72rem; }
+.reportTable th { background-color: rgba(248, 250, 252, 0.95); color: #64748b; font-weight: 600; padding: 6px 12px; font-size: 0.52rem; text-transform: uppercase; position: sticky; top: 0; border-bottom: 1px solid #e2e8f0; }
+.reportTable td { padding: 4px 12px !important; border-bottom: 1px solid #f1f5f9 !important; color: #334155; font-family: monospace !important; }
+.reportTable tbody tr:hover { background-color: #f8fafc; }
+.factCell { text-align: right; }
+.factCell strong { background-color: #f0fdf4; color: #15803d; padding: 2px 6px !important; border-radius: 4px; font-size: 0.62rem; font-weight: 700; display: inline-block; border: 1px solid #dcfce7; }
+
+.blockControls { height: auto !important; padding-top: 4px !important; padding-bottom: 4px !important; }
+
+/* ==========================================================================
+   4. АДАПТИВНОСТЬ И СТРОГИЙ СТОЛБИК НА МОБИЛЬНЫХ ЭКРАНАХ (ДО 600px)
+   ========================================================================== */
+
 @media (max-width: 600px) {
-    /* Полностью скрываем блок разницы для экономии ширины на маленьких экранах */
-    .widgetContainer > .concaveBlock:nth-child(2) { 
-      display: none !important; 
-    }
-  
-    .widgetContainer {
-      display: grid !important;
-      grid-template-columns: 1fr 1fr !important; /* Ровные адаптивные колонки 50/50 */
-      grid-template-rows: auto auto !important;   
-      max-width: 100% !important;    
-      width: calc(100vw - 24px) !important; 
-      height: auto !important; /* ИСПРАВЛЕНО: убрали жесткие 76px, теперь блоки не сжимаются по вертикали */
-      gap: 10px !important;
-      padding: 10px !important;
-      background-color: #f1f5f9 !important; 
-      border: 1px solid #cbd5e1 !important;
-      box-sizing: border-box !important;
-      border-radius: 8px !important;
-      overflow: visible !important; /* ИСПРАВЛЕНО: теперь нижние полосы прогресса не обрезаются */
-    }
-  
-    .concaveBlock { 
-      box-sizing: border-box !important; 
-      height: auto !important; /* Даем блокам растягиваться под контент */
-      padding: 10px !important; 
-      border-radius: 6px !important; 
-      width: 100% !important;
-      display: flex !important;
-      flex-direction: column !important; /* Элементы внутри блоков ложатся ровно друг под друга */
-      justify-content: center !important;
-      align-items: stretch !important;
-    }
-  
-    /* ==========================================
-       ЛЕВАЯ КОЛОНКА (КНОПКИ УПРАВЛЕНИЯ И КОРРЕКТИРОВОК)
-       ========================================== */
-    .widgetContainer > .concaveBlock:nth-child(3) {
-      grid-column: 1 !important; 
-      grid-row: 1 / span 2 !important; 
-      justify-content: flex-start !important;
-      gap: 8px !important;
-    }
-  
-    .controlAndAdjustColumn { 
-      width: 100% !important; 
-      display: flex !important; 
-      flex-direction: column !important; 
-      gap: 8px !important; 
-    }
-  
-    /* Ряд верхних кнопок управления (START, ЗВУК, LOG, STOP) */
-    .gridRow { 
-      display: flex !important; 
-      width: 100% !important; 
-      gap: 6px !important; 
-      height: 32px !important; /* Увеличили высоту, чтобы иконки звука и лога не сминались */
-    }
-    
-    .gridRow .shadowBtn { 
-      flex: 1 !important; 
-      height: 100% !important; 
-      font-size: 0.65rem !important; 
-      padding: 0 6px !important; /* Защитные отступы, чтобы текст дышал */
-      white-space: nowrap !important; 
-      border-radius: 6px !important;
-    }
-  
-    /* Ряды корректировок (-1, -10 и минуты) */
-    .gridRowFullWidth { 
-      display: flex !important; 
-      flex-direction: row !important; /* Возвращаем горизонтальный ряд */
-      width: 100% !important; 
-      gap: 4px !important; 
-      height: 28px !important; 
-    }
-    .adjBtnWide, .currentTimeBadge { 
-      height: 28px !important; 
-      font-size: 0.68rem !important; 
-      border-radius: 6px !important;
-    }
-    .adjBtnWide { 
-      padding: 0 4px !important; 
-    }
-  
-    /* ==========================================
-       ПРАВАЯ КОЛОНКА: ЭТАЖ 1 (КОНФИГУРАЦИЯ И СЕТКА ЦИФР)
-       ========================================== */
-    .widgetContainer > .concaveBlock:nth-child(1) { 
-      grid-column: 2 !important; 
-      grid-row: 1 !important; 
-    }
-  
-    /* Исправляем сетку полей, чтобы число 2029 встало на свое место */
-    .configGrid {
-      display: flex !important;
-      flex-direction: column !important; /* Выстраиваем Rate, Time и Target строго друг под друга */
-      gap: 8px !important;
-      width: 100% !important;
-      padding: 0 !important;
-    }
-  
-    .cfgRate, .cfgTime, .cfgTarget {
-      display: flex !important;
-      flex-direction: column !important;
-      align-items: center !important;
-      width: 100% !important;
-      height: auto !important;
-      position: relative !important;
-    }
-  
-    /* Поля ввода и плашки */
-    .inputNumberWide, .targetDisplayDisabled, .toggleContainer {
-      height: 26px !important; /* Одинаковая аккуратная высота элементов */
-      margin-top: 2px !important;
-    }
-    .inputNumberWide { width: 60px !important; }
-    .targetDisplayDisabled { width: 65px !important; }
-  
-    /* Текст START / WORKED */
-    .timeInfoLine {
-      height: auto !important;
-      line-height: 1.4 !important;
-      margin-top: 4px !important;
-      display: flex !important;
-      flex-direction: column !important; /* START и WORKED ложатся аккуратными строчками */
-      gap: 1px !important;
-      font-size: 0.58rem !important;
-      align-items: center !important;
-    }
-    .dividerDot { display: none !important; }
-  
-    /* ==========================================
-       ПРАВАЯ КОЛОНКА: ЭТАЖ 2 (ТАЙМЕРЫ И БОЛЬШАЯ DONE)
-       ========================================== */
-    .widgetContainer > .concaveBlock:nth-child(4) { 
-      grid-column: 2 !important; 
-      grid-row: 2 !important; 
-      padding: 8px !important;
-      gap: 8px !important;
-    }
-  
-    /* Ряд верхних счетчиков */
-    .widgetContainer > .concaveBlock:nth-child(4) > div:first-child { 
-      display: flex !important; 
-      flex-direction: row !important; 
-      flex-wrap: wrap !important;
-      gap: 6px !important; 
-      align-items: center !important; 
-      justify-content: space-between !important; 
-      width: 100% !important; 
-    }
-  
-    .compactStatsBox { min-width: 55px !important; gap: 1px !important; }
-    .compactStatsBox .rowLabel { font-size: 0.52rem !important; }
-    .compactStatsBox .rowValue { font-size: 0.65rem !important; }
-    
-    .stopwatchDisplay, .timeDisplay { 
-      display: flex !important; 
-      flex-direction: column !important; 
-      align-items: center !important; 
-      min-width: 42px !important; 
-    }
-  
-    /* КНОПКА DONE: Идеальная форма, крупные симметричные поля, текст по центру */
-    .widgetContainer > .concaveBlock:nth-child(4) .dDoneBtn {
-      width: 100% !important; /* На мобильном кнопка DONE ложится красивым широким блоком */
-      height: 38px !important; 
-      font-size: 0.85rem !important; 
-      padding: 0 16px !important; /* Одинаковые и ровные отступы с обеих сторон от слова DONE */
-      margin: 4px 0 0 0 !important;
-      border-radius: 6px !important; /* Углы стали скругленными и симметричными */
-      display: inline-flex !important;
-    }
-  
-    /* ПОЛОСЫ ПРОГРЕССА (Включая ярко-красную полосу смены в самом низу) */
-    .extendedPaceTrack, .bottomProgressBarTrack { 
-      width: 100% !important; 
-      margin: 4px 0 0 0 !important; 
-      height: 12px !important; /* Увеличили высоту, чтобы текст внутри полосы не обрезался */
-    }
+  /* Блок разницы больше не прячем, так как всё выстраивается в один ровный столбец */
+  .widgetContainer > .concaveBlock:nth-child(2) { 
+    display: flex !important; 
   }
-  
-  /* Экран супер-маленьких телефонов */
-  @media (max-width: 350px) {
-    .widgetContainer { 
-      transform: scale(0.85) !important; 
-      transform-origin: center center !important; 
-    }
+
+  .widgetContainer {
+    display: flex !important;
+    flex-direction: column !important; /* ИСПРАВЛЕНО: Все блоки строго в один столбец */
+    height: auto !important; /* Убираем жесткую десктопную высоту */
+    width: 100% !important;
+    max-width: 360px !important;    
+    gap: 10px !important;
+    padding: 10px !important;
+    background-color: #f1f5f9 !important; 
+    border: 1px solid #cbd5e1 !important;
+    box-sizing: border-box !important;
+    border-radius: 8px !important;
+    overflow: visible !important;
   }
+
+  .concaveBlock { 
+    box-sizing: border-box !important; 
+    height: auto !important; /* Высота подстраивается под содержимое, ничего не обрезая */
+    padding: 10px !important; 
+    border-radius: 6px !important; 
+    width: 100% !important;
+    display: flex !important;
+    flex-direction: row !important; /* Внутри десктопная разметка элементов сохраняется */
+    align-items: center !important;
+    justify-content: space-between !important;
+  }
+
+  /* ---- СТРОГАЯ ИЕРАРХИЯ СТОЛБИКА СВЕРХУ ВНИЗ (ОБНОВЛЕННЫЙ ПОРЯДОК) ---- */
   
+  /* Блок А (Настройки: Rate, Смена, Время старта и работы) — Первый сверху */
+  .blockConfig {
+    order: 1 !important;
+  }
+  .configGrid { gap: 12px !important; }
+
+  /* Блок Б (START, STOP, LOG и кнопки корректировок) — Второй */
+  .blockControls {
+    order: 2 !important;
+  }
+  .controlAndAdjustColumn { width: 100% !important; gap: 6px !important; }
+  .gridRow { width: 100% !important; height: 26px !important; }
+  .gridRow .shadowBtn { flex: 1 !important; height: 100% !important; font-size: 0.65rem !important; }
+  .gridRowFullWidth { width: 100% !important; height: 24px !important; }
+
+  /* Блок С (Статистика: План, Факт, Дифф и прогресс-бар) — Третий */
+  .blockStats {
+    order: 3 !important;
+  }
+
+  /* Блок Д (Финальный: DONE, таймеры и нижний красный прогресс-бар) — Четвертый в самом низу */
+  .blockAction {
+    order: 4 !important;
+    gap: 8px !important;
+  }
+  .actionMainGrid { width: 100% !important; }
+
+  /* СОХРАНЯЕМ ИДЕАЛЬНУЮ СИММЕТРИЮ И ОТСТУПЫ 35px ДЛЯ DONE НА МОБИЛЬНОМ */
+  .dDoneBtn {
+    width: auto !important; /* ИСПРАВЛЕНО: Больше не растягивается уродливо на весь блок */
+    height: 36px !important; /* Удобная высота под палец */
+    padding: 0 35px !important; /* Жесткие красивые поля 35px слева и справа */
+    font-size: 0.85rem !important; 
+    margin: 0 !important;
+  }
+
+  .extendedPaceTrack, .bottomProgressBarTrack { 
+    width: 100% !important; 
+    margin-top: 4px !important; 
+    height: 10px !important; 
+  }
+}
+
+/* Корректировка для экранов старых узких телефонов */
+@media (max-width: 340px) {
+  .widgetContainer { transform: scale(0.9) !important; transform-origin: top center !important; }
+}
