@@ -259,70 +259,78 @@
 .btnSoundOn { background-color: #334155 !important; }
 .btnReportActive { background-color: #1e293b !important; box-shadow: inset 0 2px 4px rgba(0,0,0,0.15) !important; }
 
-/* БЛОК Б: Одинаковые по ширине кнопки корректировок */
-.blockControls {
-  min-width: 190px; 
-}
-.controlAndAdjustColumn {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 5px !important;
-}
-.gridRowMain {
-  display: flex;
-  gap: 4px;
-  width: 100%;
-}
-.gridRowMain .shadowBtn {
-  flex: 1; /* Кнопки START и STOP делят верхний ряд поровну */
-}
+/* ==========================================================================
+   2. КОМПАКТНЫЙ ДИЗАЙН БЛОКА Б (УБИРАЕМ ВСЕ СТРАННЫЕ ДЫРЫ)
+   ========================================================================== */
 
-.gridRowFullWidthLabel {
-  display: flex;
-  align-items: center;
-  width: 100%;
-  gap: 8px; 
-}
-
-/* Текстовые метки перед кнопками (PCS: и TIME:) */
-.adjustPrefixLabel {
-  font-size: 0.55rem;
-  font-weight: 800;
-  color: #64748b;
-  min-width: 32px; /* Фиксированное место под надпись, чтобы сетка кнопок шла ровно */
-  text-align: left;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
-}
-
-/* Сетка, делающая кнопки корректировок строго одинаковыми */
-.adjustButtonsSubGrid {
-  display: flex;
-  flex: 1;
-  gap: 4px;
-}
-
-.adjBtnWide {
-  flex: 1 !important; /* Каждая кнопка забирает ровно четверть строки */
-  height: 22px !important;
-  font-size: 0.65rem !important;
-  font-family: monospace !important;
-}
-
-.currentTimeBadge {
-  background-color: #f8fafc;
-  border: 1px solid #cbd5e1;
-  color: #0f766e; 
-  flex: 1;
-  height: 22px !important;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: monospace !important;
-  font-size: 0.65rem !important;
-  font-weight: 700 !important;
-  border-radius: 6px;
-}
+   .blockControls { 
+    min-width: auto !important; /* ИСПРАВЛЕНО: убрали жесткие 190px, блок теперь сжимается по кнопкам */
+    width: max-content !important;
+  }
+  
+  .controlAndAdjustColumn { 
+    width: 100%; 
+    display: flex; 
+    flex-direction: column; 
+    gap: 5px !important; 
+  }
+  
+  .gridRowMain { 
+    display: flex; 
+    gap: 4px; 
+    width: 100%; 
+  }
+  .gridRowMain .shadowBtn { 
+    flex: 1; 
+  }
+  
+  .gridRowFullWidthLabel { 
+    display: flex; 
+    align-items: center; 
+    width: 100%; 
+    gap: 6px; /* Оптимальный зазор между надписью и кнопками */
+  }
+  
+  /* Метка перед кнопками (PCS:, TIME:) */
+  .adjustPrefixLabel { 
+    font-size: 0.55rem; 
+    font-weight: 800; 
+    color: #64748b; 
+    min-width: auto !important; /* ИСПРАВЛЕНО: убрали жесткую ширину, которая создавала дыру */
+    margin-right: 2px;
+    text-align: left; 
+  }
+  
+  /* Сетка кнопок корректировок — задаем им оптимальный размер под разрешение 400 */
+  .adjustButtonsSubGrid { 
+    display: flex; 
+    gap: 4px; 
+  }
+  
+  .adjBtnWide { 
+    width: 34px !important; /* ИСПРАВЛЕНО: жесткий оптимальный размер кнопки, чтобы они не растягивались */
+    height: 22px !important; 
+    font-size: 0.65rem !important; 
+    font-family: monospace !important; 
+    flex: none !important; /* Запрещаем кнопкам неконтролируемо расширяться */
+  }
+  
+  .currentTimeBadge { 
+    background-color: #f8fafc; 
+    border: 1px solid #cbd5e1; 
+    color: #0f766e; 
+    width: 34px !important; /* Плашка времени смены точно такая же аккуратная, как кнопки */
+    height: 22px !important; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    font-family: monospace !important; 
+    font-size: 0.62rem !important; 
+    font-weight: 700 !important; 
+    border-radius: 6px; 
+    flex: none !important;
+  }
+  
 
 /* ИДЕАЛЬНАЯ КНОПКА DONE С ОТСТУПАМИ ПО 35px */
 .dDoneBtn {
@@ -649,14 +657,36 @@
   .dividerDot { display: none !important; }
 
   /* БЛОК Б */
-  .controlAndAdjustColumn { width: 100% !important; gap: 8px !important; }
-  .gridRow, .gridRowMain { display: flex !important; width: 100% !important; gap: 4px !important; height: 28px !important; }
-  .gridRow .shadowBtn, .gridRowMain .shadowBtn { flex: 1 !important; height: 100% !important; font-size: 0.65rem !important; padding: 0 4px !important; white-space: nowrap !important; }
-  .gridRowFullWidth, .gridRowFullWidthLabel { display: flex !important; width: 100% !important; gap: 4px !important; height: 24px !important; }
-  .adjustPrefixLabel { font-size: 0.55rem !important; min-width: 32px !important; font-family: -apple-system, sans-serif !important; }
-  .adjustButtonsSubGrid { display: flex; flex: 1; gap: 4px; }
-  .adjBtnWide, .currentTimeBadge { height: 24px !important; font-size: 0.68rem !important; font-family: monospace !important; }
-
+  /* ==========================================
+     МОБИЛЬНЫЙ БЛОК Б (БЕЗ ДЫР И РАСТЯГИВАНИЯ)
+     ========================================== */
+     .blockControls { 
+      width: 100% !important; 
+      max-width: 100% !important; 
+    }
+    .controlAndAdjustColumn { 
+      width: 100% !important; 
+      gap: 8px !important; 
+      align-items: center !important; /* Центрируем ряды кнопок на мобильном */
+    }
+    .gridRowMain { 
+      height: 32px !important; 
+      gap: 6px !important; 
+      width: max-content !important; /* Ряд СТАРТ/СТОП не тянется на весь экран */
+    }
+    .gridRowFullWidthLabel { 
+      height: 26px !important; 
+      gap: 6px !important; 
+      width: max-content !important; /* Ряды корректировок сжимаются в аккуратный блок по центру */
+    }
+    
+    /* Кнопки корректировок на мобильном встают в свой идеальный размер */
+    .adjBtnWide, .currentTimeBadge { 
+      width: 38px !important; /* Чуть крупнее под мобильный палец, но без дыр */
+      height: 26px !important; 
+      font-size: 0.68rem !important; 
+    }
+  
   /* БЛОК С */
   /* БЛОК С */
   .compactStatsBox { 
