@@ -172,7 +172,6 @@ export default function PomodoroWidget() {
     setTimeLeft(totalTimerSeconds);
   }, [stopwatchSeconds, totalTimerSeconds, processedCount, planPcsRounded]);
 
-  // Вычисление динамического класса цвета для DONE
   const currentNormsElapsed = totalTimerSeconds > 0 ? Math.floor(shiftElapsedSeconds / totalTimerSeconds) : 0;
   let doneButtonColorClass = styles.doneGreen;
 
@@ -194,10 +193,9 @@ export default function PomodoroWidget() {
 
   const handleGlobalReset = () => {
     const wasActive = isRunning; setIsRunning(false);
-    if (confirm("Reset all shift progress and configuration?")) {
+    if (confirm("Reset all progress?")) {
       setProcessedCount(0); setStopwatchSeconds(0); setTotalRealSeconds(0); setShiftAdjustmentSeconds(0); setTimeLeft(totalTimerSeconds); setStartTimeText("--:--"); setActualStartObject(null);
-      localStorage.removeItem("p_processedCount"); localStorage.removeItem("p_totalRealSeconds"); localStorage.removeItem("p_shiftElapsedSeconds");
-      setDoneLogs([]); localStorage.removeItem("p_doneLogs");
+      localStorage.clear(); setDoneLogs([]);
     } else { setIsRunning(wasActive); }
   };
 
@@ -211,30 +209,19 @@ export default function PomodoroWidget() {
     }
     setShiftAdjustmentSeconds((prev) => { const newValue = prev - minutesAmount * 60; return newValue < 0 ? 0 : newValue; });
     const currentShiftMins = shift === "9h40m" ? 9 * 60 + 40 : 8 * 60;
- 
     const currentTargetPcs = Math.round(coefficient * (currentShiftMins / 60));
-
-    setLockedCoefficient(coefficient);
-    setLockedShift(shift);
-    setLockedTarget(currentTargetPcs);
-
+    setLockedCoefficient(coefficient); setLockedShift(shift); setLockedTarget(currentTargetPcs);
     const netMinutes = currentShiftMins - 45;
     const computedTimerSeconds = currentTargetPcs > 0 ? Math.round((netMinutes * 60) / currentTargetPcs) : 25 * 60;
-    setTimeLeft(computedTimerSeconds);
-    setIsRunning(true);
+    setTimeLeft(computedTimerSeconds); setIsRunning(true);
   };
 
   const handleStartToggle = () => {
     if (!isRunning && timeLeft === totalTimerSeconds) {
-      setLockedCoefficient(coefficient);
-      setLockedShift(shift);
-      setLockedTarget(currentTargetPositions);
+      setLockedCoefficient(coefficient); setLockedShift(shift); setLockedTarget(currentTargetPositions);
       if (!actualStartObject) {
-        const now = new Date();
-        setActualStartObject(now);
-        const hrs = now.getHours().toString().padStart(2, "0");
-        const mins = now.getMinutes().toString().padStart(2, "0");
-        setStartTimeText(`${hrs}:${mins}`);
+        const now = new Date(); setActualStartObject(now);
+        setStartTimeText(`${now.getHours().toString().padStart(2, "0")}:${now.getMinutes().toString().padStart(2, "0")}`);
       }
     }
     setIsRunning(!isRunning);
@@ -242,224 +229,116 @@ export default function PomodoroWidget() {
 
   return (
     <div className={styles.layoutWrapper}>
-      <div className={styles.widgetContainer}>
-        
-        {/* BLOCK A: CONFIGURATION (Блок настроек с измененной структурой колонок) */}
-        <div className={`${styles.concaveBlock} ${styles.blockConfig}`}>
-          <div className={styles.configGrid}>
-            
-            {/* ЛЕВАЯ КОЛОНКА: Выбор смены, START и WORKED */}
-            <div className={styles.cfgTime}>
-              <span className={styles.fieldLabel}>Time</span>
-              <div className={styles.toggleContainer} style={{ opacity: isSettingsDisabled ? 0.7 : 1 }}>
-                <input type="radio" id="shift-8" name="shiftValue" value="8h" checked={(isSettingsDisabled ? lockedShift : shift) === "8h"} onChange={() => setShift("8h")} disabled={isSettingsDisabled} className={styles.radioInput} />
-                <label htmlFor="shift-8" className={`${styles.radioLabel} ${(isSettingsDisabled ? lockedShift : shift) === "8h" ? styles.radioLabelActive : ""}`}>8h</label>
-                <input type="radio" id="shift-9" name="shiftValue" value="9h40m" checked={(isSettingsDisabled ? lockedShift : shift) === "9h40m"} onChange={() => setShift("9h40m")} disabled={isSettingsDisabled} className={styles.radioInput} />
-                <label htmlFor="shift-9" className={`${styles.radioLabel} ${(isSettingsDisabled ? lockedShift : shift) === "9h40m" ? styles.radioLabelActive : ""}`}>9:40</label>
-                <div className={styles.slider} style={{ transform: (isSettingsDisabled ? lockedShift : shift) === "9h40m" ? "translateX(45px)" : "translateX(0px)" }}></div>
-              </div>
-              <div className={styles.timeInfoLine}>
-                <span className={styles.timeAlertText}>START: {startTimeText}</span>
-                <span className={styles.timeAlertText}>WORKED: {formatTimeNoSeconds(shiftElapsedSeconds)}</span>
-              </div>
+    <div className={styles.widgetContainer}>
+      
+      {/* БЛОК А: CONFIGURATION */}
+      <div className={`${styles.concaveBlock} ${styles.blockConfig}`}>
+        <div className={styles.configGrid}>
+          <div className={styles.cfgTime}>
+            <span className={styles.fieldLabel}>Time</span>
+            <div className={styles.toggleContainer}>
+              <input type="radio" id="shift-8" name="shiftValue" value="8h" checked={(isSettingsDisabled ? lockedShift : shift) === "8h"} onChange={() => setShift("8h")} disabled={isSettingsDisabled} className={styles.radioInput} />
+              <label htmlFor="shift-8" className={`${styles.radioLabel} ${(isSettingsDisabled ? lockedShift : shift) === "8h" ? styles.radioLabelActive : ""}`}>8h</label>
+              <input type="radio" id="shift-9" name="shiftValue" value="9h40m" checked={(isSettingsDisabled ? lockedShift : shift) === "9h40m"} onChange={() => setShift("9h40m")} disabled={isSettingsDisabled} className={styles.radioInput} />
+              <label htmlFor="shift-9" className={`${styles.radioLabel} ${(isSettingsDisabled ? lockedShift : shift) === "9h40m" ? styles.radioLabelActive : ""}`}>9:40</label>
+              <div className={styles.slider} style={{ transform: (isSettingsDisabled ? lockedShift : shift) === "9h40m" ? "translateX(45px)" : "translateX(0px)" }}></div>
             </div>
-
-            {/* ПРАВАЯ КОЛОНКА: Настройка Rate/Hour и Target ниже */}
-            <div className={styles.cfgRate}>
-              <div className={styles.fieldGroup}>
-                <label htmlFor="coefficient" className={styles.fieldLabel}>Rate / Hour</label>
-                <input
-                  id="coefficient"
-                  type="number"
-                  step="1"
-                  min="1"
-                  max="999999"
-                  value={isSettingsDisabled ? lockedCoefficient : coefficient}
-                  onChange={(e) => setCoefficient(parseInt(e.target.value) || 0)}
-                  disabled={isSettingsDisabled}
-                  className={styles.inputNumberWide}
-                />
-              </div>
-              
-              <div className={styles.cfgTarget}>
-                <span className={styles.fieldLabel}>Target</span>
-                <div className={styles.targetDisplayDisabled}>
-                  {isSettingsDisabled ? lockedTarget : currentTargetPositions}
-                  <span className={styles.unitText}>pcs</span>
-                </div>
-              </div>
-            </div>
-
-          </div>
-        </div>
-
-        {/* BLOCK B: CONTROLS & MANUAL ADJUSTMENTS (Управление и ровные корректировки) */}
-        <div className={`${styles.concaveBlock} ${styles.blockControls}`}>
-          <div className={styles.controlAndAdjustColumn}>
-            
-            <div className={styles.gridRowMain}>
-              <button type="button" onClick={handleStartToggle} className={`${styles.shadowBtn} ${isRunning ? styles.btnPause : styles.btnStart}`}>
-                {isRunning ? "|| PAUSE" : "▶ START"}
-              </button>
-              <button type="button" onClick={handleGlobalReset} className={`${styles.shadowBtn} ${styles.btnReset}`}>
-                ✖ STOP
-              </button>
-            </div>
-
-            <div className={styles.gridRowFullWidthLabel}>
-              <span className={styles.adjustPrefixLabel}>PCS:</span>
-              <div className={styles.adjustButtonsSubGrid}>
-                <button type="button" onClick={() => adjustCount(-1)} className={styles.adjBtnWide}>-1</button>
-                <button type="button" onClick={() => adjustCount(-10)} className={styles.adjBtnWide}>-10</button>
-                <button type="button" onClick={() => adjustCount(10)} className={styles.adjBtnWide}>+10</button>
-                <button type="button" onClick={() => adjustCount(1)} className={styles.adjBtnWide}>+1</button>
-              </div>
-            </div>
-
-            <div className={styles.gridRowFullWidthLabel}>
-              <span className={styles.adjustPrefixLabel}>TIME:</span>
-              <div className={styles.adjustButtonsSubGrid}>
-                <button type="button" onClick={() => adjustShiftTime(-1)} className={styles.adjBtnWide}>-1m</button>
-                <button type="button" onClick={() => adjustShiftTime(-10)} className={styles.adjBtnWide}>-10m</button>
-                <button type="button" onClick={() => adjustShiftTime(10)} className={styles.adjBtnWide}>+10m</button>
-                <button type="button" onClick={() => adjustShiftTime(1)} className={styles.adjBtnWide}>+1m</button>
-              </div>
-            </div>
-
-          </div>
-        </div>
-
-        {/* BLOCK C: PROGRESS WITH LOG & SOUND (Громкость, лог и дифф перенесены сюда) */}
-        <div className={`${styles.concaveBlock} ${styles.blockStats}`}>
-          <div className={styles.compactStatsBox}>
-            <div className={styles.progressRow}>
-              <span className={styles.rowLabel}>Plan:</span>
-              <span className={styles.rowValue}>{planPercent}% ({planPcsRounded} pcs)</span>
-            </div>
-            <div className={styles.progressRow}>
-              <span className={styles.rowLabel}>Fact:</span>
-              <span className={styles.rowValue}>{processedCount} pcs ({factPercent}%)</span>
-            </div>
-            
-            <div className={styles.statsExtraControlsRow}>
-              <button type="button" onClick={() => setIsSoundEnabled(!isSoundEnabled)} className={`${styles.shadowBtnMini} ${isSoundEnabled ? styles.btnSoundOn : styles.btnSoundOff}`}>
-                {isSoundEnabled ? "🔊" : "🔇"}
-              </button>
-              <button type="button" onClick={() => setShowReport(!showReport)} className={`${styles.shadowBtnMini} ${showReport ? styles.btnReportActive : styles.btnReport}`}>
-                📋 LOG
-              </button>
-              <div className={styles.rowValue} style={{ fontWeight: "700" }}>
-                <span className={diffPcs >= 0 ? styles.textGreen : styles.textRed}>
-                  {diffPercent >= 0 ? "+" : ""}{diffPercent}% ({diffPcs >= 0 ? "+" : ""}{diffPcs} pcs)
-                </span>
-              </div>
-            </div>
-
-            <div className={styles.statusBarTrack}>
-              <div className={`${styles.statusBarFill} ${diffPcs >= 0 ? styles.bgBarGreen : styles.bgBarRed}`} style={{ width: `${barWidthPercent}%` }}></div>
+            <div className={styles.timeInfoLine}>
+              <span className={styles.timeAlertText}>START: {startTimeText}</span>
+              <span className={styles.timeAlertText}>WORKED: {formatTimeNoSeconds(shiftElapsedSeconds)}</span>
             </div>
           </div>
-        </div>
 
-        {/* BLOCK D: ACTION DONE BUTTON & TIMERS (Строгий блок с кнопкой DONE) */}
-        <div className={`${styles.concaveBlock} ${styles.blockAction}`}>
-          <div className={styles.actionMainRow} style={{ width: "100%", height: "auto" }}>
-            
-            <div className={styles.compactStatsBoxMini}>
-              <div className={styles.progressRow}><span className={styles.rowLabel} style={{ fontSize: "0.5rem" }}>Left:</span><span className={styles.rowValue} style={{ fontSize: "0.65rem" }}>{pcsLeft}</span></div>
-              <div className={styles.progressRow}><span className={styles.rowLabel} style={{ fontSize: "0.5rem" }}>Avg P:</span><span className={styles.rowValue} style={{ fontSize: "0.65rem" }}>{formatTime(totalTimerSeconds)}</span></div>
-              <div className={styles.progressRow}><span className={styles.rowLabel} style={{ fontSize: "0.5rem" }}>Avg R:</span><span className={styles.rowValue} style={{ fontSize: "0.65rem" }}>{formatTime(avgRealTimeSeconds)}</span></div>
-            </div>
-
+          <div className={styles.cfgRate}>
             <div className={styles.fieldGroup}>
-              <span className={styles.fieldLabel} style={{ fontSize: "0.5rem" }}>Done</span>
-              <div className={styles.countDisplayOnly}>{processedCount}</div>
+              <label htmlFor="coefficient" className={styles.fieldLabel}>Rate / Hour</label>
+              <input id="coefficient" type="number" value={isSettingsDisabled ? lockedCoefficient : coefficient} onChange={(e) => setCoefficient(parseInt(e.target.value) || 0)} disabled={isSettingsDisabled} className={styles.inputNumberWide} />
             </div>
-
-            <div className={styles.timeDisplay}>
-              <span className={styles.timeLabel} style={{ fontSize: "0.5rem" }}>STOPWATCH</span>
-              <span className={styles.stopwatchNumbers}>{formatTime(stopwatchSeconds)}</span>
+            <div className={styles.cfgTarget}>
+              <span className={styles.fieldLabel}>Target</span>
+              <div className={styles.targetDisplayDisabled}>{isSettingsDisabled ? lockedTarget : currentTargetPositions}<span className={styles.unitText}>pcs</span></div>
             </div>
-
-            <div className={styles.timeDisplay}>
-              <span className={styles.timeLabel} style={{ fontSize: "0.5rem" }}>PACE</span>
-              <span className={`${styles.timeNumbers} ${paceColorClass}`}>{formatTime(timeLeft)}</span>
-            </div>
-
-            <button
-              type="button"
-              onClick={handleRealItemDone}
-              disabled={isDoneDisabled}
-              className={`${styles.dDoneBtn} ${doneButtonColorClass}`}
-            >
-              DONE
-            </button>
-
-          </div>
-
-          <div className={styles.extendedPaceTrack} style={{ marginTop: "4px" }}>
-            <div
-              className={`${styles.extendedPaceFill} ${
-                paceColorClass === styles.paceGreen ? styles.bgPaceGreen : paceColorClass === styles.paceBlack ? styles.bgPaceBlack : styles.bgPaceRed
-              }`}
-              style={{ width: `${paceBarWidth}%` }}
-            />
-            <span className={styles.extendedPaceText}>Time Elapsed</span>
-          </div>
-
-          <div className={styles.bottomProgressBarTrack} style={{ marginTop: "4px" }}>
-            <div className={styles.bottomProgressBarFill} style={{ width: `${Math.min(100, Math.max(0, factPercent))}%` }} />
-            <span className={styles.bottomProgressBarText}>Progress: {factPercent}%</span>
           </div>
         </div>
+      </div>
 
-      </div> {/* Конец widgetContainer */}
-
-      {/* HISTORICAL REPORT */}
-      {showReport && (
-        <div className={styles.reportSection}>
-          <div className={styles.reportHeader}>
-            <h3>Shift Production Log</h3>
-            <button 
-              type="button" 
-              onClick={() => { if(confirm("Clear history?")) { setDoneLogs([]); localStorage.removeItem("p_doneLogs"); } }} 
-              className={styles.clearLogBtn}
-            >
-              Clear
-            </button>
+      {/* БЛОК Б: CONTROLS & MANUAL ADJUSTMENTS */}
+      <div className={`${styles.concaveBlock} ${styles.blockControls}`}>
+        <div className={styles.controlAndAdjustColumn}>
+          <div className={styles.gridRowMain}>
+            <button type="button" onClick={handleStartToggle} className={`${styles.shadowBtn} ${isRunning ? styles.btnPause : styles.btnStart}`}>{isRunning ? "|| PAUSE" : "▶ START"}</button>
+            <button type="button" onClick={handleGlobalReset} className={`${styles.shadowBtn} ${styles.btnReset}`}>✖ STOP</button>
           </div>
-          <div className={styles.tableWrapper}>
-            <table className={styles.reportTable}>
-              <thead>
-                <tr>
-                  <th>Time Done</th>
-                  <th>Last Unit Duration</th>
-                  <th>Current Plan</th>
-                  <th style={{ textAlign: "right", paddingRight: "16px" }}># Fact</th>
-                </tr>
-              </thead>
-              <tbody>
-                {doneLogs.length === 0 ? (
-                  <tr>
-                    <td colSpan={4} style={{ textAlign: "center", color: "#94a3b8", padding: "16px", fontStyle: "italic" }}>
-                      No items processed yet.
-                    </td>
-                  </tr>
-                ) : (
-                  doneLogs.toReversed().map((item, index) => (
-                    <tr key={index}>
-                      <td>{item.timestamp}</td>
-                      <td>{item.duration}</td>
-                      <td>{item.planPcs} pcs</td>
-                      <td className={styles.factCell}><strong>{item.factCount} pcs</strong></td>
-                    </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
+          <div className={styles.gridRowFullWidthLabel}>
+            <span className={styles.adjustPrefixLabel}>PCS:</span>
+            <div className={styles.adjustButtonsSubGrid}>
+              <button type="button" onClick={() => adjustCount(-1)} className={styles.adjBtnWide}>-1</button>
+              <button type="button" onClick={() => adjustCount(-10)} className={styles.adjBtnWide}>-10</button>
+              <button type="button" onClick={() => adjustCount(10)} className={styles.adjBtnWide}>+10</button>
+              <button type="button" onClick={() => adjustCount(1)} className={styles.adjBtnWide}>+1</button>
+            </div>
+          </div>
+          <div className={styles.gridRowFullWidthLabel}>
+            <span className={styles.adjustPrefixLabel}>TIME:</span>
+            <div className={styles.adjustButtonsSubGrid}>
+              <button type="button" onClick={() => adjustShiftTime(-1)} className={styles.adjBtnWide}>-1m</button>
+              <button type="button" onClick={() => adjustShiftTime(-10)} className={styles.adjBtnWide}>-10m</button>
+              <button type="button" onClick={() => adjustShiftTime(10)} className={styles.adjBtnWide}>+10m</button>
+              <button type="button" onClick={() => adjustShiftTime(1)} className={styles.adjBtnWide}>+1m</button>
+            </div>
           </div>
         </div>
-      )}
-    </div>
-  );
+      </div>
+
+      {/* БЛОК С: PROGRESS WITH LOG & SOUND */}
+      <div className={`${styles.concaveBlock} ${styles.blockStats}`}>
+        <div className={styles.compactStatsBox}>
+          <div className={styles.progressRow}><span className={styles.rowLabel}>Plan:</span><span className={styles.rowValue}>{planPercent}% ({planPcsRounded} pcs)</span></div>
+          <div className={styles.progressRow}><span className={styles.rowLabel}>Fact:</span><span className={styles.rowValue}>{processedCount} pcs ({factPercent}%)</span></div>
+          <div className={styles.statsExtraControlsRow}>
+            <button type="button" onClick={() => setIsSoundEnabled(!isSoundEnabled)} className={`${styles.shadowBtnMini} ${isSoundEnabled ? styles.btnSoundOn : styles.btnSoundOff}`}>{isSoundEnabled ? "🔊" : "🔇"}
+            </button>
+            <button type="button" onClick={() => setShowReport(!showReport)} className={`${styles.shadowBtnMini} ${showReport ? styles.btnReportActive : styles.btnReport}`}>📋 LOG</button>
+            <div className={styles.rowValue} style={{ fontWeight: "700" }}><span className={diffPcs >= 0 ? styles.textGreen : styles.textRed}>{diffPercent >= 0 ? "+" : ""}{diffPercent}% ({diffPcs >= 0 ? "+" : ""}{diffPcs} pcs)</span></div>
+          </div>
+          <div className={styles.statusBarTrack}><div className={`${styles.statusBarFill} ${diffPcs >= 0 ? styles.bgBarGreen : styles.bgBarRed}`} style={{ width: `${barWidthPercent}%` }}></div></div>
+        </div>
+      </div>
+
+      {/* БЛОК Д: ACTION DONE BUTTON & TIMERS */}
+      <div className={`${styles.concaveBlock} ${styles.blockAction}`}>
+        <div className={styles.actionMainGrid}>
+          <div className={styles.actionStatsBlock}>
+            <div className={styles.actionStatsRow}><span className={styles.actionLabel}>Left:</span><span className={styles.actionValue}>{pcsLeft}</span></div>
+            <div className={styles.actionStatsRow}><span className={styles.actionLabel}>Avg P:</span><span className={styles.actionValue}>{formatTime(totalTimerSeconds)}</span></div>
+            <div className={styles.actionStatsRow}><span className={styles.actionLabel}>Avg R:</span><span className={styles.actionValue}>{formatTime(avgRealTimeSeconds)}</span></div>
+          </div>
+          <div className={styles.actionFieldGroup}><span className={styles.actionLabel}>Done</span><div className={styles.countDisplayOnly}>{processedCount}</div></div>
+          <div className={styles.actionTimerGroup}><span className={styles.actionLabel}>STOPWATCH</span><span className={styles.stopwatchNumbers}>{formatTime(stopwatchSeconds)}</span></div>
+          <div className={styles.actionTimerGroup}><span className={styles.actionLabel}>PACE</span><span className={`${styles.timeNumbers} ${paceColorClass}`}>{formatTime(timeLeft)}</span></div>
+          <button type="button" onClick={handleRealItemDone} disabled={isDoneDisabled} className={`${styles.dDoneBtn} ${doneButtonColorClass}`}>DONE</button>
+        </div>
+        <div className={styles.extendedPaceTrack}><div className={`${styles.extendedPaceFill} ${paceColorClass === styles.paceGreen ? styles.bgPaceGreen : paceColorClass === styles.paceBlack ? styles.bgPaceBlack : styles.bgPaceRed}`} style={{ width: `${paceBarWidth}%` }} /><span className={styles.extendedPaceText}>Time Elapsed</span></div>
+        <div className={styles.bottomProgressBarTrack}><div className={styles.bottomProgressBarFill} style={{ width: `${Math.min(100, Math.max(0, factPercent))}%` }} /><span className={styles.bottomProgressBarText}>Progress: {factPercent}%</span></div>
+      </div>
+
+    </div> {/* widgetContainer закроется строго здесь */}
+
+    {/* HISTORICAL REPORT */}
+    {showReport && (
+      <div className={styles.reportSection}>
+        <div className={styles.reportHeader}><h3>Shift Production Log</h3><button type="button" onClick={() => { if(confirm("Clear history?")) { setDoneLogs([]); localStorage.removeItem("p_doneLogs"); } }} className={styles.clearLogBtn}>Clear</button></div>
+        <div className={styles.tableWrapper}>
+          <table className={styles.reportTable}>
+            <thead><tr><th>Time Done</th><th>Last Unit Duration</th><th>Current Plan</th><th style={{ textAlign: "right", paddingRight: "16px" }}># Fact</th></tr></thead>
+            <tbody>
+              {doneLogs.length === 0 ? (<tr><td colSpan={4} style={{ textAlign: "center", color: "#94a3b8", padding: "16px", fontStyle: "italic" }}>No items processed yet.</td></tr>) : 
+              (doneLogs.toReversed().map((item, index) => (<tr key={index}><td>{item.timestamp}</td><td>{item.duration}</td><td>{item.planPcs} pcs</td><td className={styles.factCell}><strong>{item.factCount} pcs</strong></td></tr>)))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    )}
+  </div>
+);
 }
