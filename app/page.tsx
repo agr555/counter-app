@@ -368,8 +368,8 @@ export default function PomodoroWidget() {
           </div>
         </div>
 
-        {/* BLOCK C: PROGRESS WITH LOG & SOUND (Громкость и лог перенесены сюда) */}
-        <div className={`${styles.concaveBlock} ${styles.blockStats}`}>
+                {/* BLOCK C: PROGRESS WITH LOG & SOUND (Блок статистики с логом и звуком) */}
+                <div className={`${styles.concaveBlock} ${styles.blockStats}`}>
           <div className={styles.compactStatsBox}>
             <div className={styles.progressRow}>
               <span className={styles.rowLabel}>Plan:</span>
@@ -380,15 +380,18 @@ export default function PomodoroWidget() {
               <span className={styles.rowValue}>{processedCount} pcs ({factPercent}%)</span>
             </div>
             
-            <div className={styles.statsExtraControlsRow}>
-              <button type="button" onClick={() => setIsSoundEnabled(!isSoundEnabled)} className={`${styles.shadowBtnMini} ${isSoundEnabled ? styles.btnSoundOn : styles.btnSoundOff}`}>
+            {/* Ряд с кнопками звука и лога */}
+            <div className={styles.gridRow} style={{ marginTop: "4px", width: "100%", justifyContent: "space-between" }}>
+              <button type="button" onClick={() => setIsSoundEnabled(!isSoundEnabled)} className={`${styles.shadowBtn} ${isSoundEnabled ? styles.btnSoundOn : styles.btnSoundOff}`} style={{ height: "20px", padding: "0 6px" }}>
                 {isSoundEnabled ? "🔊" : "🔇"}
               </button>
-              <button type="button" onClick={() => setShowReport(!showReport)} className={`${styles.shadowBtnMini} ${showReport ? styles.btnReportActive : styles.btnReport}`}>
+              <button type="button" onClick={() => setShowReport(!showReport)} className={`${styles.shadowBtn} ${showReport ? styles.btnReportActive : styles.btnReport}`} style={{ height: "20px", padding: "0 6px" }}>
                 📋 LOG
               </button>
-              <div className={`${styles.rowValue} ${diffPcs >= 0 ? styles.textGreen : styles.textRed}`}>
-                {diffPercent >= 0 ? "+" : ""}{diffPercent}% ({diffPcs >= 0 ? "+" : ""}{diffPcs} pcs)
+              <div className={styles.rowValue} style={{ fontWeight: "700" }}>
+                <span className={diffPcs >= 0 ? styles.textGreen : styles.textRed}>
+                  {diffPercent >= 0 ? "+" : ""}{diffPercent}% ({diffPcs >= 0 ? "+" : ""}{diffPcs} pcs)
+                </span>
               </div>
             </div>
 
@@ -397,28 +400,29 @@ export default function PomodoroWidget() {
             </div>
           </div>
         </div>
-        {/* BLOCK D: ACTION DONE BUTTON & TIMERS (Блок действия) */}
+
+        {/* BLOCK D: ACTION DONE BUTTON & TIMERS (Блок с кнопкой DONE) */}
         <div className={`${styles.concaveBlock} ${styles.blockAction}`}>
-          <div className={styles.actionMainGrid}>
+          <div className={styles.gridRow} style={{ width: "100%", justifyContent: "space-between", height: "auto" }}>
             
-            <div className={styles.actionStatsBlock}>
-              <div className={styles.actionStatsRow}><span className={styles.actionLabel}>Left:</span><span className={styles.actionValue}>{pcsLeft}</span></div>
-              <div className={styles.actionStatsRow}><span className={styles.actionLabel}>Avg P:</span><span className={styles.actionValue}>{formatTime(totalTimerSeconds)}</span></div>
-              <div className={styles.actionStatsRow}><span className={styles.actionLabel}>Avg R:</span><span className={styles.actionValue}>{formatTime(avgRealTimeSeconds)}</span></div>
+            <div className={styles.fieldGroup} style={{ alignItems: "flex-start", gap: "1px" }}>
+              <div style={{ fontSize: "0.5rem", fontWeight: "800", color: "#94a3b8" }}>LEFT: <span style={{ fontFamily: "monospace", color: "#1e293b", fontSize: "0.65rem" }}>{pcsLeft}</span></div>
+              <div style={{ fontSize: "0.5rem", fontWeight: "800", color: "#94a3b8" }}>AVG P: <span style={{ fontFamily: "monospace", color: "#1e293b", fontSize: "0.65rem" }}>{formatTime(totalTimerSeconds)}</span></div>
+              <div style={{ fontSize: "0.5rem", fontWeight: "800", color: "#94a3b8" }}>AVG R: <span style={{ fontFamily: "monospace", color: "#1e293b", fontSize: "0.65rem" }}>{formatTime(avgRealTimeSeconds)}</span></div>
             </div>
 
-            <div className={styles.actionFieldGroup}>
-              <span className={styles.actionLabel}>Done</span>
+            <div className={styles.fieldGroup}>
+              <span className={styles.fieldLabel} style={{ fontSize: "0.5rem" }}>Done</span>
               <div className={styles.countDisplayOnly}>{processedCount}</div>
             </div>
 
-            <div className={styles.actionTimerGroup}>
-              <span className={styles.actionLabel}>STOPWATCH</span>
+            <div className={styles.fieldGroup}>
+              <span className={styles.fieldLabel} style={{ fontSize: "0.5rem" }}>STOPWATCH</span>
               <span className={styles.stopwatchNumbers}>{formatTime(stopwatchSeconds)}</span>
             </div>
 
-            <div className={styles.actionTimerGroup}>
-              <span className={styles.actionLabel}>PACE</span>
+            <div className={styles.fieldGroup}>
+              <span className={styles.fieldLabel} style={{ fontSize: "0.5rem" }}>PACE</span>
               <span className={`${styles.timeNumbers} ${paceColorClass}`}>{formatTime(timeLeft)}</span>
             </div>
 
@@ -433,7 +437,7 @@ export default function PomodoroWidget() {
 
           </div>
 
-          <div className={styles.extendedPaceTrack}>
+          <div className={styles.extendedPaceTrack} style={{ marginTop: "4px" }}>
             <div
               className={`${styles.extendedPaceFill} ${
                 paceColorClass === styles.paceGreen ? styles.bgPaceGreen : paceColorClass === styles.paceBlack ? styles.bgPaceBlack : styles.bgPaceRed
@@ -443,7 +447,7 @@ export default function PomodoroWidget() {
             <span className={styles.extendedPaceText}>Time Elapsed</span>
           </div>
 
-          <div className={styles.bottomProgressBarTrack}>
+          <div className={styles.bottomProgressBarTrack} style={{ marginTop: "4px" }}>
             <div className={styles.bottomProgressBarFill} style={{ width: `${Math.min(100, Math.max(0, factPercent))}%` }} />
             <span className={styles.bottomProgressBarText}>Progress: {factPercent}%</span>
           </div>
@@ -499,3 +503,4 @@ export default function PomodoroWidget() {
     </div>
   );
 }
+

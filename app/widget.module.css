@@ -478,14 +478,18 @@
     height: 11px !important; 
   }
 }
-
-/* СТУПЕНЬ 3: ПОЛНАЯ МОБИЛЬНАЯ АДАПТАЦИЯ (ЭКРАНЫ МЕНЬШЕ 600px) — СТРОГИЙ СТОЛБИК */
+/* СТУПЕНЬ 3: ПОЛНАЯ МОБИЛЬНАЯ АДАПТАЦИЯ (ЭКРАНЫ МЕНЬШЕ 600px) — ЖЕСТКИЙ ФИКС ШРИФТОВ */
 @media (max-width: 600px) {
+  /* Принудительно возвращаем блок разницы в общий столбик */
+  .widgetContainer > .concaveBlock:nth-child(2) { 
+    display: flex !important; 
+  }
+
   .widgetContainer {
     display: flex !important;
-    flex-direction: column !important; /* ИСПРАВЛЕНО: Все 4 блока строго один под другим */
+    flex-direction: column !important; /* Все 4 блока строго один под другим */
     height: auto !important; 
-    width: 100% !important;
+    width: calc(100vw - 24px) !important; 
     max-width: 360px !important;    
     gap: 10px !important;
     padding: 10px !important;
@@ -493,59 +497,159 @@
     border: 1px solid #cbd5e1 !important;
     box-sizing: border-box !important;
     overflow: visible !important;
+    /* ЖЕСТКИЙ ПРИНУДИТЕЛЬНЫЙ СБРОС ШРИФТА ДЛЯ ВСЕХ ПОДБЛОКОВ */
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
   }
 
   .concaveBlock { 
     box-sizing: border-box !important; 
     height: auto !important; 
     padding: 10px !important; 
+    border-radius: 6px !important; 
     width: 100% !important;
     display: flex !important;
-    flex-direction: column !important; /* Элементы внутри блоков ложатся ровными рядами */
+    flex-direction: column !important; /* Элементы внутри карточек ложатся ровными рядами */
     align-items: stretch !important;
     gap: 8px !important;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
   }
 
-  /* ---- СТРОГИЙ СТОЛБИК БЛОКОВ СВЕРХУ ВНИЗ (ПОРЯДОК ОРДЕРА) ---- */
-  .blockConfig   { order: 1 !important; } /* Блок А — Настройки */
-  .blockControls { order: 2 !important; } /* Блок Б — Кнопки корректировок */
-  .blockStats    { order: 3 !important; } /* Блок С — Статистика */
-  .blockAction   { order: 4 !important; } /* Блок Д — Финальный результат с DONE */
+  /* Строгий порядок карточек сверху вниз */
+  .widgetContainer > .concaveBlock:nth-child(1) { order: 1 !important; } /* Блок А — Настройки */
+  .widgetContainer > .concaveBlock:nth-child(3) { order: 2 !important; } /* Блок Б — Кнопки корректировок */
+  .widgetContainer > .concaveBlock:nth-child(2) { order: 3 !important; } /* Блок С — Статистика */
+  .widgetContainer > .concaveBlock:nth-child(4) { order: 4 !important; } /* Блок Д — Финальный результат с DONE */
 
-  /* Исправление элементов Блока А */
-  .configGrid { flex-direction: column !important; gap: 8px !important; align-items: center !important; }
-  .cfgRate, .cfgTime, .cfgTarget { align-items: center !important; width: 100% !important; }
-  .inputNumberWide, .targetDisplayDisabled, .toggleContainer { height: 24px !important; margin-top: 2px !important; }
-  .timeInfoLine { flex-direction: column !important; gap: 2px !important; align-items: center !important; }
+  /* ==========================================
+     БЛОК А: РАСПРЕДЕЛЕНИЕ ШИРИНЫ ПО СТРЕЛКАМ (60% НА 40%)
+     ========================================== */
+  .configGrid { 
+    display: grid !important;
+    grid-template-columns: 60% 40% !important; /* Левая колонка шире под время, правая уже під Rate */
+    gap: 8px !important;
+    width: 100% !important;
+    align-items: center !important;
+  }
 
-  /* Исправление Блока Б */
-  .controlAndAdjustColumn { width: 100% !important; gap: 8px !important; }
-  .gridRowMain { height: 32px !important; gap: 6px !important; }
-  .gridRowFullWidthLabel { height: 26px !important; gap: 4px !important; }
-  .adjBtnWide, .currentTimeBadge { height: 26px !important; font-size: 0.68rem !important; }
+  /* Сброс шрифтов для полей ввода Блока А */
+  .fieldLabel, .unitText {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+  }
 
-  /* Исправление Блока С */
-  .compactStatsBox { gap: 4px !important; }
-  .statsExtraControlsRow { height: 26px !important; }
+  .inputNumberWide, .targetDisplayDisabled, .toggleContainer { 
+    height: 24px !important; 
+    margin-top: 2px !important; 
+  }
+  .inputNumberWide { width: 55px !important; }
+  .targetDisplayDisabled { width: 62px !important; }
+  
+  /* Строки START и WORKED ложатся ровно без наездов */
+  .timeInfoLine { 
+    flex-direction: column !important; 
+    gap: 2px !important; 
+    align-items: flex-start !important; 
+    height: auto !important;
+  }
+  .timeAlertText {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+    font-size: 0.58rem !important;
+  }
+  .dividerDot { display: none !important; }
 
-  /* Исправление Блока Д */
-  .actionMainGrid { width: 100% !important; display: flex !important; flex-direction: row !important; justify-content: space-between !important; align-items: center !important; gap: 4px !important; }
-  .actionStatsBlock { min-width: 55px !important; }
-  .stopwatchDisplay, .timeDisplay { min-width: 42px !important; }
+  /* ==========================================
+     БЛОК Б: ИСПРАВЛЕНИЕ КНОПОК И СЕТКИ КОРРЕКТИРОВОК
+     ========================================== */
+  .controlAndAdjustColumn { 
+    width: 100% !important; 
+    gap: 8px !important; 
+  }
+  
+  /* Ряд главных кнопок */
+  .gridRow { 
+    display: flex !important; 
+    width: 100% !important; 
+    gap: 4px !important; 
+    height: 28px !important; 
+  }
+  .gridRow .shadowBtn { 
+    flex: 1 !important; 
+    height: 100% !important; 
+    font-size: 0.65rem !important; 
+    padding: 0 4px !important;
+    white-space: nowrap !important;
+  }
 
-  /* ИСПРАВЛЕНО: Кнопка DONE на мобильном ровная, прямоугольная, с отступами по 35px! */
+  /* Ряды корректировок */
+  .gridRowFullWidth { 
+    display: flex !important; 
+    width: 100% !important; 
+    gap: 4px !important; 
+    height: 24px !important; 
+  }
+  .adjBtnWide, .currentTimeBadge { 
+    height: 24px !important; 
+    font-size: 0.68rem !important; 
+    font-family: monospace !important;
+  }
+
+  /* ==========================================
+     БЛОК С: УБИРАЕМ TIMES NEW ROMAN ИЗ СТАТИСТИКИ
+     ========================================== */
+  .compactStatsBox { 
+    gap: 4px !important; 
+    width: 100% !important; 
+  }
+  .progressRow .rowLabel, .progressRow .rowValue { 
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+    font-size: 0.68rem !important; 
+  }
+
+  /* ==========================================
+     БЛОК Д: ВОЗВРАЩЕНИЕ DONE ВНУТРЬ ЭКРАНА С ОТСТУПАМИ 35px
+     ========================================== */
+  /* Контейнер счетчиков и таймеров */
+  .widgetContainer > .concaveBlock:nth-child(4) > div:first-child {
+    display: flex !important;
+    flex-direction: row !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    width: 100% !important;
+    gap: 4px !important;
+  }
+
+  .compactStatsBox, .stopwatchDisplay, .timeDisplay, .fieldGroup {
+    height: auto !important;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+  }
+  
+  .actionLabel, .stopwatchLabel, .timeLabel {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+  }
+
+  .stopwatchNumbers, .timeNumbers, .countDisplayOnly {
+    font-family: monospace !important;
+  }
+
+  /* Кнопка DONE строго держит свои симметричные отступы 35px внутри карточки */
   .dDoneBtn {
-    width: auto !important; /* Больше не растягивается уродливо на весь экран */
-    height: 38px !important; 
-    font-size: 0.85rem !important; 
-    padding: 0 35px !important; /* Строго держит отступы 35px слева и справа */
+    width: auto !important; 
+    height: 36px !important; 
+    font-size: 0.8rem !important; 
+    padding: 0 35px !important; /* Жесткие отступы 35px слева и справа */
     margin: 0 !important;
     display: inline-flex !important;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+    border-radius: 6px !important;
   }
 
-  .extendedPaceTrack, .bottomProgressBarTrack { width: 100% !important; margin-top: 4px !important; height: 10px !important; }
+  .extendedPaceTrack, .bottomProgressBarTrack { 
+    width: 100% !important; 
+    margin-top: 4px !important; 
+    height: 11px !important; 
+  }
 }
 
+/* Экран супер-маленьких телефонов */
 @media (max-width: 340px) {
-  .widgetContainer { transform: scale(0.88) !important; transform-origin: top center !important; }
+  .widgetContainer { transform: scale(0.85) !important; transform-origin: top center !important; }
 }
