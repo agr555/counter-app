@@ -147,6 +147,8 @@ export default function PomodoroWidget() {
   const isSettingsDisabled = timeLeft !== totalTimerSeconds || isRunning;
   const isDoneDisabled = !isRunning && processedCount === 0;
 
+
+
   const handleRealItemDone = useCallback(() => {
     const nextProcessedCount = processedCount + 1;
     const now = new Date();
@@ -168,16 +170,26 @@ export default function PomodoroWidget() {
     setProcessedCount(nextProcessedCount);
     setTotalRealSeconds((prev) => prev + stopwatchSeconds);
     setStopwatchSeconds(0);
+    
+    // МГНОВЕННЫЙ СБРОС ТАЙМЕРА: Кнопка гарантированно позеленеет для новой детали!
     setTimeLeft(totalTimerSeconds);
   }, [stopwatchSeconds, totalTimerSeconds, processedCount, planPcsRounded]);
 
-  const currentNormsElapsed = totalTimerSeconds > 0 ? Math.floor(shiftElapsedSeconds / totalTimerSeconds) : 0;
-  let doneButtonColorClass = styles.doneGreen;
 
-  if (currentNormsElapsed > processedCount) {
-    const overdueCount = currentNormsElapsed - processedCount;
-    if (overdueCount === 1) { doneButtonColorClass = styles.doneRed; }
-    else if (overdueCount >= 2) { doneButtonColorClass = styles.doneBlackBlink; }
+
+  const currentNormsElapsed = totalTimerSeconds > 0 ? Math.floor(shiftElapsedSeconds / totalTimerSeconds) : 0;
+  // ---  ИНТЕРАКТИВНАЯ ЛОГИКА ЦВЕТА КНОПКИ DONE ---
+  let doneButtonColorClass = styles.doneGreen; // По умолчанию всегда зеленая (время идет)
+
+  // Если таймер текущей детали дошел до конца (или равен 0)
+  if (timeLeft <= 0) {
+    doneButtonColorClass = styles.doneRed; // Время на 1 деталь вышло (красная)
+  }
+
+  // Если вы отстаете от общего темпа смены более чем на 2 детали в текущем цикле
+  const currentExpectedPlan = totalTimerSeconds > 0 ? Math.floor(shiftElapsedSeconds / totalTimerSeconds) : 0;
+  if (currentExpectedPlan - processedCount >= 2) {
+    doneButtonColorClass = styles.doneBlackBlink; // Критическое отставание на 2+ детали (черная и мигает)
   }
 
   useEffect(() => {
