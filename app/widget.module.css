@@ -21,14 +21,15 @@
     background-color: #ffffff;
     border-radius: 8px;
     width: max-content; 
-    height: 84px; /* Фиксированная высота десктопа — ничего не подпрыгнет */
-    overflow: visible; 
+    /* ИСПРАВЛЕНО: Убрали жесткие height: 84px. Теперь высота резиновая, блоки раскрываются вниз и полосы видны! */
+    min-height: 104px !important; 
+    overflow: visible; /* По полосы прогресса и текст больше не прячутся */
     gap: 6px;
-    padding: 4px; 
+    padding: 6px; /* Добавили больше воздуха вокруг блоков */
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-    /* Жесткий контроль шрифтов во всех подблоках */
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
   }
+  
   
   .concaveBlock {
     display: flex;
