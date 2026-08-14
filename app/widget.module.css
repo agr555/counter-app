@@ -1,5 +1,5 @@
 /* ==========================================================================
-   1. БАЗОВАЯ ГЕОМЕТРИЯ И СТРОГИЙ ДИЗАЙН КАРТОЧЕК (ДЕСКТОП)
+   1. СБРОС И ЕДИНЫЙ КОМПАКТНЫЙ ШРИФТ ДЛЯ ВСЕГО ВИДЖЕТА (ФИКС ОШИБКИ 1)
    ========================================================================== */
 
    .layoutWrapper {
@@ -10,8 +10,8 @@
     min-height: 100vh;         
     background-color: transparent; 
     box-sizing: border-box;
-    padding-bottom: 12px !important; 
-    padding-right: 24px !important; 
+    padding-bottom: 12px; 
+    padding-right: 24px; 
   }
   
   .widgetContainer {
@@ -21,13 +21,13 @@
     background-color: #ffffff;
     border-radius: 8px;
     width: max-content; 
-    /* ЖЕСТКИЙ И ПРИНУДИТЕЛЬНЫЙ СБРОС ДЛЯ УСТРАНЕНИЯ TIMES NEW ROMAN */
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
-    min-height: 84px; 
+    height: 84px; /* Фиксированная высота десктопа — ничего не подпрыгнет */
     overflow: visible; 
     gap: 6px;
     padding: 4px; 
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    /* Жесткий контроль шрифтов во всех подблоках */
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
   }
   
   .concaveBlock {
@@ -41,19 +41,15 @@
     border-radius: 6px;
     box-shadow: inset 0 2px 4px rgba(148, 163, 184, 0.04); 
     box-sizing: border-box;
-    /* ПРИНУДИТЕЛЬНО ДЛЯ КАЖДОЙ КАРТОЧКИ */
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
   }
   
-  
-  /* Выравнивание подписей и элементов строго по левому краю карточек */
+  /* Компактные подписи по левому краю */
   .fieldGroup, .fieldGroupTarget, .cfgRate, .cfgTime, .cfgTarget {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     justify-content: center;
     gap: 2px;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
   }
   
   .fieldLabel {
@@ -62,46 +58,43 @@
     color: #64748b;
     text-transform: uppercase;
     letter-spacing: 0.03em;
-    text-align: left;
   }
   
-  /* Поля ввода и числовые плашки */
+  /* Поля ввода и тумблеры */
   .inputNumberWide {
     background-color: #ffffff;
     border: 1px solid #cbd5e1;
     border-radius: 6px;
     color: #1e293b;
-    font-size: 0.72rem !important; 
+    font-size: 0.72rem; 
     font-weight: 700;
-    font-family: monospace !important;
-    width: 52px !important; 
+    font-family: monospace;
+    width: 52px; 
     height: 22px; 
     text-align: center;
     outline: none;
   }
   .inputNumberWide:focus { border-color: #0f766e; }
-  .inputNumberWide:disabled { opacity: 0.6; cursor: not-allowed; background-color: #f1f5f9; }
+  .inputNumberWide:disabled { opacity: 0.6; background-color: #f1f5f9; }
   
   .targetDisplayDisabled {
     background-color: #f1f5f9;
     border: 1px dashed #cbd5e1;
     border-radius: 6px;
-    font-size: 0.72rem !important; 
+    font-size: 0.72rem; 
     font-weight: 700;
     color: #94a3b8;
-    font-family: monospace !important;
+    font-family: monospace;
     display: flex;
     align-items: center;
     justify-content: center;
     height: 22px; 
     width: 58px; 
     box-sizing: border-box;
-    gap: 1px;
   }
   
-  .unitText { font-size: 0.6rem !important; color: #94a3b8; font-weight: 600; }
+  .unitText { font-size: 0.6rem; color: #94a3b8; font-weight: 600; }
   
-  /* Переключатель выбора длительности смены */
   .toggleContainer {
     display: flex;
     align-items: center;
@@ -111,7 +104,6 @@
     border-radius: 6px;
     height: 22px; 
     min-width: 105px;
-    box-sizing: border-box;
   }
   
   .radioInput { position: absolute; opacity: 0; width: 0; height: 0; }
@@ -126,7 +118,6 @@
     color: #64748b;
     cursor: pointer;
     z-index: 2;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
   }
   .radioLabelActive { color: #ffffff !important; }
   
@@ -141,73 +132,20 @@
     z-index: 1;
   }
   
+  /* БЛОК А (Строгое деление по вашим пропорциям) */
+  .blockConfig { min-width: 250px; }
+  .configGrid { display: grid; grid-template-columns: 1fr auto; gap: 12px; width: 100%; height: 100%; }
+  .cfgTime { grid-column: 1; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-between; width: 100%; }
+  
+  .timeInfoLine { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; margin-top: 2px; }
+  .timeAlertText { font-size: 0.58rem; color: #dc2626; font-weight: 900; text-transform: uppercase; }
+  
+  .cfgRate { grid-column: 2; display: flex; flex-direction: column; align-items: flex-start; gap: 4px; }
+  .cfgTarget { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; margin-top: 2px; }
   /* ==========================================================================
-     ИСПРАВЛЕННАЯ СТРУКТУРА ДЛЯ БЛОКА А (СТОЛБИКИ ВРЕМЕНИ И КОЭФФИЦИЕНТОВ)
-     ========================================================================== */
-  .blockConfig {
-    min-width: 250px !important; 
-  }
-  
-  .configGrid { 
-    display: grid !important; 
-    grid-template-columns: 1fr auto !important; /* Левая колонка — резиновая под время, правая — под Rate */
-    gap: 12px !important; 
-    width: 100% !important;
-    height: 100%; 
-    box-sizing: border-box; 
-  }
-  
-  /* Левая половина Блока А (Выбор смены, START и WORKED строго друг под другом) */
-  .cfgTime {
-    grid-column: 1 !important;
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: flex-start !important;
-    justify-content: space-between !important;
-    gap: 3px !important;
-    width: 100% !important;
-  }
-  
-  /* СТРОГИЙ, КРУПНЫЙ И ЯРКО-КРАСНЫЙ СТИЛЬ СТРОК ВРЕМЕНИ СТАРТА */
-  .timeInfoLine {
-    display: flex !important;
-    flex-direction: column !important; /* Строчки встают ровно в один левый ряд */
-    align-items: flex-start !important; 
-    justify-content: flex-start !important;
-    gap: 2px !important;
-    margin-top: 2px; 
-  }
-  
-  .timeAlertText {
-    font-size: 0.58rem;
-    color: #dc2626 !important; /* Насыщенный красный цвет текста */
-    font-weight: 900 !important; /* Максимально заметный жирный шрифт */
-    text-transform: uppercase;
-    letter-spacing: 0.02em;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
-  }
-  
-  /* Правая половина Блока А (Rate/Hour и ниже Target строго в один столбик) */
-  .cfgRate {
-    grid-column: 2 !important;
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: flex-start !important;
-    gap: 4px !important;
-  }
-  
-  .cfgTarget {
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: flex-start !important;
-    gap: 2px !important;
-    margin-top: 2px !important;
-  }
-  /* ==========================================================================
-   2. СТРОГИЙ ДИЗАЙН КНОПОК И ЦВЕТОВ (ВСЕГО 2 ЦВЕТА С ОТСТУПАМИ)
+   2. ДИЗАЙН КНОПОК И БЛОКА СТАТИСТИКИ (ПЛОТНЫЙ ВИД БЕЗ КИЛОМЕТРОВЫХ ДЫР)
    ========================================================================== */
 
-/* Общий шаблон формы для ВСЕХ кнопок на странице */
 .shadowBtn, .adjBtnWide, .dDoneBtn, .shadowBtnMini {
   border: none;
   font-weight: 800;
@@ -216,546 +154,326 @@
   align-items: center;
   justify-content: center;
   text-align: center;
-  border-radius: 6px !important; /* У всех кнопок строго одинаковые углы */
+  border-radius: 6px !important;
   box-sizing: border-box;
-  transition: background-color 0.15s ease, transform 0.1s ease, box-shadow 0.15s ease;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
 }
 
 .shadowBtn:active, .adjBtnWide:active, .dDoneBtn:active:not(:disabled), .shadowBtnMini:active {
   transform: scale(0.96);
 }
 
-/* СТИЛЬ 1: Фирменный изумрудный (START, кнопки корректировок) */
-.btnStart, .btnReport, .adjBtnWide {
-  background-color: #0f766e !important;
-  color: #ffffff !important;
-}
-.btnStart:hover, .btnReport:hover, .adjBtnWide:hover {
-  background-color: #115e59 !important;
-}
+/* Строгая двухцветная палитра */
+.btnStart, .btnReport, .adjBtnWide { background-color: #0f766e !important; color: #ffffff !important; }
+.btnStart:hover, .btnReport:hover, .adjBtnWide:hover { background-color: #115e59 !important; }
 
-/* СТИЛЬ 2: Спокойный Сланцево-Серый/Slate (PAUSE, STOP, ЗВУК, LOG) */
-.btnPause, .btnReset, .btnSoundOn, .btnSoundOff, .btnReportActive {
-  background-color: #475569 !important;
-  color: #ffffff !important;
-}
-.btnPause:hover, .btnReset:hover, .btnSoundOn:hover, .btnSoundOff:hover {
-  background-color: #334155 !important;
-}
+.btnPause, .btnReset, .btnSoundOn, .btnSoundOff, .btnReportActive { background-color: #475569 !important; color: #ffffff !important; }
+.btnPause:hover, .btnReset:hover, .btnSoundOn:hover, .btnSoundOff:hover { background-color: #334155 !important; }
 
-/* Основные кнопки управления десктопа */
-.shadowBtn {
-  height: 24px;
-  padding: 0 12px;
-  font-size: 0.65rem;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
-}
-
-/* Маленькие кнопки звука и лога, перенесенные в блок статистики */
-.shadowBtnMini {
-  height: 18px;
-  padding: 0 6px;
-  font-size: 0.6rem;
-}
+.shadowBtn { height: 24px; padding: 0 12px; font-size: 0.65rem; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08); }
+.shadowBtnMini { height: 18px; padding: 0 6px; font-size: 0.6rem; }
 .btnSoundOn { background-color: #334155 !important; }
-.btnReportActive { background-color: #1e293b !important; box-shadow: inset 0 2px 4px rgba(0,0,0,0.15) !important; }
+.btnReportActive { background-color: #1e293b !important; }
 
+/* БЛОК Б: Оптимальные плотные кнопки без дыр */
+.blockControls { min-width: max-content; }
+.controlAndAdjustColumn { width: max-content; display: flex; flex-direction: column; gap: 5px; }
+.gridRowMain { display: flex; gap: 4px; width: 100%; }
+.gridRowMain .shadowBtn { flex: 1; } /* В обычном виде кнопки СТАРТ/СТОП делят строку */
+
+.gridRowFullWidthLabel { display: flex; align-items: center; gap: 6px; width: max-content; }
+.adjustPrefixLabel { font-size: 0.55rem; font-weight: 800; color: #64748b; min-width: 32px; text-align: left; }
+.adjustButtonsSubGrid { display: flex; gap: 4px; }
+
+/* Фиксированная ширина 44px — кнопки больше не раздувает */
+.adjBtnWide { width: 44px !important; height: 22px !important; font-size: 0.65rem !important; font-family: monospace !important; flex: none !important; }
+.currentTimeBadge { background-color: #f8fafc; border: 1px solid #cbd5e1; color: #0f766e; width: 44px !important; height: 22px !important; display: flex; align-items: center; justify-content: center; font-family: monospace !important; font-size: 0.65rem !important; font-weight: 700 !important; border-radius: 6px; flex: none !important; }
+
+/* БЛОК С: Компактная статистика без пустот */
+.blockStats { min-width: max-content; }
+.compactStatsBox { display: flex; flex-direction: column; gap: 3px; width: max-content; }
+.progressRow { display: flex; align-items: center; gap: 12px; width: max-content; } /* ИСПРАВЛЕНО: Тексты и значения теперь рядом, без дыры между ними */
+.rowLabel { font-size: 0.65rem; font-weight: 700; color: #64748b; text-transform: uppercase; width: 34px; }
+.rowValue { font-size: 0.68rem; font-weight: 700; color: #1e293b; font-family: monospace; }
+
+/* Уплотненный ряд кнопок лога и звука */
+.statsExtraControlsRow { display: flex; align-items: center; gap: 6px; width: max-content; margin-top: 1px; }
+
+.textGreen { color: #16a34a !important; }
+.textRed { color: #dc2626 !important; }
+
+.statusBarTrack { width: 100%; height: 2px; background-color: #e2e8f0; margin-top: 1px; overflow: hidden; }
+.statusBarFill { height: 100%; width: 0%; transition: width 0.3s ease; }
+.bgBarGreen { background-color: #16a34a; }
+.bgBarRed { background-color: #dc2626; }
 /* ==========================================================================
-   2. КОМПАКТНЫЙ И КРУПНЫЙ ДИЗАЙН БЛОКА Б (БЕЗ ДЫР И СЖАТИЯ)
+   3. БЛОК Д (ДЕЙСТВИЕ), ЛОГИ И ПОЛОСЫ ПРОГРЕССА (ДЕСКТОП)
    ========================================================================== */
 
-   .blockControls { 
-    min-width: auto !important;
-    width: max-content !important;
-  }
-  
-  .controlAndAdjustColumn { 
-    width: 100%; 
-    display: flex; 
-    flex-direction: column; 
-    gap: 5px !important; 
-  }
-  
-  .gridRowMain { 
-    display: flex; 
-    gap: 4px; 
-    width: 100%; 
-  }
-  .gridRowMain .shadowBtn { 
-    flex: 1; 
-  }
-  
-  .gridRowFullWidthLabel { 
-    display: flex; 
-    align-items: center; 
-    width: 100%; 
-    gap: 6px; 
-  }
-  
-  /* Метка перед кнопками (PCS:, TIME:) */
-  .adjustPrefixLabel { 
-    font-size: 0.55rem; 
-    font-weight: 800; 
-    color: #64748b; 
-    min-width: 32px !important; /* Дали фиксированное место под надпись, чтобы кнопки шли в один ряд */
-    text-align: left; 
-  }
-  
-  .adjustButtonsSubGrid { 
-    display: flex; 
-    gap: 4px; 
-  }
-  
-  /* ИСПРАВЛЕНО: Кнопки стали крупными и одинаковыми на десктопе */
-  .adjBtnWide { 
-    width: 44px !important; /* Задали хорошую, заметную ширину вместо микро-кнопок */
-    height: 22px !important; 
-    font-size: 0.65rem !important; 
-    font-family: monospace !important; 
-    flex: none !important; 
-  }
-  
-  .currentTimeBadge { 
-    background-color: #f8fafc; 
-    border: 1px solid #cbd5e1; 
-    color: #0f766e; 
-    width: 44px !important; /* Плашка времени смены точно такая же крупная, как кнопки */
-    height: 22px !important; 
-    display: flex; 
-    align-items: center; 
-    justify-content: center; 
-    font-family: monospace !important; 
-    font-size: 0.62rem !important; 
-    font-weight: 700 !important; 
-    border-radius: 6px; 
-    flex: none !important;
-  }
-  
-  
-
-/* ИДЕАЛЬНАЯ КНОПКА DONE С ОТСТУПАМИ ПО 35px */
-.dDoneBtn {
-  width: auto !important;
-  max-width: max-content !important; /* Запрещаем кнопке бесконтрольно расти */
-  height: 42px !important; 
-  padding: 0 35px !important; /* Ваши идеальные отступы по 35px */
-  font-size: 0.85rem !important;
-  font-weight: 900 !important;
-  letter-spacing: 0.05em !important;
-  color: #ffffff !important;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1) !important;
-  flex: none !important; /* Запрещаем Flexbox растягивать кнопку */
-  white-space: nowrap !important; /* Текст DONE всегда строго в одну строчку */
-}
-
-/* Цвет 1: Зеленый (Вы укладываетесь в норму) */
-.doneGreen {
-  background-color: #16a34a !important;
-}
-.doneGreen:hover {
-  background-color: #15803d !important;
-}
-
-/* Цвет 2: Красный (Опоздание на 1 деталь) */
-.doneRed {
-  background-color: #dc2626 !important;
-  box-shadow: 0 0 10px rgba(220, 38, 38, 0.4) !important;
-}
-.doneRed:hover {
-  background-color: #b91c1c !important;
-}
-
-/* Цвет 3: Черный + Мигание (Опоздание на 2 и более детали) */
-.doneBlackBlink {
-  background-color: #0f172a !important;
-  box-shadow: 0 0 12px rgba(15, 23, 42, 0.6) !important;
-  animation: criticalXScale 1.2s infinite ease-in-out; /* Включена пульсация со сжатием */
-}
-.doneBlackBlink:hover {
-  background-color: #000000 !important;
-}
-
-/* Анимация сжимает кнопку исключительно по ширине (X) */
-@keyframes criticalXScale {
-  0% { transform: scaleX(1); }
-  50% { transform: scaleX(0.88); box-shadow: 0 0 16px rgba(220, 38, 38, 0.6) !important; }
-  100% { transform: scaleX(1); }
-}
-/* ==========================================================================
-   3. ИНФОРМАЦИОННЫЕ ИНДИКАТОРЫ И ОТЧЕТЫ ЛОГОВ
-   ========================================================================== */
-
-/* Блок С: Строка дополнительных кнопок (звук, лог) внутри статистики */
-.statsExtraControlsRow {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;
-  gap: 6px;
-  margin-top: 2px;
-}
-
-/* Наведение порядка в Блоке Д (Финальный блок с таймерами и DONE) */
-.blockAction {
-  flex-direction: column !important;
-  align-items: stretch !important;
-  gap: 4px !important;
-}
-
-.actionMainGrid {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;
-  height: auto;
-  gap: 8px;
-}
-
-.actionStatsBlock {
-  display: flex;
-  flex-direction: column;
-  gap: 1px;
-  min-width: 58px;
-}
-
-.actionStatsRow {
-  display: flex;
-  justify-content: space-between;
-  font-size: 0.58rem;
-  font-weight: 700;
-  line-height: 1.1;
-}
-
-.actionLabel {
-  font-size: 0.48rem;
-  font-weight: 800;
-  color: #94a3b8;
-  text-transform: uppercase;
-  line-height: 1;
-}
-
-.actionValue {
-  font-size: 0.68rem;
-  font-weight: 700;
-  color: #1e293b;
-  font-family: monospace;
-}
-
-.actionFieldGroup, .actionTimerGroup {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  min-width: 48px;
-}
-
-.countDisplayOnly {
-  color: #0f766e;
-  font-size: 0.85rem;
-  font-weight: 800;
-  font-family: monospace;
-  text-align: center;
-  border: 1px solid #cbd5e1;
-  background-color: #ffffff;
-  border-radius: 6px;
-  height: 22px;
-  width: 36px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-top: 1px;
-}
-
-.stopwatchNumbers { font-size: 0.85rem; font-weight: 700; color: #3b82f6; font-family: monospace; }
-.timeNumbers { font-size: 0.85rem; font-weight: 800; font-family: monospace; }
-
-/* ДАШБОРД-ЛОГ ОТЧЕТА */
-.reportSection {
-  width: 100%;
-  max-width: 510px;
-  margin-top: 14px;
-  background-color: #ffffff;
-  border: 1px solid #e2e8f0;
-  border-radius: 12px;
-  padding: 12px;
-  box-sizing: border-box;
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.03);
-}
-.reportHeader { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; padding-bottom: 6px; border-bottom: 1px solid #f1f5f9; }
-.reportHeader h3 { margin: 0; font-size: 0.75rem; font-weight: 700; color: #0f172a; text-transform: uppercase; letter-spacing: 0.05em; }
-.clearLogBtn { background-color: #fff1f2; border: 1px solid #ffe4e6; color: #e11d48; font-size: 0.6rem; font-weight: 700; padding: 2px 8px; border-radius: 4px; cursor: pointer; text-transform: uppercase; }
-.clearLogBtn:hover { background-color: #ffe4e6; color: #be123c; }
-
-.tableWrapper { max-height: 240px; overflow-y: auto; border: 1px solid #f1f5f9; border-radius: 8px; background-color: #ffffff; }
-.reportTable { width: 100%; border-collapse: collapse; font-size: 0.72rem; }
-.reportTable th { background-color: rgba(248, 250, 252, 0.95); color: #64748b; font-weight: 600; padding: 6px 12px; font-size: 0.52rem; text-transform: uppercase; position: sticky; top: 0; border-bottom: 1px solid #e2e8f0; }
-.reportTable td { padding: 4px 12px !important; border-bottom: 1px solid #f1f5f9 !important; color: #334155; font-family: monospace !important; }
-.reportTable tbody tr:hover { background-color: #f8fafc; }
-.factCell { text-align: right; }
-.factCell strong { background-color: #f0fdf4; color: #15803d; padding: 2px 6px !important; border-radius: 4px; font-size: 0.62rem; font-weight: 700; display: inline-block; border: 1px solid #dcfce7; }
-
-.blockControls { height: auto !important; padding-top: 4px !important; padding-bottom: 4px !important; }
-
-/* ==========================================================================
-   4. ОБНОВЛЕННЫЕ СТУПЕНИ АДАПТИВНОСТИ ДЛЯ ВЕРСЕЛА
-   ========================================================================== */
-
-/* СТУПЕНЬ 2: ДЛЯ СРЕДНИХ ЭКРАНОВ И ПЛАНШЕТОВ (ОТ 601px ДО 1100px) — ИДЕАЛЬНАЯ СЕТКА 2х2 */
-@media (max-width: 1100px) and (min-width: 601px) {
-  .widgetContainer {
-    max-width: 760px !important; 
-    width: 100% !important;
-    height: auto !important; 
-    display: grid !important;
-    grid-template-columns: 1fr 1fr !important; 
-    grid-template-rows: auto auto !important;   
-    padding: 10px !important; 
-    background-color: #f1f5f9 !important; 
-    border: 1px solid #cbd5e1 !important;
-    margin-left: auto !important; 
-    margin-right: 0 !important; 
-    gap: 10px !important;
-    overflow: visible !important; 
-    /* ЖЕСТКИЙ СБРОС ШРИФТА ДЛЯ СЕТКИ 2х2 */
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
-  }
-
-  .concaveBlock {
-    height: auto !important; 
-    min-height: 94px !important; 
-    box-sizing: border-box !important;
-    padding: 10px !important;       
-    width: 100% !important;
-    display: flex !important;
-    flex-direction: column !important; 
-    justify-content: center !important;
-    align-items: stretch !important;
-    border-radius: 6px !important;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
-  }
-
-  .blockConfig   { grid-column: 1 !important; grid-row: 1 !important; order: 1 !important; } 
-  .blockControls { grid-column: 2 !important; grid-row: 1 !important; order: 2 !important; } 
-  .blockStats    { grid-column: 1 !important; grid-row: 2 !important; order: 3 !important; } 
-  .blockAction   { grid-column: 2 !important; grid-row: 2 !important; order: 4 !important; } 
-
-  .configGrid, .controlAndAdjustColumn, .compactStatsBox, .actionMainGrid {
-    width: 100% !important;
+   .blockAction {
     flex-direction: column !important;
-    gap: 6px !important;
+    align-items: stretch !important;
+    gap: 4px !important;
   }
-
-  /* Исправление шрифтов строк Plan / Fact */
-  .progressRow {
-    display: flex !important;
-    justify-content: space-between !important;
-    align-items: center !important;
-    width: 100% !important;
+  
+  .actionMainGrid {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 12px;
+    width: max-content;
   }
-  .rowLabel, .rowValue {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
-    font-size: 0.72rem !important;
-    font-weight: 700 !important;
+  
+  .actionStatsBlock {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
   }
-
-  .cfgRate, .cfgTime, .cfgTarget { align-items: center !important; width: 100% !important; }
-  .inputNumberWide, .targetDisplayDisabled, .toggleContainer { height: 24px !important; margin-top: 2px !important; }
-  .timeInfoLine { gap: 8px !important; margin-top: 4px !important; }
-
-  .gridRowMain { width: 100% !important; height: 28px !important; gap: 4px !important; }
-  .gridRowFullWidthLabel { width: 100% !important; height: 24px !important; gap: 4px !important; }
-  .adjBtnWide, .currentTimeBadge { height: 24px !important; font-size: 0.65rem !important; }
-
-  .statsExtraControlsRow { height: 24px !important; margin-top: 4px !important; }
-
-  .actionMainGrid { 
-    flex-direction: row !important; 
-    flex-wrap: wrap !important; 
-    justify-content: space-between !important; 
-    align-items: center !important; 
-    gap: 6px !important; 
+  
+  .actionStatsRow {
+    display: flex;
+    align-items: center;
+    gap: 4px;
   }
-  .actionStatsBlock { min-width: 60px !important; }
-  .stopwatchDisplay, .timeDisplay { min-width: 45px !important; }
-
-  .dDoneBtn { 
-    height: 36px !important; 
+  
+  .actionLabel {
+    font-size: 0.52rem;
+    font-weight: 800;
+    color: #94a3b8;
+    text-transform: uppercase;
+  }
+  
+  .actionValue {
+    font-size: 0.68rem;
+    font-weight: 700;
+    color: #1e293b;
+    font-family: monospace;
+  }
+  
+  .actionFieldGroup, .actionTimerGroup, .timeDisplay {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1px;
+  }
+  
+  .countDisplayOnly {
+    color: #0f766e;
+    font-size: 0.85rem;
+    font-weight: 800;
+    font-family: monospace;
+    text-align: center;
+    border: 1px solid #cbd5e1;
+    background-color: #ffffff;
+    border-radius: 6px;
+    height: 22px;
+    width: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .stopwatchNumbers { font-size: 0.85rem; font-weight: 700; color: #3b82f6; font-family: monospace; }
+  .timeNumbers { font-size: 0.85rem; font-weight: 800; font-family: monospace; }
+  
+  /* ИДЕАЛЬНАЯ ДЕСКТОПНАЯ КНОПКА DONE С ОТСТУПАМИ 35px */
+  .dDoneBtn {
     width: auto !important;
-    padding: 0 35px !important; 
+    height: 42px !important;
+    padding: 0 35px !important; /* Строго 35px от текста до краев */
     font-size: 0.85rem !important;
-    margin: 0 !important;
-    display: inline-flex !important;
+    font-weight: 900 !important;
+    letter-spacing: 0.05em;
+    color: #ffffff !important;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    flex: none !important;
+    white-space: nowrap !important;
   }
-
-  /* Восстановление полос прогресса в сетке 2х2 */
-  .extendedPaceTrack, .bottomProgressBarTrack { 
-    width: 100% !important; 
-    margin-top: 4px !important; 
-    height: 11px !important; 
+  
+  .doneGreen { background-color: #16a34a !important; }
+  .doneRed { background-color: #dc2626 !important; }
+  .doneBlackBlink {
+    background-color: #0f172a !important;
+    animation: criticalXScale 1.2s infinite ease-in-out;
   }
+  
+  @keyframes criticalXScale {
+    0% { transform: scaleX(1); }
+    50% { transform: scaleX(0.88); }
+    100% { transform: scaleX(1); }
+  }
+  
+  .extendedPaceTrack, .bottomProgressBarTrack {
+    width: calc(100% - 4px);
+    height: 12px;
+    background-color: #e2e8f0;
+    border-radius: 4px;
+    position: relative;
+    overflow: hidden;
+  }
+  .extendedPaceFill { height: 100%; transition: width 1s linear; border-radius: 4px; }
+  .bgPaceGreen { background-color: #16a34a; }
+  .bgPaceBlack { background-color: #0f172a; }
+  .bgPaceRed   { background-color: #dc2626; }
+  .bottomProgressBarFill { height: 100%; background-color: #dc2626 !important; transition: width 0.3s ease-out; }
   
   .extendedPaceText, .bottomProgressBarText {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
-    font-size: 0.52rem !important;
-    font-weight: 800 !important;
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.52rem;
+    font-weight: 800;
+    color: #1e293b;
+    text-transform: uppercase;
+    mix-blend-mode: difference;
   }
-}
-
-
-/* СТУПЕНЬ 3: ПОЛНАЯ МОБИЛЬНАЯ АДАПТАЦИЯ (ЭКРАНЫ МЕНЬШЕ 600px) — СТРОГИЙ СТОЛБИК */
-@media (max-width: 600px) {
-  .widgetContainer > .concaveBlock:nth-child(2) { 
-    display: flex !important; 
-  }
-
-  .widgetContainer {
-    display: flex !important;
-    flex-direction: column !important; 
-    height: auto !important; 
-    width: calc(100vw - 24px) !important; 
-    max-width: 360px !important;    
-    gap: 10px !important;
-    padding: 10px !important;
-    background-color: #f1f5f9 !important; 
-    border: 1px solid #cbd5e1 !important;
-    box-sizing: border-box !important;
-    overflow: visible !important;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
-  }
-
-  .concaveBlock { 
-    box-sizing: border-box !important; 
-    height: auto !important; 
-    padding: 10px !important; 
-    border-radius: 6px !important; 
-    width: 100% !important;
-    display: flex !important;
-    flex-direction: column !important; 
-    align-items: stretch !important;
-    gap: 8px !important;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
-  }
-
-  /* Строгий порядок блоков сверху вниз */
-  .widgetContainer > .concaveBlock:nth-child(1) { order: 1 !important; } 
-  .widgetContainer > .concaveBlock:nth-child(3) { order: 2 !important; } 
-  .widgetContainer > .concaveBlock:nth-child(2) { order: 3 !important; } 
-  .widgetContainer > .concaveBlock:nth-child(4) { order: 4 !important; } 
-
-  /* БЛОК А */
-  .configGrid { 
-    display: grid !important;
-    grid-template-columns: 60% 40% !important; 
-    gap: 8px !important;
-    width: 100% !important;
-    align-items: center !important;
-  }
-
-  .fieldLabel, .unitText { font-family: -apple-system, sans-serif !important; }
-  .inputNumberWide, .targetDisplayDisabled, .toggleContainer { height: 24px !important; margin-top: 2px !important; }
-  .inputNumberWide { width: 55px !important; }
-  .targetDisplayDisabled { width: 62px !important; }
   
-  .timeInfoLine { flex-direction: column !important; gap: 2px !important; align-items: flex-start !important; height: auto !important; }
-  .timeAlertText { font-family: -apple-system, sans-serif !important; font-size: 0.58rem !important; }
-  .dividerDot { display: none !important; }
-
-  .rowLabel, .rowValue {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
-    font-size: 0.68rem !important;
-    font-weight: 700 !important;
-  }
-    /* ==========================================
-     МОБИЛЬНЫЙ БЛОК Б (КРУПНЫЕ КНОПКИ ПОД ПАЛЕЦ)
-     ========================================== */
-     .blockControls { 
-      width: 100% !important; 
-      max-width: 100% !important; 
+  /* ИСТОРИЯ ЛОГОВ */
+  .reportSection { width: 100%; max-width: 510px; margin-top: 14px; background-color: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 12px; box-sizing: border-box; }
+  .reportHeader { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+  .reportHeader h3 { margin: 0; font-size: 0.75rem; font-weight: 700; color: #0f172a; text-transform: uppercase; }
+  .clearLogBtn { background-color: #fff1f2; border: 1px solid #ffe4e6; color: #e11d48; font-size: 0.6rem; font-weight: 700; padding: 2px 8px; border-radius: 4px; cursor: pointer; }
+  .tableWrapper { max-height: 240px; overflow-y: auto; border: 1px solid #f1f5f9; border-radius: 8px; }
+  .reportTable { width: 100%; border-collapse: collapse; font-size: 0.72rem; }
+  .reportTable th { background-color: rgba(248, 250, 252, 0.95); color: #64748b; padding: 6px 12px; font-size: 0.52rem; text-transform: uppercase; position: sticky; top: 0; }
+  .reportTable td { padding: 4px 12px !important; border-bottom: 1px solid #f1f5f9 !important; color: #334155; }
+  .factCell { text-align: right; }
+  .factCell strong { background-color: #f0fdf4; color: #15803d; padding: 2px 6px !important; border-radius: 4px; font-size: 0.62rem; display: inline-block; border: 1px solid #dcfce7; }
+  
+  /* ==========================================================================
+     4. ИСПРАВЛЕНИЕ СТУПЕНИ 1100px (АККУРАТНАЯ СЕТКА 2х2 БЕЗ ДЫР)
+     ========================================================================== */
+  @media (max-width: 1100px) and (min-width: 601px) {
+    .widgetContainer {
+      width: max-content !important; /* Контейнер сжимается строго по контенту */
+      height: auto !important; 
+      display: grid !important;
+      grid-template-columns: auto auto !important; /* Столбики подстраиваются под блоки, дыр больше нет */
+      gap: 10px !important;
+      padding: 10px !important;
+      background-color: #f1f5f9 !important; 
+      border: 1px solid #cbd5e1 !important;
+      overflow: visible !important; 
     }
-    .controlAndAdjustColumn { 
-      width: 100% !important; 
-      gap: 8px !important; 
-      align-items: center !important; 
+  
+    .concaveBlock {
+      height: auto !important; 
+      min-height: 94px !important;
+      width: max-content !important; /* Карточки плотные, не растягиваются на километры */
+      padding: 10px 14px !important;       
     }
+  
+    .blockConfig   { grid-column: 1 !important; grid-row: 1 !important; order: 1 !important; } 
+    .blockControls { grid-column: 2 !important; grid-row: 1 !important; order: 2 !important; } 
+    .blockStats    { grid-column: 1 !important; grid-row: 2 !important; order: 3 !important; } 
+    .blockAction   { grid-column: 2 !important; grid-row: 2 !important; order: 4 !important; } 
+  
+    /* ИСПРАВЛЕНО: Кнопки START и STOP зафиксированы в кучу, чтобы не нажать случайно */
     .gridRowMain { 
-      height: 32px !important; 
-      gap: 6px !important; 
-      width: 100% !important; /* На мобильном СТАРТ/СТОП могут занять всю ширину столбика */
-    }
-    .gridRowFullWidthLabel { 
-      height: 28px !important; 
-      gap: 6px !important; 
       width: max-content !important; 
+      gap: 6px !important; 
+    }
+    .gridRowMain .shadowBtn {
+      width: 80px !important; /* Четкий фиксированный размер, никакого растягивания */
+      flex: none !important;
+    }
+  
+    /* Статистика сохраняет свой плотный вид */
+    .compactStatsBox { width: max-content !important; }
+    .progressRow { gap: 16px !important; }
+  
+    /* Блок DONE */
+    .actionMainGrid { gap: 10px !important; width: max-content !important; }
+    .dDoneBtn { height: 38px !important; }
+  }
+  
+  /* ==========================================================================
+     5. ИСПРАВЛЕНИЕ СТУПЕНИ 500px (МОБИЛЬНЫЙ СТОЛБИК БЕЗ ПРЫЖКОВ ТЕКСТА)
+     ========================================================================== */
+  @media (max-width: 600px) {
+    .widgetContainer {
+      display: flex !important;
+      flex-direction: column !important; /* Строгий вертикальный столбик блоков */
+      height: auto !important; 
+      width: calc(100vw - 24px) !important; 
+      max-width: 360px !important;    
+      gap: 10px !important;
+      padding: 10px !important;
+      background-color: #f1f5f9 !important; 
+      border: 1px solid #cbd5e1 !important;
+      overflow: visible !important;
+    }
+  
+    .concaveBlock { 
+      box-sizing: border-box !important; 
+      height: auto !important; 
+      padding: 10px !important; 
+      width: 100% !important;
+      display: flex !important;
+      flex-direction: column !important; /* Контент внутри карточек ложится ровными рядами */
+      align-items: stretch !important;
+      gap: 8px !important;
+    }
+  
+    .blockConfig   { order: 1 !important; } 
+    .blockControls { order: 2 !important; } 
+    .blockStats    { order: 3 !important; } 
+    .blockAction   { order: 4 !important; } 
+  
+    /* Мобильный Блок А */
+    .configGrid { display: grid !important; grid-template-columns: 55% 45% !important; gap: 8px !important; width: 100% !important; }
+    .cfgTime { align-items: flex-start !important; }
+    .cfgRate, .cfgTarget { align-items: center !important; }
+    .timeInfoLine { flex-direction: column !important; gap: 2px !important; }
+  
+    /* Мобильный Блок Б */
+    .controlAndAdjustColumn { align-items: center !important; width: 100% !important; }
+    .gridRowMain { width: max-content !important; gap: 6px !important; height: 32px !important; }
+    .gridRowMain .shadowBtn { width: 85px !important; flex: none !important; } /* Фикс размера СТАРТ на мобильном */
+    .gridRowFullWidthLabel { width: max-content !important; gap: 6px !important; height: 28px !important; }
+    .adjBtnWide, .currentTimeBadge { width: 44px !important; height: 26px !important; font-size: 0.68rem !important; }
+  
+    /* Мобильный Блок С */
+    .compactStatsBox { width: 100% !important; gap: 4px !important; }
+    .progressRow { width: 100% !important; justify-content: space-between !important; }
+    .statsExtraControlsRow { width: 100% !important; justify-content: space-between !important; height: 26px !important; }
+  
+    /* ИСПРАВЛЕНО: МОБИЛЬНЫЙ БЛОК Д БЕЗ ПРЫГАЮЩЕГО СЕРОГО ТЕКСТА */
+    .actionMainGrid { 
+      width: 100% !important; 
+      display: flex !important; 
+      flex-direction: row !important; 
+      justify-content: space-between !important; 
+      align-items: center !important; 
+      gap: 4px !important; 
     }
     
-    .adjustPrefixLabel {
-      font-size: 0.65rem !important;
-      min-width: 36px !important;
+    /* Жестко фиксируем серые метки и цифры в ровный аккуратный блок, текст не подпрыгивает */
+    .actionStatsBlock { 
+      display: flex !important;
+      flex-direction: column !important;
+      gap: 3px !important;
+      min-width: max-content !important;
+    }
+    .actionStatsRow {
+      display: flex !important;
+      align-items: center !important;
+      justify-content: flex-start !important;
+      gap: 4px !important;
+      height: 12px !important; /* Жесткая строчка, текст не прыгнет вверх */
     }
   
-    /* ИСПРАВЛЕНО: Крупные, отличные кнопки для мобильного режима */
-    .adjBtnWide, .currentTimeBadge { 
-      width: 54px !important; /* Увеличили до 54px, теперь они крупные и по ним легко попасть */
-      height: 28px !important; 
-      font-size: 0.72rem !important; 
+    .actionFieldGroup, .actionTimerGroup, .timeDisplay { align-items: center !important; }
+  
+    /* DONE на мобильном держит свои 35px и не ломает экран */
+    .dDoneBtn {
+      width: auto !important; 
+      height: 36px !important; 
+      padding: 0 35px !important; 
+      display: inline-flex !important;
     }
   
+    .extendedPaceTrack, .bottomProgressBarTrack { width: 100% !important; height: 11px !important; }
+  }
   
-  /* БЛОК С */
-  /* БЛОК С */
-  .compactStatsBox { 
-    gap: 4px !important; 
-    width: 100% !important; 
-  }
-  .progressRow .rowLabel, .progressRow .rowValue { 
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
-    font-size: 0.68rem !important;
-    font-weight: 700 !important;
-  }
-
-  /* БЛОК Д */
-  .widgetContainer > .concaveBlock:nth-child(4) > div:first-child { 
-    display: flex !important; 
-    flex-direction: row !important; 
-    justify-content: space-between !important; 
-    align-items: center !important; 
-    width: 100% !important; 
-    gap: 4px !important; 
-  }
-  .compactStatsBox, .stopwatchDisplay, .timeDisplay, .fieldGroup { 
-    height: auto !important; 
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important; 
-  }
-  .actionLabel, .stopwatchLabel, .timeLabel { 
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important; 
-  }
-  .stopwatchNumbers, .timeNumbers, .countDisplayOnly { 
-    font-family: monospace !important; 
-  }
-
-  /* Кнопка DONE на мобильном с отступами по 35px */
-  .dDoneBtn {
-    width: auto !important; 
-    height: 36px !important; 
-    font-size: 0.8rem !important; 
-    padding: 0 35px !important; 
-    margin: 0 !important;
-    display: inline-flex !important;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
-    border-radius: 6px !important;
-  }
-
-  .extendedPaceTrack, .bottomProgressBarTrack { 
-    width: 100% !important; 
-    margin-top: 4px !important; 
-    height: 11px !important; 
-  }
-}
-
-@media (max-width: 340px) {
-  .widgetContainer { 
-    transform: scale(0.85) !important; 
-    transform-origin: top center !important; 
-  }
-}
