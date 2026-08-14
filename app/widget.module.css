@@ -488,7 +488,7 @@
    4. ОБНОВЛЕННЫЕ СТУПЕНИ АДАПТИВНОСТИ ДЛЯ ВЕРСЕЛА
    ========================================================================== */
 
-/* СТУПЕНЬ 2: ДЛЯ СРЕДНИХ ЭКРАНОВ И ПЛАНШЕТОВ (ОТ 601px ДО 1100px) — СЕТКА 2х2 */
+/* СТУПЕНЬ 2: ДЛЯ СРЕДНИХ ЭКРАНОВ И ПЛАНШЕТОВ (ОТ 601px ДО 1100px) — ИДЕАЛЬНАЯ СЕТКА 2х2 */
 @media (max-width: 1100px) and (min-width: 601px) {
   .widgetContainer {
     max-width: 760px !important; 
@@ -504,11 +504,13 @@
     margin-right: 0 !important; 
     gap: 10px !important;
     overflow: visible !important; 
+    /* ЖЕСТКИЙ СБРОС ШРИФТА ДЛЯ СЕТКИ 2х2 */
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
   }
 
   .concaveBlock {
     height: auto !important; 
-    min-height: 90px !important; 
+    min-height: 94px !important; 
     box-sizing: border-box !important;
     padding: 10px !important;       
     width: 100% !important;
@@ -517,6 +519,7 @@
     justify-content: center !important;
     align-items: stretch !important;
     border-radius: 6px !important;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
   }
 
   .blockConfig   { grid-column: 1 !important; grid-row: 1 !important; order: 1 !important; } 
@@ -528,6 +531,19 @@
     width: 100% !important;
     flex-direction: column !important;
     gap: 6px !important;
+  }
+
+  /* Исправление шрифтов строк Plan / Fact */
+  .progressRow {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    width: 100% !important;
+  }
+  .rowLabel, .rowValue {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+    font-size: 0.68rem !important;
+    font-weight: 700 !important;
   }
 
   .cfgRate, .cfgTime, .cfgTarget { align-items: center !important; width: 100% !important; }
@@ -559,67 +575,20 @@
     display: inline-flex !important;
   }
 
+  /* Восстановление полос прогресса в сетке 2х2 */
   .extendedPaceTrack, .bottomProgressBarTrack { 
     width: 100% !important; 
     margin-top: 4px !important; 
     height: 11px !important; 
   }
-}
-/* ПОЛНОЕ ИСПРАВЛЕНИЕ ДЛЯ ПОЛОС ПРОГРЕССА И СТРОК ПЛАН/ФАКТ */
-.progressRow { 
-  display: flex !important; 
-  justify-content: space-between !important; 
-  align-items: center !important; 
-  width: 100% !important; 
-}
-
-.rowLabel, .rowValue {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
-  font-size: 0.72rem !important;
-  font-weight: 700 !important;
+  
+  .extendedPaceText, .bottomProgressBarText {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+    font-size: 0.52rem !important;
+    font-weight: 800 !important;
+  }
 }
 
-.extendedPaceTrack, .bottomProgressBarTrack {
-  width: calc(100% - 12px);
-  height: 12px;
-  background-color: #e2e8f0;
-  border-radius: 4px;
-  position: relative;
-  overflow: hidden;
-  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.08);
-}
-
-/* Текст внутри верхней полосы (Time Elapsed) */
-.extendedPaceText {
-  position: absolute !important;
-  inset: 0 !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  font-size: 0.52rem !important;
-  font-weight: 800 !important;
-  color: #1e293b !important;
-  text-transform: uppercase !important;
-  letter-spacing: 0.02em !important;
-  mix-blend-mode: difference !important;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
-}
-
-/* Текст нижней полосы прогресса (Progress) */
-.bottomProgressBarText {
-  position: absolute !important;
-  inset: 0 !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  font-size: 0.52rem !important;
-  font-weight: 800 !important;
-  color: #1e293b !important;
-  text-transform: uppercase !important;
-  letter-spacing: 0.02em !important;
-  mix-blend-mode: difference !important;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
-}
 
 /* СТУПЕНЬ 3: ПОЛНАЯ МОБИЛЬНАЯ АДАПТАЦИЯ (ЭКРАНЫ МЕНЬШЕ 600px) — СТРОГИЙ СТОЛБИК */
 @media (max-width: 600px) {

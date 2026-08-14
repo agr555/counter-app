@@ -207,18 +207,32 @@ export default function PomodoroWidget() {
 
   const adjustShiftTime = (minutesAmount: number) => {
     if (actualStartObject) {
-      const updatedDate = new Date(actualStartObject.getTime() + minutesAmount * 60 * 1000);
+      const timeShiftMs = minutesAmount * 60 * 1000;
+      const updatedDate = new Date(actualStartObject.getTime() + timeShiftMs);
       setActualStartObject(updatedDate);
       setStartTimeText(`${updatedDate.getHours().toString().padStart(2, "0")}:${updatedDate.getMinutes().toString().padStart(2, "0")}`);
     }
-    setShiftAdjustmentSeconds((prev) => { const newValue = prev - minutesAmount * 60; return newValue < 0 ? 0 : newValue; });
+
+    setShiftAdjustmentSeconds((prev) => { 
+      const newValue = prev - minutesAmount * 60; 
+      return newValue < 0 ? 0 : newValue; 
+    });
+
     const currentShiftMins = shift === "9h40m" ? 9 * 60 + 40 : 8 * 60;
     const currentTargetPcs = Math.round(coefficient * (currentShiftMins / 60));
-    setLockedCoefficient(coefficient); setLockedShift(shift); setLockedTarget(currentTargetPcs);
+
+    setLockedCoefficient(coefficient); 
+    setLockedShift(shift); 
+    setLockedTarget(currentTargetPcs);
+
     const netMinutes = currentShiftMins - 45;
     const computedTimerSeconds = currentTargetPcs > 0 ? Math.round((netMinutes * 60) / currentTargetPcs) : 25 * 60;
-    setTimeLeft(computedTimerSeconds); setIsRunning(true);
+    
+    // ИСПРАВЛЕНО: Убрали ошибочную строчку перезаписи времени под факт!
+    setTimeLeft(computedTimerSeconds); 
+    setIsRunning(true);
   };
+
 
   const handleStartToggle = () => {
     if (!isRunning && timeLeft === totalTimerSeconds) {
