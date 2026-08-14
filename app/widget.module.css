@@ -22,14 +22,14 @@
     border-radius: 8px;
     width: max-content; 
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    height: 76px; /* Фиксированная высота для десктопа */
+    height: 76px; /* Фиксированная высота десктопа */
     overflow: hidden;
     gap: 6px;
     padding: 0;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
   }
   
-  /* Все карточки блоков на странице теперь строго в одном стиле */
+  /* Все карточки блоков теперь строго в одном стиле */
   .concaveBlock {
     display: flex;
     align-items: center;
@@ -38,16 +38,16 @@
     padding: 0 10px;
     background: #f8fafc;
     border: 1px solid #e2e8f0;
-    border-radius: 6px; /* Единое скругление для всей страницы */
+    border-radius: 6px; /* Единое скругление углов */
     box-shadow: inset 0 2px 4px rgba(148, 163, 184, 0.04); 
     box-sizing: border-box;
   }
   
-  /* Выравнивание подписей по левому краю */
+  /* Строгое выравнивание подписей по левому краю */
   .fieldGroup, .fieldGroupTarget, .cfgRate, .cfgTime, .cfgTarget {
     display: flex;
     flex-direction: column;
-    align-items: flex-start; /* ИСПРАВЛЕНО: строго по левому краю */
+    align-items: flex-start; /* Подписи прижаты влево */
     justify-content: center;
     gap: 2px;
   }
@@ -58,10 +58,10 @@
     color: #64748b;
     text-transform: uppercase;
     letter-spacing: 0.03em;
-    text-align: left; /* ИСПРАВЛЕНО: текст заголовков слева */
+    text-align: left;
   }
   
-  /* Поля ввода и тумблеры */
+  /* Поля ввода и Target */
   .inputNumberWide {
     background-color: #ffffff;
     border: 1px solid #cbd5e1;
@@ -97,7 +97,7 @@
   
   .unitText { font-size: 0.6rem !important; color: #94a3b8; font-weight: 600; }
   
-  /* Поля времени (сделали шире, чтобы влезало 5-6 цифр) */
+  /* Ползунок времени (расширен под 5-6 цифр) */
   .toggleContainer {
     display: flex;
     align-items: center;
@@ -106,7 +106,7 @@
     border: 1px solid #cbd5e1;
     border-radius: 6px;
     height: 20px; 
-    min-width: 105px; /* ИСПРАВЛЕНО: расширили поле, чтобы ничего не зажималось */
+    min-width: 105px; /* Расширили рамку, чтобы текст не зажимался */
     box-sizing: border-box;
   }
   
@@ -144,7 +144,7 @@
     box-sizing: border-box; 
   }
   
-  /* КРУПНЫЙ ЖИРНЫЙ КРАСНЫЙ СТИЛЬ ДЛЯ СТРОК ВРЕМЕНИ СТАРТА И РАБОТЫ */
+  /* КРУПНЫЙ, ЖИРНЫЙ, ЯРКО-КРАСНЫЙ СТИЛЬ СТРОК ВРЕМЕНИ */
   .timeInfoLine {
     display: flex;
     align-items: center; 
@@ -155,8 +155,8 @@
   
   .timeAlertText {
     font-size: 0.55rem;
-    color: #dc2626 !important; /* ИСПРАВЛЕНО: Яркий красный цвет */
-    font-weight: 900 !important; /* ИСПРАВЛЕНО: Супер-жирный шрифт */
+    color: #dc2626 !important; /* Ярко-красный */
+    font-weight: 900 !important; /* Максимально жирный */
     text-transform: uppercase;
     letter-spacing: 0.02em;
   }
@@ -165,13 +165,12 @@
     color: #dc2626 !important;
     font-size: 0.6rem;
   }
-  
   /* ==========================================================================
    2. СТРОГИЙ ДИЗАЙН КНОПОК И ЦВЕТОВ (ВСЕГО 2 ЦВЕТА С ОТСТУПАМИ)
    ========================================================================== */
 
-/* Общий базовый шаблон формы для ВСЕХ кнопок на странице */
-.shadowBtn, .adjBtnWide, .dDoneBtn {
+/* Общий шаблон формы для ВСЕХ кнопок на странице */
+.shadowBtn, .adjBtnWide, .dDoneBtn, .shadowBtnMini {
   border: none;
   font-weight: 800;
   cursor: pointer;
@@ -179,12 +178,12 @@
   align-items: center;
   justify-content: center;
   text-align: center;
-  border-radius: 6px !important; /* У всех кнопок теперь строго одинаковые углы */
+  border-radius: 6px !important; /* У всех кнопок строго одинаковые углы */
   box-sizing: border-box;
   transition: background-color 0.15s ease, transform 0.1s ease, box-shadow 0.15s ease;
 }
 
-.shadowBtn:active, .adjBtnWide:active, .dDoneBtn:active:not(:disabled) {
+.shadowBtn:active, .adjBtnWide:active, .dDoneBtn:active:not(:disabled), .shadowBtnMini:active {
   transform: scale(0.96);
 }
 
@@ -206,29 +205,83 @@
   background-color: #334155 !important;
 }
 
-/* Настройки верхнего ряда главных кнопок */
+/* Основные кнопки управления десктопа */
 .shadowBtn {
   height: 22px;
   padding: 0 10px;
   font-size: 0.65rem;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
 }
+
+/* Маленькие кнопки звука и лога, перенесенные в блок статистики */
+.shadowBtnMini {
+  height: 18px;
+  padding: 0 6px;
+  font-size: 0.6rem;
+}
 .btnSoundOn { background-color: #334155 !important; }
 .btnReportActive { background-color: #1e293b !important; box-shadow: inset 0 2px 4px rgba(0,0,0,0.15) !important; }
 
-/* КНОПКИ КОРРЕКТИРОВОК — СТРОГО ОДИНАКОВОЙ ШИРИНЫ */
+/* НОВЫЙ БЛОК Б: Одинаковые по ширине кнопки корректировок */
+.gridRowMain {
+  display: flex;
+  gap: 4px;
+  width: 100%;
+}
+.gridRowMain .shadowBtn {
+  flex: 1; /* Кнопки START и STOP делят верхний ряд поровну */
+}
+
+.gridRowFullWidthLabel {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  gap: 6px;
+}
+
+/* Текстовые метки перед кнопками (PCS: и TIME:) */
+.adjustPrefixLabel {
+  font-size: 0.55rem;
+  font-weight: 800;
+  color: #64748b;
+  min-width: 32px; /* Фиксированное место под надпись, чтобы сетка кнопок шла ровно */
+  text-align: left;
+}
+
+/* Сетка, делающая кнопки корректировок строго одинаковыми */
+.adjustButtonsSubGrid {
+  display: flex;
+  flex: 1;
+  gap: 4px;
+}
+
 .adjBtnWide {
-  flex: 1 !important; /* Кнопки делят строку абсолютно поровну */
+  flex: 1 !important; /* Каждая кнопка забирает ровно четверть строки */
   height: 20px !important;
   font-size: 0.62rem !important;
   font-family: monospace !important;
 }
 
-/* СТИЛИЗАЦИЯ ТРЕХ ЦВЕТОВ ДЛЯ КНОПКИ DONE С ОТСТУПАМИ ПО 35px */
+.currentTimeBadge {
+  background-color: #f8fafc;
+  border: 1px solid #cbd5e1;
+  color: #0f766e; 
+  flex: 1;
+  height: 20px !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: monospace !important;
+  font-size: 0.62rem !important;
+  font-weight: 700 !important;
+  border-radius: 6px;
+}
+
+/* ИДЕАЛЬНАЯ КНОПКА DONE С ОТСТУПАМИ ПО 35px */
 .dDoneBtn {
   width: auto !important;
   height: calc(100% - 4px);
-  padding: 0 35px !important; /* ИСПРАВЛЕНО: Строго по 35px от текста до краев кнопки */
+  padding: 0 35px !important; /* СТРОГО ПО 35px от краев до слова DONE */
   font-size: 0.85rem;
   font-weight: 900;
   margin-top: 2px;
@@ -237,7 +290,7 @@
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-/* Цвет 1: Зеленый (Время на деталь еще идет) */
+/* Цвет 1: Зеленый (Вы укладываетесь в норму) */
 .doneGreen {
   background-color: #16a34a !important;
 }
@@ -245,7 +298,7 @@
   background-color: #15803d !important;
 }
 
-/* Цвет 2: Красный (Время на 1 деталь вышло) */
+/* Цвет 2: Красный (Опоздание на 1 деталь) */
 .doneRed {
   background-color: #dc2626 !important;
   box-shadow: 0 0 10px rgba(220, 38, 38, 0.4) !important;
@@ -254,88 +307,37 @@
   background-color: #b91c1c !important;
 }
 
-/* Цвет 3: Черный + Мигание (Время вышло на 2 и более детали) */
+/* Цвет 3: Черный + Мигание (Опоздание на 2 и более детали) */
 .doneBlackBlink {
   background-color: #0f172a !important;
   box-shadow: 0 0 12px rgba(15, 23, 42, 0.6) !important;
-  animation: criticalBlink 1.2s infinite ease-in-out;
+  animation: criticalXScale 1.2s infinite ease-in-out; /* Включена пульсация со сжатием */
 }
 .doneBlackBlink:hover {
   background-color: #000000 !important;
 }
 
-@keyframes criticalBlink {
-  0% { transform: scale(1); opacity: 1; }
-  50% { transform: scale(1.03); opacity: 0.85; box-shadow: 0 0 18px rgba(220, 38, 38, 0.7) !important; }
-  100% { transform: scale(1); opacity: 1; }
+/* ИСПРАВЛЕНО: Анимация сжимает кнопку исключительно по ширине (X) */
+@keyframes criticalXScale {
+  0% { transform: scaleX(1); }
+  50% { transform: scaleX(0.88); box-shadow: 0 0 16px rgba(220, 38, 38, 0.6) !important; }
+  100% { transform: scaleX(1); }
 }
-
 /* ==========================================================================
-   3. ИНФОРМАЦИОННЫЕ ИНДИКАТОРЫ И ПОЛОСЫ ПРОГРЕССА
+   3. ИНФОРМАЦИОННЫЕ ИНДИКАТОРЫ И ОТЧЕТЫ ЛОГОВ
    ========================================================================== */
 
-.blockStats {
-  flex: 1 !important; 
-  min-width: 140px; 
-  padding: 0 10px !important;
-}
-
-.compactStatsBox {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  width: 100% !important; 
-  height: 100%;
-  line-height: 1.2;
-  gap: 1px;
-}
-
-.progressRow { display: flex; justify-content: space-between; align-items: center; width: 100% !important; }
-.rowLabel { font-size: 0.58rem; font-weight: 700; color: #64748b; text-transform: uppercase; }
-.rowValue { font-size: 0.72rem !important; font-weight: 700; color: #1e293b; font-family: monospace; }
-.textGreen { color: #16a34a !important; }
-.textRed { color: #dc2626 !important; }
-
-.statusBarTrack { width: 100%; height: 2px; background-color: #e2e8f0; border-radius: 1px; margin-top: 2px; overflow: hidden; }
-.statusBarFill { height: 100%; width: 0%; transition: width 0.3s ease; }
-.bgBarGreen { background-color: #16a34a; }
-.bgBarRed { background-color: #dc2626; }
-
-.extendedPaceTrack, .bottomProgressBarTrack {
-  width: calc(100% - 12px);
-  height: 10px;
-  background-color: #e2e8f0;
-  border-radius: 4px;
-  position: relative;
-  overflow: hidden;
-  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.08);
-}
-.extendedPaceFill { height: 100%; transition: width 1s linear, background-color 0.2s ease; border-radius: 4px; }
-.extendedPaceText, .bottomProgressBarText {
-  position: absolute;
-  inset: 0;
+/* Блок С: Строка дополнительных кнопок (звук, лог) внутри статистики */
+.statsExtraControlsRow {
   display: flex;
   align-items: center;
-  justify-content: center;
-  font-size: 0.52rem;
-  font-weight: 800;
-  color: #1e293b;
-  text-transform: uppercase;
-  letter-spacing: 0.02em;
-  mix-blend-mode: difference;
+  justify-content: space-between;
+  width: 100%;
+  gap: 6px;
+  margin-top: 2px;
 }
 
-.bgPaceGreen { background-color: #16a34a; }
-.bgPaceBlack { background-color: #0f172a; }
-.bgPaceRed   { background-color: #dc2626; }
-
-/* КРАСНЫЙ ПРОГРЕСС-БАР СМЕНЫ ВЕРНУЛСЯ НА МЕСТО */
-.bottomProgressBarFill { height: 100%; background-color: #dc2626 !important; transition: width 0.3s ease-out; border-radius: 4px; }
-/* ==========================================================================
-   3. НАВЕДЕНИЕ ПОРЯДКА В БЛОКЕ Д И ИСТОРИИ ЛОГОВ
-   ========================================================================== */
-
-/* Пересобираем Блок Д в строгую линию без мешанины элементов */
+/* Наведение порядка в Блоке Д (Финальный блок с таймерами и DONE) */
 .blockAction {
   flex-direction: column !important;
   align-items: stretch !important;
@@ -381,7 +383,6 @@
   font-family: monospace;
 }
 
-/* Зоны таймеров иDone */
 .actionFieldGroup, .actionTimerGroup {
   display: flex;
   flex-direction: column;
@@ -438,19 +439,68 @@
 .blockControls { height: auto !important; padding-top: 4px !important; padding-bottom: 4px !important; }
 
 /* ==========================================================================
-   4. АДАПТИВНОСТЬ И СТРОГИЙ СТОЛБИК НА МОБИЛЬНЫХ ЭКРАНАХ (ДО 600px)
+   4. ОБНОВЛЕННЫЕ СТУПЕНИ АДАПТИВНОСТИ ДЛЯ ВЕРСЕЛА
    ========================================================================== */
 
-@media (max-width: 600px) {
-  /* Блок разницы больше не прячем, так как всё выстраивается в один ровный столбец */
-  .widgetContainer > .concaveBlock:nth-child(2) { 
-    display: flex !important; 
+/* СТУПЕНЬ 2: ДЛЯ СРЕДНИХ ЭКРАНОВ И ПЛАНШЕТОВ (ОТ 601px ДО 1100px) — СЕТКА 2х2 */
+@media (max-width: 1100px) and (min-width: 601px) {
+  .widgetContainer {
+    max-width: 520px !important; 
+    width: 520px !important;
+    height: auto !important; /* Сбросили 76px десктопа */
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important; /* ИСПРАВЛЕНО: Два ровных столбика по два блока */
+    grid-template-rows: auto auto !important;   
+    padding: 8px !important;
+    background-color: #f1f5f9 !important; 
+    border: 1px solid #cbd5e1 !important;
+    margin-left: auto !important; 
+    margin-right: 0 !important; 
+    gap: 8px !important;
   }
 
+  .concaveBlock {
+    height: auto !important; 
+    min-height: 76px !important;
+    box-sizing: border-box !important;
+    padding: 8px !important;       
+    width: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    align-items: stretch !important;
+  }
+
+  /* Порядок карточек в сетке 2х2 */
+  .blockConfig   { grid-column: 1 !important; grid-row: 1 !important; order: 1 !important; }
+  .blockControls { grid-column: 2 !important; grid-row: 1 !important; order: 2 !important; }
+  .blockStats    { grid-column: 1 !important; grid-row: 2 !important; order: 3 !important; }
+  .blockAction   { grid-column: 2 !important; grid-row: 2 !important; order: 4 !important; }
+
+  /* Корректировка внутренних рядов под 2 столбика */
+  .configGrid, .controlAndAdjustColumn, .compactStatsBox, .actionMainGrid {
+    width: 100% !important;
+    flex-direction: column !important;
+    gap: 6px !important;
+  }
+  .gridRow, .gridRowMain, .gridRowFullWidthLabel { width: 100% !important; height: 24px !important; }
+  .actionMainGrid { flex-direction: row !important; flex-wrap: wrap !important; justify-content: space-between !important; }
+
+  /* Кнопка DONE на средних экранах */
+  .dDoneBtn { 
+    height: 34px !important; 
+    width: auto !important;
+    padding: 0 35px !important; /* Держим 35px */
+    font-size: 0.8rem !important;
+  }
+}
+
+/* СТУПЕНЬ 3: ПОЛНАЯ МОБИЛЬНАЯ АДАПТАЦИЯ (ЭКРАНЫ МЕНЬШЕ 600px) — СТРОГИЙ СТОЛБИК */
+@media (max-width: 600px) {
   .widgetContainer {
     display: flex !important;
-    flex-direction: column !important; /* ИСПРАВЛЕНО: Все блоки строго в один столбец */
-    height: auto !important; /* Убираем жесткую десктопную высоту */
+    flex-direction: column !important; /* ИСПРАВЛЕНО: Все 4 блока строго один под другим */
+    height: auto !important; 
     width: 100% !important;
     max-width: 360px !important;    
     gap: 10px !important;
@@ -458,68 +508,60 @@
     background-color: #f1f5f9 !important; 
     border: 1px solid #cbd5e1 !important;
     box-sizing: border-box !important;
-    border-radius: 8px !important;
     overflow: visible !important;
   }
 
   .concaveBlock { 
     box-sizing: border-box !important; 
-    height: auto !important; /* Высота подстраивается под содержимое, ничего не обрезая */
+    height: auto !important; 
     padding: 10px !important; 
-    border-radius: 6px !important; 
     width: 100% !important;
     display: flex !important;
-    flex-direction: row !important; /* Внутри десктопная разметка элементов сохраняется */
-    align-items: center !important;
-    justify-content: space-between !important;
-  }
-
-  /* ---- СТРОГАЯ ИЕРАРХИЯ СТОЛБИКА СВЕРХУ ВНИЗ (ОБНОВЛЕННЫЙ ПОРЯДОК) ---- */
-  
-  /* Блок А (Настройки: Rate, Смена, Время старта и работы) — Первый сверху */
-  .blockConfig {
-    order: 1 !important;
-  }
-  .configGrid { gap: 12px !important; }
-
-  /* Блок Б (START, STOP, LOG и кнопки корректировок) — Второй */
-  .blockControls {
-    order: 2 !important;
-  }
-  .controlAndAdjustColumn { width: 100% !important; gap: 6px !important; }
-  .gridRow { width: 100% !important; height: 26px !important; }
-  .gridRow .shadowBtn { flex: 1 !important; height: 100% !important; font-size: 0.65rem !important; }
-  .gridRowFullWidth { width: 100% !important; height: 24px !important; }
-
-  /* Блок С (Статистика: План, Факт, Дифф и прогресс-бар) — Третий */
-  .blockStats {
-    order: 3 !important;
-  }
-
-  /* Блок Д (Финальный: DONE, таймеры и нижний красный прогресс-бар) — Четвертый в самом низу */
-  .blockAction {
-    order: 4 !important;
+    flex-direction: column !important; /* Элементы внутри блоков ложатся ровными рядами */
+    align-items: stretch !important;
     gap: 8px !important;
   }
-  .actionMainGrid { width: 100% !important; }
 
-  /* СОХРАНЯЕМ ИДЕАЛЬНУЮ СИММЕТРИЮ И ОТСТУПЫ 35px ДЛЯ DONE НА МОБИЛЬНОМ */
+  /* ---- СТРОГИЙ СТОЛБИК БЛОКОВ СВЕРХУ ВНИЗ (ПОРЯДОК ОРДЕРА) ---- */
+  .blockConfig   { order: 1 !important; } /* Блок А — Настройки */
+  .blockControls { order: 2 !important; } /* Блок Б — Кнопки корректировок */
+  .blockStats    { order: 3 !important; } /* Блок С — Статистика */
+  .blockAction   { order: 4 !important; } /* Блок Д — Финальный результат с DONE */
+
+  /* Исправление элементов Блока А */
+  .configGrid { flex-direction: column !important; gap: 8px !important; align-items: center !important; }
+  .cfgRate, .cfgTime, .cfgTarget { align-items: center !important; width: 100% !important; }
+  .inputNumberWide, .targetDisplayDisabled, .toggleContainer { height: 24px !important; margin-top: 2px !important; }
+  .timeInfoLine { flex-direction: column !important; gap: 2px !important; align-items: center !important; }
+
+  /* Исправление Блока Б */
+  .controlAndAdjustColumn { width: 100% !important; gap: 8px !important; }
+  .gridRowMain { height: 32px !important; gap: 6px !important; }
+  .gridRowFullWidthLabel { height: 26px !important; gap: 4px !important; }
+  .adjBtnWide, .currentTimeBadge { height: 26px !important; font-size: 0.68rem !important; }
+
+  /* Исправление Блока С */
+  .compactStatsBox { gap: 4px !important; }
+  .statsExtraControlsRow { height: 26px !important; }
+
+  /* Исправление Блока Д */
+  .actionMainGrid { width: 100% !important; display: flex !important; flex-direction: row !important; justify-content: space-between !important; align-items: center !important; gap: 4px !important; }
+  .actionStatsBlock { min-width: 55px !important; }
+  .stopwatchDisplay, .timeDisplay { min-width: 42px !important; }
+
+  /* ИСПРАВЛЕНО: Кнопка DONE на мобильном ровная, прямоугольная, с отступами по 35px! */
   .dDoneBtn {
-    width: auto !important; /* ИСПРАВЛЕНО: Больше не растягивается уродливо на весь блок */
-    height: 36px !important; /* Удобная высота под палец */
-    padding: 0 35px !important; /* Жесткие красивые поля 35px слева и справа */
+    width: auto !important; /* Больше не растягивается уродливо на весь экран */
+    height: 38px !important; 
     font-size: 0.85rem !important; 
+    padding: 0 35px !important; /* Строго держит отступы 35px слева и справа */
     margin: 0 !important;
+    display: inline-flex !important;
   }
 
-  .extendedPaceTrack, .bottomProgressBarTrack { 
-    width: 100% !important; 
-    margin-top: 4px !important; 
-    height: 10px !important; 
-  }
+  .extendedPaceTrack, .bottomProgressBarTrack { width: 100% !important; margin-top: 4px !important; height: 10px !important; }
 }
 
-/* Корректировка для экранов старых узких телефонов */
 @media (max-width: 340px) {
-  .widgetContainer { transform: scale(0.9) !important; transform-origin: top center !important; }
+  .widgetContainer { transform: scale(0.88) !important; transform-origin: top center !important; }
 }
